@@ -322,6 +322,294 @@
       display: flex;
     }
 
+    .page-doc-sidebar {
+      flex: 0 0 0;
+      width: 0;
+      height: 100%;
+      overflow: hidden;
+      color: #4b5563;
+      background: #fff;
+      border-left: 0 solid #e6ebf2;
+      box-shadow: none;
+      transition: flex-basis 0.22s ease, width 0.22s ease, border-color 0.22s ease;
+    }
+
+    body.page-doc-open .page-doc-sidebar {
+      flex-basis: 440px;
+      width: 440px;
+      border-left-width: 1px;
+      box-shadow: -6px 0 18px rgba(29, 58, 96, 0.04);
+    }
+
+    body.page-doc-open .filter-grid {
+      grid-template-columns: repeat(2, minmax(180px, 1fr));
+    }
+
+    body.page-doc-open .resource-filter {
+      grid-template-columns: minmax(140px, 180px) minmax(160px, 220px);
+    }
+
+    body.page-doc-open .resource-filter-actions {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+    }
+
+    .page-doc-trigger {
+      position: fixed;
+      z-index: 45;
+      top: 50%;
+      right: 0;
+      width: 32px;
+      min-height: 92px;
+      padding: 10px 7px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      letter-spacing: 1px;
+      line-height: 1.25;
+      background: #2f91f1;
+      border-radius: 6px 0 0 6px;
+      box-shadow: 0 6px 16px rgba(22, 135, 232, 0.22);
+      transform: translateY(-50%);
+      transition: right 0.22s ease, background 0.18s ease, box-shadow 0.18s ease;
+      writing-mode: vertical-rl;
+    }
+
+    .page-doc-trigger:hover {
+      background: #1687e8;
+      box-shadow: 0 8px 20px rgba(22, 135, 232, 0.28);
+    }
+
+    body.page-doc-open .page-doc-trigger {
+      right: 440px;
+    }
+
+    .page-doc-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-width: 440px;
+    }
+
+    .page-doc-head {
+      height: 54px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #edf1f5;
+      background: #fbfcfe;
+    }
+
+    .page-doc-head h2 {
+      margin: 0;
+      color: #1f2d3d;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .page-doc-close {
+      width: 24px;
+      height: 24px;
+      color: #98a3b3;
+      border-radius: 50%;
+    }
+
+    .page-doc-close:hover {
+      color: #fff;
+      background: #b8c2cf;
+    }
+
+    .page-doc-body {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 16px 18px 22px;
+    }
+
+    .page-doc-tabs {
+      height: 42px;
+      padding: 0 18px;
+      display: flex;
+      align-items: flex-end;
+      gap: 26px;
+      background: #fff;
+      border-bottom: 1px solid #edf1f5;
+    }
+
+    .page-doc-tab {
+      height: 40px;
+      padding: 0 2px;
+      color: #667182;
+      border-bottom: 2px solid transparent;
+      font-size: 13px;
+    }
+
+    .page-doc-tab:hover {
+      color: var(--blue);
+    }
+
+    .page-doc-tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+      font-weight: 500;
+    }
+
+    .page-doc-summary {
+      margin: 0 0 16px;
+      color: #657182;
+      line-height: 1.8;
+    }
+
+    .page-doc-section {
+      padding: 13px 0 14px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .page-doc-title {
+      position: relative;
+      margin-bottom: 10px;
+      padding-left: 10px;
+      color: #1f2d3d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .page-doc-title::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 3px;
+      height: 12px;
+      background: var(--blue);
+      border-radius: 2px;
+    }
+
+    .page-doc-list {
+      margin: 0;
+      padding-left: 16px;
+      color: #5e6a7b;
+      line-height: 1.8;
+    }
+
+    .page-doc-list li + li {
+      margin-top: 4px;
+    }
+
+    .page-doc-fields {
+      display: grid;
+      gap: 8px;
+    }
+
+    .page-doc-note-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .page-doc-note {
+      padding: 10px 12px;
+      border: 1px solid #e7edf5;
+      border-radius: 4px;
+      background: #fbfdff;
+    }
+
+    .page-doc-meta {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+
+    .page-doc-note-text {
+      color: #5e6a7b;
+      line-height: 1.75;
+    }
+
+    .page-doc-field {
+      width: 100%;
+      padding: 9px 10px;
+      text-align: left;
+      border: 1px solid #e7edf5;
+      border-radius: 4px;
+      background: #fbfdff;
+    }
+
+    .page-doc-field:hover {
+      color: var(--blue);
+      border-color: #bddcff;
+      background: #f4f9ff;
+    }
+
+    .page-doc-field strong {
+      display: block;
+      margin-bottom: 3px;
+      color: #344253;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .page-doc-field:hover strong {
+      color: var(--blue);
+    }
+
+    .page-doc-field span {
+      display: block;
+      color: #7d8897;
+      line-height: 1.6;
+    }
+
+    .page-doc-field-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .page-doc-field-title .page-doc-meta {
+      justify-content: flex-end;
+      margin-bottom: 0;
+    }
+
+    .page-doc-version {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      height: 20px;
+      padding: 0 7px;
+      color: var(--blue);
+      font-style: normal;
+      font-size: 12px;
+      font-weight: 400;
+      background: #edf6ff;
+      border: 1px solid #cfe7ff;
+      border-radius: 10px;
+    }
+
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      height: 18px;
+      margin-right: 6px;
+      padding: 0 6px;
+      color: #c87800;
+      background: #fff7e6;
+      border: 1px solid #ffd99a;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    [data-doc-field].doc-field-highlight {
+      outline: 2px solid rgba(47, 145, 241, 0.7);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 5px rgba(47, 145, 241, 0.13);
+      background: #f0f8ff !important;
+      transition: outline 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
     .panel {
       background: #fff;
       border: 1px solid var(--border);
@@ -964,6 +1252,9 @@
     }
 
     .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       height: 32px;
       min-width: 68px;
       padding: 0 15px;
@@ -2112,6 +2403,21 @@
       }
     }
 
+    @media (max-width: 1180px) {
+      body.page-doc-open .page-doc-sidebar {
+        flex-basis: 360px;
+        width: 360px;
+      }
+
+      body.page-doc-open .page-doc-trigger {
+        right: 360px;
+      }
+
+      .page-doc-panel {
+        min-width: 360px;
+      }
+    }
+
     @media (max-width: 1080px) {
       .filter-grid {
         grid-template-columns: repeat(2, minmax(180px, 1fr));
@@ -2213,6 +2519,8 @@
       <nav class="breadcrumb-bar" id="breadcrumb"></nav>
       <section class="content" id="content"></section>
     </main>
+    <aside class="page-doc-sidebar" id="pageDoc"></aside>
+    <button class="page-doc-trigger" id="pageDocTrigger" data-action="toggle-page-doc">页面说明</button>
   </div>
   <div id="overlay"></div>
   <div id="toast"></div>
@@ -2231,7 +2539,7 @@
       var yesNoOptions = ["否", "是"];
       var packageOptions = ["畅享20GB", "物联50GB", "基础10GB", "商户共享100GB", "启动卡体验包"];
       var flowTypeOptions = ["大流量", "小流量"];
-      var taskOperationOptions = ["停卡", "激活卡", "同步卡状态", "同步实名状态", "开启流量限速", "关闭流量限速", "变更卡状态", "卡销号"];
+      var taskOperationOptions = ["停卡", "激活卡", "同步卡状态", "同步实名状态", "开启流量限速", "关闭流量限速", "变更卡状态", "卡销号", "卡状态查询"];
       var taskStatusOptions = ["未完成", "已完成"];
       var cardFormOptions = ["插拔卡", "eSIM", "贴片卡"];
       var writeStatusOptions = ["未写卡", "写卡中", "写卡成功", "写卡失败"];
@@ -2606,6 +2914,9 @@
         esimMenuCollapsed: false,
         supplierMenuCollapsed: false,
         taskMenuCollapsed: false,
+        pageDocOpen: false,
+        pageDocTab: "functions",
+        docHighlightTimer: null,
         activePage: "home",
         openPages: ["home"],
         homeChartMode: "day",
@@ -2716,6 +3027,407 @@
           return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" })[char];
         });
       };
+
+      var fieldDocLabels = {
+        "ID": "id",
+        "SIM卡总数": "simTotal",
+        "激活数": "activeCount",
+        "本月流量消耗": "monthTraffic",
+        "余额": "balance",
+        "流量类型": "flowType",
+        "供应商": "vendor",
+        "群组名称": "groupName",
+        "群组简称": "groupShort",
+        "剩余用量(GB)": "remainUsage",
+        "使用量(GB)": "usedUsage",
+        "本月日均用量（GB）": "averageUsage",
+        "使用量百分比": "usagePercent",
+        "时间": "time",
+        "ICCID": "iccid",
+        "MSISDN": "msisdn",
+        "IMSI": "imsi",
+        "所属商户": "merchant",
+        "运营商": "carrier",
+        "运营商平台": "accountPlatform",
+        "运营商套餐": "carrierPackage",
+        "用户套餐": "userPackage",
+        "商户套餐": "merchantPackage",
+        "卡用途": "cardUsage",
+        "卡极速上网": "fastNetwork",
+        "卡状态": "cardStatus",
+        "流量状态": "trafficStatus",
+        "是否需要实名": "needRealName",
+        "实名结果": "realNameResult",
+        "是否限速": "speedLimit",
+        "卡形态": "cardForm",
+        "总流量（MB）": "totalFlow",
+        "本月流量（MB）": "monthFlow",
+        "上月流量（MB）": "lastMonthFlow",
+        "二次认证开关": "authSwitch",
+        "二次认证广告模式": "authAdMode",
+        "服务开始时间": "serviceStart",
+        "服务到期时间": "serviceEnd",
+        "创建时间": "createdAt",
+        "ESIM芯片供应商": "esimChipVendor",
+        "所属业务平台": "businessPlatform",
+        "写卡状态": "writeStatus",
+        "管理停用状态": "manageStopStatus",
+        "卡状态异常标记次数": "abnormalMarkCount",
+        "是否分配": "allocated",
+        "导入时间": "importedAt",
+        "EID": "eid",
+        "芯片类型": "chipType",
+        "芯片型号": "chipModel",
+        "原始MSISDN": "originalMsisdn",
+        "原始ICCID": "originalIccid",
+        "写卡后MSISDN": "writtenMsisdn",
+        "写卡后ICCID": "writtenIccid",
+        "终端最近使用IMEI": "latestImei",
+        "最近上报IMEI时间": "imeiReportedAt",
+        "设备最近位置": "deviceLocation",
+        "最近上报位置时间": "locationReportedAt",
+        "最近位置上报时间": "locationReportedAt",
+        "更新时间": "updatedAt",
+        "写卡申请编号": "requestNo",
+        "发起任务平台端": "launchPlatform",
+        "申请时间": "appliedAt",
+        "任务类型": "taskType",
+        "初始入库平台端": "initialPlatform",
+        "IMEI": "imei",
+        "绑定状态": "bindStatus",
+        "绑定时间": "boundAt",
+        "批次号": "batchNo",
+        "操作类型": "operationType",
+        "操作数量": "operationCount",
+        "状态": "status",
+        "处理总数": "totalCount",
+        "成功数": "successCount",
+        "失败数": "failedCount",
+        "备注": "remark",
+        "操作人": "operator",
+        "操作时间": "operatedAt",
+        "序号": "seq",
+        "操作前状态": "beforeStatus",
+        "操作结果": "operationResult",
+        "变更时间": "changedAt",
+        "检测状态": "detectionStatus",
+        "失败原因": "failReason"
+      };
+
+      var queryKeyDocFields = {
+        resourceFlowType: "flowType",
+        resourceSupplier: "vendor",
+        resourceGroup: "groupName",
+        vendor: "vendor",
+        carrier: "carrier",
+        platform: "accountPlatform",
+        groupShort: "groupShort",
+        groupVendor: "vendor",
+        groupFlowType: "flowType",
+        taskBatchNo: "batchNo",
+        taskType: "operationType",
+        taskStatus: "status",
+        detailIccid: "iccid",
+        detailStatus: "status",
+        simKeyword: "iccid",
+        simCarrier: "carrier",
+        simVendor: "vendor",
+        simUsage: "cardUsage",
+        simAuthSwitch: "authSwitch",
+        simAdMode: "authAdMode",
+        simMerchant: "merchant",
+        simFastNetwork: "fastNetwork",
+        simCardStatus: "cardStatus",
+        simTrafficStatus: "trafficStatus",
+        simRealName: "needRealName",
+        simSpeedLimit: "speedLimit",
+        simPackage: "carrierPackage",
+        esimKeyword: "iccid",
+        esimCarrier: "carrier",
+        esimVendor: "vendor",
+        esimUsage: "cardUsage",
+        esimMerchant: "merchant",
+        esimFastNetwork: "fastNetwork",
+        esimCardStatus: "cardStatus",
+        esimForm: "cardForm",
+        esimTrafficStatus: "trafficStatus",
+        esimRealName: "needRealName",
+        esimSpeedLimit: "speedLimit",
+        esimPackage: "carrierPackage",
+        esimWriteStatus: "writeStatus",
+        esimManageStop: "manageStopStatus",
+        esimAbnormalMarkCount: "abnormalMarkCount",
+        esimDisabledReason: "manageStopReason",
+        esimDisabledBy: "disabledBy",
+        esimAllocated: "allocated",
+        esimChipVendor: "esimChipVendor",
+        esimPlatform: "businessPlatform",
+        changeOperationType: "operationType",
+        changeChipVendor: "esimChipVendor",
+        changePlatform: "businessPlatform",
+        changeStatus: "status",
+        detectionIccid: "iccid",
+        detectionStatus: "detectionStatus",
+        chipEid: "eid",
+        chipSupplier: "vendor",
+        chipPlatform: "businessPlatform",
+        chipType: "chipType",
+        chipModel: "chipModel",
+        chipIccid: "originalIccid",
+        chipMsisdn: "originalMsisdn",
+        chipWriteStatus: "writeStatus",
+        chipRecordBatchNo: "batchNo",
+        chipRecordType: "operationType",
+        chipRecordSupplier: "vendor",
+        chipRecordPlatform: "businessPlatform",
+        chipRecordStatus: "status",
+        chipDetectionEid: "eid",
+        chipDetectionStatus: "detectionStatus",
+        writeTaskNo: "requestNo",
+        writeTaskEid: "eid",
+        writeTaskChipType: "chipType",
+        writeTaskIccid: "originalIccid",
+        writeTaskMsisdn: "originalMsisdn",
+        writeTaskStatus: "writeStatus",
+        writeTaskType: "taskType",
+        writeTaskLaunchPlatform: "launchPlatform",
+        imeiCode: "imei",
+        imeiEid: "eid",
+        imeiChipVendor: "esimChipVendor",
+        imeiBindStatus: "bindStatus"
+      };
+
+      var actionDocFields = {
+        "toggle-sim-date": "activationTime",
+        "toggle-esim-date": "activationTime",
+        "toggle-esim-disabled-date": "disabledAt",
+        "toggle-esim-chip-import-date": "importedAt",
+        "toggle-chip-record-operation-date": "operatedAt",
+        "toggle-write-task-apply-date": "appliedAt",
+        "toggle-write-task-update-date": "updatedAt"
+      };
+
+      function emptyPageDocumentation(title) {
+        return {
+          page: { title: "", description: "" },
+          fields: [],
+          functions: [],
+          businessRules: [],
+          interactions: []
+        };
+      }
+
+      var pageDocumentation = {
+        home: emptyPageDocumentation("首页"),
+        sim: emptyPageDocumentation("SIM卡管理"),
+        simDetail: emptyPageDocumentation("SIM卡详情"),
+        account: emptyPageDocumentation("运营商账户配置"),
+        group: emptyPageDocumentation("群组管理"),
+        batchTask: {
+          page: { title: "", description: "" },
+          fields: [],
+          functions: [
+            {
+              name: "查询卡状态",
+              version: "V3.1.5",
+              ticket: "1002182",
+              text: "下载文件字段：批次号、ICCID、所属供应商、运营商、卡状态、机卡分离状态、物联卡管理停复机冻结状态、操作类型、操作人、操作结果、备注、创建时间"
+            }
+          ],
+          businessRules: [],
+          interactions: []
+        },
+        batchTaskDetail: emptyPageDocumentation("批量任务详情"),
+        esim: emptyPageDocumentation("ESIM可写码号列表"),
+        esimRecords: emptyPageDocumentation("ESIM可写码号变更记录"),
+        esimChangeDetail: emptyPageDocumentation("可写码号变更详情"),
+        esimChip: emptyPageDocumentation("ESIM芯片列表"),
+        esimChipRecords: emptyPageDocumentation("ESIM芯片变更记录"),
+        esimChipRecordDetail: emptyPageDocumentation("ESIM芯片变更详情"),
+        esimChipDetail: emptyPageDocumentation("ESIM芯片详情"),
+        esimWriteTask: emptyPageDocumentation("ESIM写卡任务管理"),
+        imei: emptyPageDocumentation("设备IMEI管理")
+      };
+
+      function docFieldIdForLabel(label) {
+        return fieldDocLabels[label] || "";
+      }
+
+      function currentDocPageKey() {
+        if (state.activePage === "esim" && state.esimActiveTab === "records") { return "esimRecords"; }
+        if (state.activePage === "esimChip" && state.esimChipActiveTab === "records") { return "esimChipRecords"; }
+        return state.activePage;
+      }
+
+      function currentPageDocumentation() {
+        return pageDocumentation[currentDocPageKey()] || pageDocumentation[state.activePage] || null;
+      }
+
+      function applyDocumentationAnchors() {
+        var content = $("#content");
+        if (!content) { return; }
+        Array.prototype.forEach.call(content.querySelectorAll("[data-key]"), function (node) {
+          var fieldId = queryKeyDocFields[node.dataset.key];
+          var anchor = node.closest("label") || node;
+          if (fieldId && anchor) { anchor.dataset.docField = fieldId; }
+        });
+        Array.prototype.forEach.call(content.querySelectorAll("[data-action]"), function (node) {
+          var fieldId = actionDocFields[node.dataset.action];
+          var anchor = node.closest("label") || node;
+          if (fieldId && anchor) { anchor.dataset.docField = fieldId; }
+        });
+        Array.prototype.forEach.call(content.querySelectorAll("th"), function (node) {
+          var fieldId = docFieldIdForLabel(node.textContent.trim());
+          if (fieldId) { node.dataset.docField = fieldId; }
+        });
+        Array.prototype.forEach.call(content.querySelectorAll(".detail-item"), function (node) {
+          var label = node.querySelector(".detail-label");
+          var fieldId = label ? docFieldIdForLabel(label.textContent.trim()) : "";
+          if (fieldId) { node.dataset.docField = fieldId; }
+        });
+        Array.prototype.forEach.call(content.querySelectorAll(".metric-card"), function (node) {
+          var label = node.querySelector(".metric-label");
+          var fieldId = label ? docFieldIdForLabel(label.textContent.trim()) : "";
+          if (fieldId) { node.dataset.docField = fieldId; }
+        });
+      }
+
+      function docListMarkup(items) {
+        return '<div class="page-doc-note-list">' + items.map(function (item) {
+          var todo = typeof item === "object" && item.todo;
+          var text = typeof item === "object" ? item.text : item;
+          var name = typeof item === "object" && item.name ? item.name : "";
+          var version = typeof item === "object" && item.version ? item.version : "V1.0";
+          var ticket = typeof item === "object" && item.ticket ? item.ticket : "";
+          var formattedText = name ? name + "：" + String(text || "").replace(/[。；;]\s*$/, "") + "；" : text;
+          return '<div class="page-doc-note">' +
+            '<div class="page-doc-meta"><em class="page-doc-version">修改版本：' + esc(version) + "</em>" +
+            (ticket ? '<em class="page-doc-version">工单号：' + esc(ticket) + "</em>" : "") + "</div>" +
+            '<div class="page-doc-note-text">' + (todo ? '<span class="doc-badge">待补充</span>' : "") + esc(formattedText) + "</div>" +
+          "</div>";
+        }).join("") + "</div>";
+      }
+
+      function docSectionMarkup(title, inner) {
+        return '<section class="page-doc-section"><div class="page-doc-title">' + esc(title) + "</div>" + inner + "</section>";
+      }
+
+      function docFieldsMarkup(fields) {
+        return '<div class="page-doc-fields">' + fields.map(function (field) {
+          return '<button class="page-doc-field" data-action="doc-field-jump" data-field="' + esc(field.id) + '">' +
+            '<div class="page-doc-field-title"><strong>' + esc(field.name) + "</strong>" +
+            '<div class="page-doc-meta"><em class="page-doc-version">修改版本：' + esc(field.version || "V1.0") + "</em>" +
+            (field.ticket ? '<em class="page-doc-version">工单号：' + esc(field.ticket) + "</em>" : "") + "</div></div>" +
+            '<span>' + esc(field.description) + "</span>" +
+          "</button>";
+        }).join("") + "</div>";
+      }
+
+      function docFunctionItems(doc) {
+        var items = [];
+        if (doc.page && doc.page.description) {
+          items.push({ name: doc.page.name || "", text: doc.page.description, version: doc.page.version || "V1.0", ticket: doc.page.ticket || "" });
+        }
+        return items.concat(doc.functions || [], doc.businessRules || [], doc.interactions || []);
+      }
+
+      function pageDocTabsMarkup() {
+        var active = state.pageDocTab || "functions";
+        return '<div class="page-doc-tabs">' +
+          '<button class="page-doc-tab ' + (active === "functions" ? "active" : "") + '" data-action="set-page-doc-tab" data-tab="functions">功能说明</button>' +
+          '<button class="page-doc-tab ' + (active === "fields" ? "active" : "") + '" data-action="set-page-doc-tab" data-tab="fields">字段说明</button>' +
+        "</div>";
+      }
+
+      function renderPageDocumentation() {
+        var doc = currentPageDocumentation();
+        var sidebar = $("#pageDoc");
+        var trigger = $("#pageDocTrigger");
+        if (!doc || !sidebar || !trigger) {
+          document.body.classList.remove("page-doc-open");
+          if (trigger) { trigger.style.display = "none"; }
+          if (sidebar) { sidebar.innerHTML = ""; }
+          return;
+        }
+        trigger.style.display = "inline-flex";
+        document.body.classList.toggle("page-doc-open", state.pageDocOpen);
+        trigger.setAttribute("aria-expanded", state.pageDocOpen ? "true" : "false");
+        if (!state.pageDocOpen) {
+          sidebar.innerHTML = "";
+          return;
+        }
+        var bodyMarkup = "";
+        if (state.pageDocTab === "fields") {
+          bodyMarkup = doc.fields && doc.fields.length ? docFieldsMarkup(doc.fields) : "";
+        } else {
+          var functionItems = docFunctionItems(doc);
+          bodyMarkup = functionItems.length ? docListMarkup(functionItems) : "";
+        }
+        sidebar.innerHTML = '<div class="page-doc-panel">' +
+          '<div class="page-doc-head"><h2>页面说明</h2><button class="page-doc-close" data-action="close-page-doc" aria-label="关闭页面说明">×</button></div>' +
+          pageDocTabsMarkup() +
+          '<div class="page-doc-body">' + bodyMarkup + "</div>" +
+        "</div>";
+      }
+
+      function fieldNameFromDocumentation(fieldId) {
+        var doc = currentPageDocumentation();
+        var fields = doc && doc.fields ? doc.fields : [];
+        var found = fields.find(function (field) { return field.id === fieldId; });
+        return found ? found.name : fieldId;
+      }
+
+      function findVisibleDocField(fieldId) {
+        var nodes = Array.prototype.slice.call(document.querySelectorAll("#content [data-doc-field]"));
+        return nodes.find(function (node) {
+          return node.dataset.docField === fieldId && node.offsetParent !== null;
+        });
+      }
+
+      function clearDocFieldHighlights() {
+        Array.prototype.forEach.call(document.querySelectorAll(".doc-field-highlight"), function (node) {
+          node.classList.remove("doc-field-highlight");
+        });
+      }
+
+      function revealDocField(fieldId, retried) {
+        var node = findVisibleDocField(fieldId);
+        if (!node && !retried) {
+          if (state.activePage === "sim" && !state.simExpanded) {
+            state.simExpanded = true;
+            renderContent();
+            window.setTimeout(function () { revealDocField(fieldId, true); }, 60);
+            return;
+          }
+          if ((state.activePage === "esim" || state.activePage === "esimChangeDetail") && !state.esimExpanded) {
+            state.esimExpanded = true;
+            renderContent();
+            window.setTimeout(function () { revealDocField(fieldId, true); }, 60);
+            return;
+          }
+        }
+        if (!node) {
+          toast("当前页面未找到字段：" + fieldNameFromDocumentation(fieldId));
+          return;
+        }
+        var tableShell = node.closest(".table-shell, .resource-table");
+        if (tableShell) {
+          tableShell.scrollLeft = Math.max(0, node.offsetLeft - 24);
+        }
+        var content = $("#content");
+        if (content) {
+          var contentRect = content.getBoundingClientRect();
+          var nodeRect = node.getBoundingClientRect();
+          var top = content.scrollTop + nodeRect.top - contentRect.top - 70;
+          content.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+        } else {
+          node.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        clearDocFieldHighlights();
+        node.classList.add("doc-field-highlight");
+        window.clearTimeout(state.docHighlightTimer);
+        state.docHighlightTimer = window.setTimeout(clearDocFieldHighlights, 2000);
+      }
 
       function toast(message) {
         $("#toast").innerHTML = '<div class="toast">' + esc(message) + "</div>";
@@ -3465,7 +4177,8 @@
           "开启流量限速": "不限速",
           "关闭流量限速": "已限速",
           "变更卡状态": "库存",
-          "卡销号": "已停用"
+          "卡销号": "已停用",
+          "卡状态查询": "未知"
         };
         return statuses.map(function (status, index) {
           return {
@@ -3534,7 +4247,7 @@
           '<td title="' + esc(row.remark) + '">' + esc(row.remark) + "</td>" +
           "<td>" + esc(row.operator) + "</td>" +
           "<td>" + esc(row.operatedAt) + "</td>" +
-          '<td><button class="link" data-action="download-batch-task" data-id="' + row.id + '">下载</button></td>' +
+          '<td><button class="link" data-action="open-batch-task-detail" data-id="' + row.id + '">详情</button><button class="link" data-action="download-batch-task" data-id="' + row.id + '">下载</button></td>' +
         "</tr>";
       }
 
@@ -4563,6 +5276,8 @@
           markup = accountMarkup();
         }
         $("#content").innerHTML = markup;
+        applyDocumentationAnchors();
+        renderPageDocumentation();
       }
 
       function choiceGroupMarkup(action, current, options, extraName) {
@@ -5030,7 +5745,32 @@
         var key = target.dataset.key;
         var row;
 
-        if (action === "open-home") {
+        if (action === "toggle-page-doc") {
+          var shouldRefreshContent = state.openSelect || state.openCombo || state.simDateOpen;
+          var nextPageDocOpen = !state.pageDocOpen;
+          state.pageDocOpen = nextPageDocOpen;
+          if (nextPageDocOpen) { state.pageDocTab = "functions"; }
+          state.openSelect = "";
+          state.openCombo = "";
+          state.simDateOpen = false;
+          if (shouldRefreshContent) {
+            renderContent();
+          } else {
+            renderPageDocumentation();
+          }
+        } else if (action === "close-page-doc") {
+          state.pageDocOpen = false;
+          renderPageDocumentation();
+        } else if (action === "set-page-doc-tab") {
+          state.pageDocTab = target.dataset.tab || "functions";
+          renderPageDocumentation();
+        } else if (action === "doc-field-jump") {
+          event.preventDefault();
+          state.pageDocOpen = true;
+          state.pageDocTab = "fields";
+          renderPageDocumentation();
+          revealDocField(target.dataset.field);
+        } else if (action === "open-home") {
           openPage("home");
           render();
         } else if (action === "toggle-sim-menu") {
