@@ -1120,6 +1120,175 @@
       box-shadow: 0 0 0 2px rgba(22, 135, 232, 0.08);
     }
 
+    .sim-traffic-page .filter-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .sim-traffic-page .filter-grid > label {
+      min-width: 0;
+    }
+
+    .sim-traffic-page .clear-value {
+      right: 10px;
+    }
+
+    .traffic-input input[type="number"] {
+      appearance: textfield;
+    }
+
+    .traffic-input input::-webkit-inner-spin-button,
+    .traffic-input input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .sim-traffic-page .select .clear-value,
+    .sim-traffic-page .combo:not(.traffic-input) .clear-value {
+      right: 28px;
+    }
+
+    .traffic-filter-error {
+      margin-top: 9px;
+      color: #f05252;
+    }
+
+    .sim-traffic-page .table-shell {
+      min-height: 200px;
+    }
+
+    .sim-traffic-page table {
+      min-width: 1160px;
+    }
+
+    .sim-traffic-page :focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .monthly-traffic-page table {
+      min-width: 1640px;
+    }
+
+    .monthly-traffic-tabs {
+      flex-shrink: 0;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .monthly-traffic-panel {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .traffic-history-page table {
+      min-width: 2560px;
+    }
+
+    .traffic-history-page th:nth-child(-n+2),
+    .traffic-history-page td:nth-child(-n+2) {
+      position: sticky;
+      z-index: 2;
+      background: #fff;
+    }
+
+    .traffic-history-page th:nth-child(-n+2) {
+      background: #fbfcfe;
+    }
+
+    .traffic-history-page th:first-child,
+    .traffic-history-page td:first-child {
+      left: 0;
+    }
+
+    .traffic-history-page th:nth-child(2),
+    .traffic-history-page td:nth-child(2) {
+      left: 140px;
+      box-shadow: 2px 0 4px rgba(20, 44, 80, 0.05);
+    }
+
+    .traffic-history-page tbody tr:hover td:nth-child(-n+2) {
+      background: #f8fbff;
+    }
+
+    .traffic-history-page .operate-bar {
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .info-trigger {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      padding: 0;
+      flex: 0 0 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 50%;
+    }
+
+    .info-trigger::before {
+      content: "";
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+    }
+
+    .info-trigger svg {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 12px;
+    }
+
+    .info-trigger:hover,
+    .info-trigger:focus-visible {
+      color: #fff;
+      background: #0d77d1;
+    }
+
+    .traffic-month-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 8px 0;
+    }
+
+    .traffic-month-option {
+      height: 34px;
+      border-radius: 3px;
+      color: #596273;
+    }
+
+    .traffic-month-option:hover {
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .traffic-month-option.selected {
+      color: #fff;
+      background: var(--blue);
+    }
+
+    .monthly-traffic-usage {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .monthly-traffic-usage .refresh-card:disabled {
+      cursor: wait;
+    }
+
+    body.page-doc-open .sim-traffic-page .filter-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .date-field {
       position: relative;
     }
@@ -1774,6 +1943,54 @@
       min-width: 2570px;
     }
 
+    .sim-management-table table {
+      min-width: 2750px;
+    }
+
+    .sim-management-table .sim-operations-head,
+    .sim-management-table .sim-operations-cell {
+      position: sticky;
+      right: 0;
+      z-index: 3;
+      background: #fff;
+      box-shadow: -1px 0 0 #e7ebf1;
+    }
+
+    .sim-management-table .sim-operations-head {
+      z-index: 4;
+      background: #fbfcfe;
+    }
+
+    .sim-management-table tbody tr:hover .sim-operations-cell {
+      background: #f8fbff;
+    }
+
+    .sim-operations-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .sim-reset-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+    }
+
+    .sim-reset-action {
+      min-width: 108px;
+      padding: 0;
+      line-height: 1.3;
+    }
+
+    .sim-operations-cell:focus {
+      outline: 2px solid var(--blue);
+      outline-offset: -2px;
+    }
+
     .esim-table table {
       min-width: 3020px;
     }
@@ -2311,6 +2528,10 @@
       width: 386px;
     }
 
+    .sim-reset-dialog {
+      max-width: calc(100vw - 48px);
+    }
+
     .confirm-content {
       padding: 31px 24px 6px;
       color: #3e4858;
@@ -2419,6 +2640,10 @@
     }
 
     @media (max-width: 1080px) {
+      .sim-traffic-page .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .filter-grid {
         grid-template-columns: repeat(2, minmax(180px, 1fr));
       }
@@ -2445,6 +2670,19 @@
     }
 
     @media (max-width: 720px) {
+      .sim-traffic-page .filter-grid,
+      body.page-doc-open .sim-traffic-page .filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sim-traffic-page .pagination {
+        height: auto;
+        min-height: 56px;
+        flex-wrap: wrap;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
       body {
         overflow: auto;
       }
@@ -2524,12 +2762,15 @@
   </div>
   <div id="overlay"></div>
   <div id="toast"></div>
-  <div id="floating-popover" class="floating-popover"></div>
+  <div id="floating-popover" class="floating-popover" role="tooltip" aria-hidden="true"></div>
 
   <script>
     (function () {
       var vendors = ["中国移动终端公司", "联通物联网有限公司", "天翼物联科技有限公司", "中移物联网有限公司"];
       var carriers = ["中国移动", "中国联通", "中国电信"];
+      var simDataResetNote = "物联卡上网功能异常的时候可以通过重置数据服务来重置恢复 GPRS 上网功能，3分钟内仅可重置1次。";
+      var simDataResetCooldownMs = 3 * 60 * 1000;
+      var simDataResetStorageKey = "simcloud.data-service-reset.cooldowns";
       var platforms = ["OneLink平台", "物联网连接管理平台", "天翼物联平台", "CMP连接管理平台"];
       var usageOptions = ["卡池卡", "启动卡"];
       var switchOptions = ["关闭", "开启"];
@@ -2582,6 +2823,55 @@
         { id: 4, imsi: "460001234567893", iccid: "89860477193200654328", msisdn: "14775280004", merchant: "童联穿戴", vendor: "中移物联网有限公司", carrier: "中国移动", carrierPackage: "商户共享100GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "库存", needRealName: "否", realNameResult: "未提交", speedLimit: "否", form: "贴片卡", totalFlow: 102400, monthFlow: 0, lastMonthFlow: 0, authSwitch: "关闭", adMode: "开启", serviceStart: "2026-05-20", serviceEnd: "2027-05-19", created: "2026-05-20 16:46", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "未开通", activationTime: "2026-05-20" },
         { id: 5, imsi: "460011234567894", iccid: "89860120881230076145", msisdn: "14610123005", merchant: "迅捷物流", vendor: "联通物联网有限公司", carrier: "中国联通", carrierPackage: "物联50GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "可测试", needRealName: "是", realNameResult: "待实名", speedLimit: "否", form: "插拔卡", totalFlow: 51200, monthFlow: 50500, lastMonthFlow: 49230, authSwitch: "开启", adMode: "关闭", serviceStart: "2026-04-01", serviceEnd: "2027-03-31", created: "2026-03-26 11:35", cardUsage: "启动卡", fastNetwork: "不支持", trafficStatus: "流量不足", activationTime: "2026-04-01" },
         { id: 6, imsi: "460031234567895", iccid: "89860320987654321876", msisdn: "14922810006", merchant: "北辰能源", vendor: "天翼物联科技有限公司", carrier: "中国电信", carrierPackage: "基础10GB", userPackage: "用户基础10GB", merchantPackage: "基础10GB", cardStatus: "已销号", needRealName: "否", realNameResult: "无需实名", speedLimit: "是", form: "eSIM", totalFlow: 10240, monthFlow: 3500, lastMonthFlow: 4200, authSwitch: "关闭", adMode: "关闭", serviceStart: "2025-12-01", serviceEnd: "2026-11-30", created: "2025-11-28 13:09", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "正常", activationTime: "2025-12-01" }
+      ];
+
+      var simTrafficRowsSeed = [];
+      for (var trafficIndex = 0; trafficIndex < 42; trafficIndex += 1) {
+        var trafficCard = simRowsSeed[trafficIndex % simRowsSeed.length];
+        var trafficDate = "2026-10-" + String(26 - Math.floor(trafficIndex / 3)).padStart(2, "0");
+        simTrafficRowsSeed.push({
+          date: trafficDate,
+          iccid: trafficCard.iccid,
+          vendor: trafficCard.vendor,
+          merchant: trafficCard.merchant,
+          carrier: trafficCard.carrier,
+          flow: trafficIndex < 3 || trafficIndex % 5 === 0 ? 0 : Number(((trafficIndex * 137.83) % 3200).toFixed(2)),
+          created: trafficDate + " " + ["17:49:59", "14:51:28", "06:05:12"][trafficIndex % 3]
+        });
+      }
+
+      var monthlyTrafficRowsSeed = [];
+      simRowsSeed.forEach(function (card, cardIndex) {
+        var cumulativeCents = 0;
+        for (var monthIndex = 0; monthIndex < 12; monthIndex += 1) {
+          var month = new Date(Date.UTC(2025, 10 + monthIndex, 1)).toISOString().slice(0, 7);
+          var flowCents = (monthIndex + cardIndex) % 5 === 0 ? 0 : (monthIndex + 3) * (cardIndex + 2) * 13783;
+          cumulativeCents += flowCents;
+          monthlyTrafficRowsSeed.push({
+            id: card.id + "-" + month,
+            month: month, iccid: card.iccid, vendor: card.vendor, merchant: card.merchant, carrier: card.carrier,
+            cumulativeFlow: cumulativeCents / 100, monthFlow: flowCents / 100,
+            currentUsage: null,
+            created: month + "-23 10:" + String(10 + cardIndex).padStart(2, "0") + ":17",
+            updated: month + "-26 15:" + String(18 + cardIndex).padStart(2, "0") + ":36"
+          });
+        }
+      });
+      monthlyTrafficRowsSeed.sort(function (a, b) {
+        return b.month.localeCompare(a.month) || a.iccid.localeCompare(b.iccid);
+      });
+
+      var monthlyTrafficColumns = [
+        { key: "month", name: "月份", width: 110 },
+        { key: "iccid", name: "ICCID", width: 240 },
+        { key: "vendor", name: "供应商", width: 190 },
+        { key: "merchant", name: "商户名称", width: 150 },
+        { key: "carrier", name: "运营商", width: 100 },
+        { key: "cumulativeFlow", name: "累计流量值（MB）", width: 150 },
+        { key: "monthFlow", name: "月流量值（MB）", width: 140 },
+        { key: "currentUsage", name: "本月数据用量", width: 160 },
+        { key: "created", name: "创建时间", width: 200 },
+        { key: "updated", name: "更新时间", width: 200 }
       ];
 
       var esimRowsSeed = simRowsSeed.map(function (row, index) {
@@ -2795,6 +3085,22 @@
         return { detailIccid: "", detailStatus: "" };
       };
 
+      var blankSimTrafficQuery = function () {
+        return { trafficMin: "", trafficMax: "", trafficVendor: "", trafficMerchant: "", trafficCarrier: "", trafficIccid: "", trafficDate: "" };
+      };
+
+      var blankMonthlyTrafficQuery = function () {
+        return { monthlyTrafficMin: "", monthlyTrafficMax: "", monthlyTrafficVendor: "", monthlyTrafficMerchant: "", monthlyTrafficCarrier: "", monthlyTrafficIccid: "", monthlyTrafficMonth: "" };
+      };
+
+      function trafficHistoryCurrentYear() {
+        return new Intl.DateTimeFormat("en", { timeZone: "Asia/Shanghai", year: "numeric" }).format(new Date());
+      }
+
+      var blankTrafficHistoryQuery = function () {
+        return { trafficHistoryYear: trafficHistoryCurrentYear(), trafficHistoryKeyword: "", trafficHistoryVendor: "", trafficHistoryMerchant: "", trafficHistoryCarrier: "" };
+      };
+
       var blankSimQuery = function () {
         return {
           simKeyword: "",
@@ -2943,6 +3249,28 @@
         simQuery: blankSimQuery(),
         simApplied: blankSimQuery(),
         simExpanded: false,
+        simTrafficQuery: blankSimTrafficQuery(),
+        simTrafficApplied: blankSimTrafficQuery(),
+        simTrafficPage: 1,
+        simTrafficPageSize: 20,
+        simTrafficError: "",
+        monthlyTrafficRows: monthlyTrafficRowsSeed.slice(),
+        monthlyTrafficQuery: blankMonthlyTrafficQuery(),
+        monthlyTrafficApplied: blankMonthlyTrafficQuery(),
+        monthlyTrafficPage: 1,
+        monthlyTrafficDraftMonth: "",
+        monthlyTrafficCalendarYear: 2026,
+        monthlyTrafficError: "",
+        monthlyTrafficRefreshing: new Set(),
+        monthlyTrafficTab: "records",
+        trafficHistoryQuery: blankTrafficHistoryQuery(),
+        trafficHistoryApplied: blankTrafficHistoryQuery(),
+        trafficHistoryPage: 1,
+        trafficHistoryInfoOpen: false,
+        simResetInfoOpen: false,
+        simDataResetConfirmIccid: "",
+        simDataResetCooldowns: readSimDataResetCooldowns() || {},
+        simDataResetBusy: {},
         esimRows: esimRowsSeed.slice(),
         esimQuery: blankEsimQuery(),
         esimApplied: blankEsimQuery(),
@@ -3029,6 +3357,12 @@
       };
 
       var fieldDocLabels = {
+        "年度使用流量总计": "annualFlow",
+        "月份": "trafficMonth",
+        "商户名称": "merchant",
+        "累计流量值（MB）": "cumulativeFlow",
+        "月流量值（MB）": "monthTrafficFlow",
+        "本月数据用量": "currentUsage",
         "ID": "id",
         "SIM卡总数": "simTotal",
         "激活数": "activeCount",
@@ -3115,6 +3449,23 @@
       };
 
       var queryKeyDocFields = {
+        trafficHistoryYear: "year",
+        trafficHistoryKeyword: "iccid",
+        trafficHistoryVendor: "vendor",
+        trafficHistoryMerchant: "merchant",
+        trafficHistoryCarrier: "carrier",
+        monthlyTrafficMin: "trafficMin",
+        monthlyTrafficMax: "trafficMax",
+        monthlyTrafficVendor: "vendor",
+        monthlyTrafficMerchant: "merchant",
+        monthlyTrafficCarrier: "carrier",
+        monthlyTrafficIccid: "iccid",
+        trafficMin: "trafficMin",
+        trafficMax: "trafficMax",
+        trafficVendor: "vendor",
+        trafficMerchant: "merchant",
+        trafficCarrier: "carrier",
+        trafficIccid: "iccid",
         resourceFlowType: "flowType",
         resourceSupplier: "vendor",
         resourceGroup: "groupName",
@@ -3198,6 +3549,8 @@
       };
 
       var actionDocFields = {
+        "toggle-monthly-traffic-month": "trafficMonth",
+        "toggle-sim-traffic-date": "trafficDate",
         "toggle-sim-date": "activationTime",
         "toggle-esim-date": "activationTime",
         "toggle-esim-disabled-date": "disabledAt",
@@ -3220,6 +3573,15 @@
       var pageDocumentation = {
         home: emptyPageDocumentation("首页"),
         sim: emptyPageDocumentation("SIM卡管理"),
+        simTraffic: emptyPageDocumentation("SIM卡日流量"),
+        simMonthlyTraffic: emptyPageDocumentation("SIM卡月流量"),
+        simTrafficHistory: {
+          page: { title: "", description: "统计流量同步运营商月流量统计。" },
+          fields: [],
+          functions: [],
+          businessRules: [],
+          interactions: []
+        },
         simDetail: emptyPageDocumentation("SIM卡详情"),
         account: emptyPageDocumentation("运营商账户配置"),
         group: emptyPageDocumentation("群组管理"),
@@ -3254,6 +3616,7 @@
       }
 
       function currentDocPageKey() {
+        if (state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab === "history") { return "simTrafficHistory"; }
         if (state.activePage === "esim" && state.esimActiveTab === "records") { return "esimRecords"; }
         if (state.activePage === "esimChip" && state.esimChipActiveTab === "records") { return "esimChipRecords"; }
         return state.activePage;
@@ -3439,6 +3802,8 @@
         return {
           home: "首页",
           sim: "SIM卡管理",
+          simTraffic: "SIM卡日流量",
+          simMonthlyTraffic: "SIM卡月流量",
           esim: "ESIM可写码号管理",
           esimChangeDetail: "可写码号变更详情",
           esimChip: "ESIM芯片管理",
@@ -3520,6 +3885,8 @@
             "</button>" +
             '<div class="submenu">' +
               '<button class="submenu-btn ' + (state.activePage === "sim" ? "active" : "") + '" data-action="open-sim">SIM卡管理</button>' +
+              '<button class="submenu-btn ' + (state.activePage === "simTraffic" ? "active" : "") + '" data-action="open-sim-traffic">SIM卡日流量</button>' +
+              '<button class="submenu-btn ' + (state.activePage === "simMonthlyTraffic" ? "active" : "") + '" data-action="open-monthly-traffic">SIM卡月流量</button>' +
             "</div>" +
           "</div>" +
           '<div class="' + (state.esimMenuCollapsed ? "collapsed" : "") + '">' +
@@ -3654,6 +4021,12 @@
           startKey = "simActivationStart";
           endKey = "simActivationEnd";
           action = "toggle-sim-date";
+        } else if (target === "simTraffic") {
+          query = state.simTrafficQuery;
+          startKey = "trafficDate";
+          endKey = "trafficDate";
+          action = "toggle-sim-traffic-date";
+          placeholder = "请选择日期";
         } else if (target === "esimDisabled") {
           query = state.esimQuery;
           startKey = "esimDisabledStart";
@@ -3688,6 +4061,7 @@
         var start = query[startKey];
         var end = query[endKey];
         var text = start && end ? formatDate(start) + " - " + formatDate(end) : "";
+        if (target === "simTraffic") { text = formatDate(start); }
         return '<div class="date-field ' + (state.simDateOpen && state.dateTarget === target ? "open" : "") + '">' +
           '<button class="date-trigger" data-action="' + action + '">' +
             (text ? esc(text) : '<span class="placeholder">' + esc(placeholder) + "</span>") +
@@ -3798,6 +4172,12 @@
           state.esimChipQuery[key] = value;
         } else if (isEsimKey(key)) {
           state.esimQuery[key] = value;
+        } else if (key.indexOf("trafficHistory") === 0) {
+          state.trafficHistoryQuery[key] = value;
+        } else if (key.indexOf("monthlyTraffic") === 0) {
+          state.monthlyTrafficQuery[key] = value;
+        } else if (key.indexOf("traffic") === 0) {
+          state.simTrafficQuery[key] = value;
         } else if (isSimKey(key)) {
           state.simQuery[key] = value;
         } else if (isGroupEditKey(key)) {
@@ -4268,6 +4648,83 @@
         "</tr>";
       }
 
+      function readSimDataResetCooldowns() {
+        try {
+          var data = JSON.parse(window.localStorage.getItem(simDataResetStorageKey) || "{}");
+          if (!data || typeof data !== "object" || Array.isArray(data)) { return null; }
+          var result = {};
+          var now = Date.now();
+          simRowsSeed.forEach(function (row) {
+            var deadline = data[row.iccid];
+            if (typeof deadline === "number" && isFinite(deadline) && deadline > now && deadline <= now + simDataResetCooldownMs) {
+              result[row.iccid] = deadline;
+            }
+          });
+          return result;
+        } catch (error) { return null; }
+      }
+
+      function simDataResetRemaining(iccid) {
+        return Math.max(0, Math.ceil(((state.simDataResetCooldowns[iccid] || 0) - Date.now()) / 1000));
+      }
+
+      function simDataResetActionMarkup(row) {
+        return '<div class="sim-reset-cell">' +
+          '<button class="link sim-reset-action" data-action="reset-sim-data-service" data-iccid="' + esc(row.iccid) +
+          '" aria-label="重置' + esc(row.iccid) + '的数据服务">重置数据服务</button></div>';
+      }
+
+      function setSimResetBackgroundInert(inert) {
+        document.querySelector(".layout").inert = inert;
+        document.querySelector(".topbar").inert = inert;
+      }
+
+      function closeSimDataResetDialog(restoreFocus) {
+        var iccid = state.simDataResetConfirmIccid;
+        state.simDataResetConfirmIccid = "";
+        renderOverlay();
+        setSimResetBackgroundInert(false);
+        var cell = document.querySelector('[data-sim-reset-cell="' + iccid + '"]');
+        if (restoreFocus && cell) {
+          var button = cell.querySelector("button:not(:disabled)");
+          (button || cell).focus();
+        }
+      }
+
+      function openSimDataResetDialog(iccid) {
+        var row = state.simRows.find(function (item) { return item.iccid === iccid; });
+        if (!row) { return; }
+        Object.assign(state.simDataResetCooldowns, readSimDataResetCooldowns() || {});
+        if (state.simDataResetBusy[iccid] || simDataResetRemaining(iccid)) {
+          toast("该卡3分钟内仅可重置1次，请等待冷却结束");
+          return;
+        }
+        hideManageStopPopover();
+        state.simDataResetConfirmIccid = iccid;
+        renderOverlay();
+        setSimResetBackgroundInert(true);
+        document.querySelector('[data-action="cancel-sim-data-reset"]').focus();
+      }
+
+      function confirmSimDataReset() {
+        var iccid = state.simDataResetConfirmIccid;
+        if (!iccid) { return; }
+        Object.assign(state.simDataResetCooldowns, readSimDataResetCooldowns() || {});
+        if (state.simDataResetBusy[iccid] || simDataResetRemaining(iccid)) {
+          closeSimDataResetDialog(true);
+          toast("该卡3分钟内仅可重置1次，请等待冷却结束");
+          return;
+        }
+        state.simDataResetCooldowns[iccid] = Date.now() + simDataResetCooldownMs;
+        state.simDataResetBusy[iccid] = true;
+        try { window.localStorage.setItem(simDataResetStorageKey, JSON.stringify(state.simDataResetCooldowns)); } catch (error) {}
+        closeSimDataResetDialog(true);
+        window.setTimeout(function () {
+          delete state.simDataResetBusy[iccid];
+          toast("数据服务已重置，3分钟内不可再次重置：" + iccid);
+        }, 650);
+      }
+
       function simRowMarkup(row) {
         return "<tr>" +
           '<td><div class="iccid-cell" title="' + esc(row.iccid) + '">' +
@@ -4294,6 +4751,7 @@
           "<td>" + esc(row.serviceStart) + "</td>" +
           "<td>" + esc(row.serviceEnd) + "</td>" +
           "<td>" + esc(row.created) + "</td>" +
+          '<td class="sim-operations-cell" tabindex="-1" data-sim-reset-cell="' + esc(row.iccid) + '">' + simDataResetActionMarkup(row) + '</td>' +
         "</tr>";
       }
 
@@ -4667,14 +5125,449 @@
               '<button class="btn btn-gray" data-action="export-sim">导出</button>' +
             "</div>" +
           "</div>" +
-          '<div class="table-shell sim-table">' +
-            '<table><colgroup><col style="width:240px"><col style="width:110px"><col style="width:120px"><col style="width:150px"><col style="width:90px"><col style="width:120px"><col style="width:120px"><col style="width:130px"><col style="width:90px"><col style="width:95px"><col style="width:90px"><col style="width:80px"><col style="width:80px"><col style="width:105px"><col style="width:105px"><col style="width:105px"><col style="width:120px"><col style="width:135px"><col style="width:120px"><col style="width:120px"><col style="width:140px"></colgroup>' +
-              "<thead><tr><th>ICCID</th><th>MSISDN</th><th>所属商户</th><th>供应商</th><th>运营商</th><th>运营商套餐</th><th>用户套餐</th><th>商户套餐</th><th>卡状态</th><th>是否需要实名</th><th>实名结果</th><th>是否限速</th><th>卡形态</th><th>总流量（MB）</th><th>本月流量（MB）</th><th>上月流量（MB）</th><th>二次认证开关</th><th>二次认证广告模式</th><th>服务开始时间</th><th>服务到期时间</th><th>创建时间</th></tr></thead>" +
-              "<tbody>" + (rows.length ? rows.map(simRowMarkup).join("") : '<tr class="empty-row"><td colspan="21">暂无符合条件的数据</td></tr>') + "</tbody>" +
+          '<div class="table-shell sim-table sim-management-table">' +
+            '<table><colgroup><col style="width:240px"><col style="width:110px"><col style="width:120px"><col style="width:150px"><col style="width:90px"><col style="width:120px"><col style="width:120px"><col style="width:130px"><col style="width:90px"><col style="width:95px"><col style="width:90px"><col style="width:80px"><col style="width:80px"><col style="width:105px"><col style="width:105px"><col style="width:105px"><col style="width:120px"><col style="width:135px"><col style="width:120px"><col style="width:120px"><col style="width:140px"><col style="width:180px"></colgroup>' +
+              '<thead><tr><th>ICCID</th><th>MSISDN</th><th>所属商户</th><th>供应商</th><th>运营商</th><th>运营商套餐</th><th>用户套餐</th><th>商户套餐</th><th>卡状态</th><th>是否需要实名</th><th>实名结果</th><th>是否限速</th><th>卡形态</th><th>总流量（MB）</th><th>本月流量（MB）</th><th>上月流量（MB）</th><th>二次认证开关</th><th>二次认证广告模式</th><th>服务开始时间</th><th>服务到期时间</th><th>创建时间</th><th class="sim-operations-head"><div class="sim-operations-title"><span>操作</span>' + infoIconMarkup("sim-reset-info", "重置数据服务说明") + '</div></th></tr></thead>' +
+              "<tbody>" + (rows.length ? rows.map(simRowMarkup).join("") : '<tr class="empty-row"><td colspan="22">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
           "</div>" +
           '<div class="pagination"><span>共' + rows.length + '条</span><span class="select-mini">20条/页&nbsp;⌄</span><span class="page-box">1</span><span>前往</span><input class="jump-input" value="1" readonly><span>页</span></div>' +
         "</div>";
+      }
+
+      function filteredSimTrafficRows() {
+        var q = state.simTrafficApplied;
+        return simTrafficRowsSeed.filter(function (row) {
+          return (q.trafficMin === "" || row.flow >= Number(q.trafficMin)) &&
+            (q.trafficMax === "" || row.flow <= Number(q.trafficMax)) &&
+            (!q.trafficVendor || row.vendor.indexOf(q.trafficVendor) !== -1) &&
+            (!q.trafficMerchant || row.merchant.indexOf(q.trafficMerchant) !== -1) &&
+            (!q.trafficCarrier || row.carrier === q.trafficCarrier) &&
+            (!q.trafficIccid || row.iccid.toLowerCase().indexOf(q.trafficIccid.toLowerCase()) !== -1) &&
+            (!q.trafficDate || row.date === q.trafficDate);
+        });
+      }
+
+      function simTrafficInputMarkup(key, value, placeholder, numeric) {
+        return '<label class="combo traffic-input">' +
+          '<input class="text-input" type="' + (numeric ? "number" : "text") + '"' +
+          (numeric ? ' min="0" step="0.01" inputmode="decimal"' : '') +
+          ' data-action="sim-traffic-input" data-key="' + key + '" id="' + key +
+          '" value="' + esc(value) + '" placeholder="' + esc(placeholder) + '" aria-label="' + esc(placeholder) + '">' +
+          '<button class="clear-value" data-action="clear-sim-traffic-input" data-key="' + key +
+          '" aria-label="清除' + esc(placeholder.replace("请输入", "")) + '"' + (value === "" ? " hidden" : "") + '>×</button></label>';
+      }
+
+      function searchSimTraffic(monthly) {
+        var q = monthly ? state.monthlyTrafficQuery : state.simTrafficQuery;
+        var minKey = monthly ? "monthlyTrafficMin" : "trafficMin";
+        var maxKey = monthly ? "monthlyTrafficMax" : "trafficMax";
+        var errorKey = monthly ? "monthlyTrafficError" : "simTrafficError";
+        var invalidKey = [minKey, maxKey].find(function (key) {
+          var input = document.getElementById(key);
+          return (input && input.validity.badInput) ||
+            (q[key] !== "" && (!isFinite(Number(q[key])) || Number(q[key]) < 0));
+        });
+        state[errorKey] = invalidKey ? "流量值需为大于或等于0的有效数字" : "";
+        if (!invalidKey && q[minKey] !== "" && q[maxKey] !== "" && Number(q[minKey]) > Number(q[maxKey])) {
+          invalidKey = maxKey;
+          state[errorKey] = "流量最大值不能小于流量最小值，请调整后搜索";
+        }
+        if (invalidKey) {
+          renderContent();
+          var invalidInput = document.getElementById(invalidKey);
+          invalidInput.setAttribute("aria-invalid", "true");
+          invalidInput.setAttribute("aria-describedby", "trafficFilterError");
+          invalidInput.focus();
+          return;
+        }
+        if (monthly) {
+          state.monthlyTrafficApplied = Object.assign({}, q, {
+            monthlyTrafficVendor: q.monthlyTrafficVendor.trim(), monthlyTrafficMerchant: q.monthlyTrafficMerchant.trim(), monthlyTrafficIccid: q.monthlyTrafficIccid.trim()
+          });
+          state.monthlyTrafficPage = 1;
+        } else {
+          state.simTrafficApplied = Object.assign({}, q, {
+            trafficVendor: q.trafficVendor.trim(), trafficMerchant: q.trafficMerchant.trim(), trafficIccid: q.trafficIccid.trim()
+          });
+          state.simTrafficPage = 1;
+        }
+        state.openSelect = "";
+        state.openCombo = "";
+        state.simDateOpen = false;
+        renderContent();
+        toast(monthly ? "已更新SIM卡月流量查询结果" : "已更新SIM卡日流量查询结果");
+      }
+
+      function simTrafficPaginationMarkup(total, totalPages, monthly, history) {
+        var currentPage = history ? state.trafficHistoryPage : (monthly ? state.monthlyTrafficPage : state.simTrafficPage);
+        var pageAction = history ? "traffic-history-page" : (monthly ? "monthly-traffic-page" : "sim-traffic-page");
+        var jumpAction = history ? "traffic-history-jump" : (monthly ? "monthly-traffic-jump" : "sim-traffic-jump");
+        var buttons = "";
+        for (var page = 1; page <= totalPages; page += 1) {
+          buttons += '<button class="page-btn ' + (currentPage === page ? "active" : "") +
+            '" data-action="' + pageAction + '" data-page="' + page + '" aria-label="第' + page + '页"' +
+            (currentPage === page ? ' aria-current="page"' : "") + '>' + page + "</button>";
+        }
+        return '<div class="pagination" aria-label="' + (history ? "SIM卡历史流量记录分页" : (monthly ? "SIM卡月流量分页" : "SIM卡日流量分页")) + '"><span>共 ' + total + ' 条</span>' +
+          '<span class="select-mini">20条/页</span>' +
+          '<button class="page-nav" data-action="' + pageAction + '" data-page="' + (currentPage - 1) +
+          '" aria-label="上一页"' + (currentPage <= 1 ? " disabled" : "") + '>‹</button>' + buttons +
+          '<button class="page-nav" data-action="' + pageAction + '" data-page="' + (currentPage + 1) +
+          '" aria-label="下一页"' + (currentPage >= totalPages ? " disabled" : "") + '>›</button>' +
+          '<span>前往</span><input class="jump-input" type="number" min="1" max="' + totalPages +
+          '" value="' + currentPage + '" data-action="' + jumpAction + '" aria-label="前往页码"><span>页</span></div>';
+      }
+
+      function simTrafficMarkup() {
+        var q = state.simTrafficQuery;
+        var rows = filteredSimTrafficRows();
+        var totalPages = Math.max(1, Math.ceil(rows.length / state.simTrafficPageSize));
+        state.simTrafficPage = Math.max(1, Math.min(state.simTrafficPage, totalPages));
+        var pageRows = rows.slice((state.simTrafficPage - 1) * state.simTrafficPageSize, state.simTrafficPage * state.simTrafficPageSize);
+        var merchantOptions = simRowsSeed.map(function (row) { return row.merchant; });
+        return '<div class="panel page-panel sim-traffic-page">' +
+          '<div class="filters"><div class="filter-grid">' +
+            simTrafficInputMarkup("trafficMin", q.trafficMin, "流量最小值（MB）", true) +
+            simTrafficInputMarkup("trafficMax", q.trafficMax, "流量最大值（MB）", true) +
+            '<label>' + comboMarkup("trafficVendor", q.trafficVendor, vendors, "请输入或选择供应商") + '</label>' +
+            '<label>' + comboMarkup("trafficMerchant", q.trafficMerchant, merchantOptions, "请输入或选择商户") + '</label>' +
+            '<label>' + selectMarkup("trafficCarrier", q.trafficCarrier, carriers, "请选择运营商", true) + '</label>' +
+            simTrafficInputMarkup("trafficIccid", q.trafficIccid, "请输入ICCID", false) +
+            '<label>' + dateRangeMarkup("simTraffic") + '</label>' +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="sim-traffic-search">搜索</button>' +
+            '<button class="btn btn-gray" data-action="sim-traffic-reset">重置</button></div>' +
+            (state.simTrafficError ? '<div class="traffic-filter-error" id="trafficFilterError" role="alert">' + esc(state.simTrafficError) + '</div>' : '') +
+          '</div><div class="operate-bar"><button class="btn btn-primary" data-action="export-sim-traffic">导出</button></div>' +
+          '<div class="table-shell"><table><colgroup><col style="width:130px"><col style="width:240px">' +
+            '<col style="width:190px"><col style="width:160px"><col style="width:110px"><col style="width:130px"><col style="width:200px"></colgroup>' +
+            '<thead><tr><th>日期</th><th>ICCID</th><th>供应商</th><th>商户名称</th><th>运营商</th><th>流量值（MB）</th><th>创建时间</th></tr></thead>' +
+            '<tbody>' + (pageRows.length ? pageRows.map(function (row) {
+              return '<tr><td>' + esc(row.date) + '</td><td>' + esc(row.iccid) + '</td><td title="' + esc(row.vendor) + '">' +
+                esc(row.vendor) + '</td><td>' + esc(row.merchant) + '</td><td>' + esc(row.carrier) +
+                '</td><td>' + row.flow.toFixed(2) + 'MB</td><td>' + esc(row.created) + '</td></tr>';
+            }).join('') : '<tr class="empty-row"><td colspan="7">暂无符合条件的数据，请调整筛选条件或重置</td></tr>') +
+            '</tbody></table></div>' + simTrafficPaginationMarkup(rows.length, totalPages) + '</div>';
+      }
+
+      function filteredMonthlyTrafficRows() {
+        var q = state.monthlyTrafficApplied;
+        return state.monthlyTrafficRows.filter(function (row) {
+          return (q.monthlyTrafficMin === "" || row.monthFlow >= Number(q.monthlyTrafficMin)) &&
+            (q.monthlyTrafficMax === "" || row.monthFlow <= Number(q.monthlyTrafficMax)) &&
+            (!q.monthlyTrafficVendor || row.vendor.indexOf(q.monthlyTrafficVendor) !== -1) &&
+            (!q.monthlyTrafficMerchant || row.merchant.indexOf(q.monthlyTrafficMerchant) !== -1) &&
+            (!q.monthlyTrafficCarrier || row.carrier === q.monthlyTrafficCarrier) &&
+            (!q.monthlyTrafficIccid || row.iccid.toLowerCase().indexOf(q.monthlyTrafficIccid.toLowerCase()) !== -1) &&
+            (!q.monthlyTrafficMonth || row.month === q.monthlyTrafficMonth);
+        });
+      }
+
+      function monthlyTrafficMonthMarkup() {
+        var open = state.simDateOpen && state.dateTarget === "monthlyTraffic";
+        var value = state.monthlyTrafficQuery.monthlyTrafficMonth;
+        var popup = "";
+        if (open) {
+          var buttons = "";
+          for (var month = 1; month <= 12; month += 1) {
+            var key = state.monthlyTrafficCalendarYear + "-" + String(month).padStart(2, "0");
+            var selected = state.monthlyTrafficDraftMonth === key;
+            buttons += '<button class="traffic-month-option ' + (selected ? "selected" : "") +
+              '" data-action="monthly-traffic-month-select" data-value="' + key + '" aria-label="' +
+              state.monthlyTrafficCalendarYear + '年' + month + '月" aria-pressed="' + selected + '">' + month + '月</button>';
+          }
+          popup = '<div class="date-popover" id="monthlyTrafficMonthPicker" role="group" aria-label="月份选择器">' +
+            '<div class="calendar-header"><button class="month-btn" data-action="monthly-traffic-year-prev" aria-label="上一年">‹</button>' +
+              '<span>' + state.monthlyTrafficCalendarYear + '年</span><button class="month-btn" data-action="monthly-traffic-year-next" aria-label="下一年">›</button></div>' +
+            '<div class="traffic-month-grid">' + buttons + '</div><div class="calendar-footer">' +
+              '<button class="btn btn-gray" data-action="monthly-traffic-month-clear">清空</button>' +
+              '<button class="btn btn-primary" data-action="monthly-traffic-month-confirm">确定</button></div></div>';
+        }
+        return '<div class="date-field ' + (open ? "open" : "") + '">' +
+          '<button class="date-trigger" data-action="toggle-monthly-traffic-month" aria-label="选择月份" aria-expanded="' + open + '"' +
+          (open ? ' aria-controls="monthlyTrafficMonthPicker"' : '') + '>' +
+          (value ? esc(value) : '<span class="placeholder">请选择月份</span>') + '</button><span class="calendar-icon"></span>' + popup + '</div>';
+      }
+
+      function monthlyTrafficUsageMarkup(row) {
+        var busy = state.monthlyTrafficRefreshing.has(row.id);
+        return '<span class="monthly-traffic-usage" aria-busy="' + busy + '"><span>' +
+          (row.currentUsage === null ? "--" : row.currentUsage.toFixed(2) + "MB") + '</span>' +
+          '<button class="refresh-card ' + (busy ? "spinning" : "") + '" data-action="refresh-monthly-traffic" data-id="' + row.id +
+          '" title="刷新本月数据用量" aria-label="刷新' + row.iccid + '本月数据用量"' + (busy ? " disabled" : "") + '>↻</button></span>';
+      }
+
+      function monthlyTrafficValue(row, key) {
+        if (key === "cumulativeFlow" || key === "monthFlow") { return row[key].toFixed(2); }
+        if (key === "currentUsage") { return row.currentUsage === null ? "--" : row.currentUsage.toFixed(2); }
+        return row[key];
+      }
+
+      function monthlyTrafficMarkup() {
+        if (state.monthlyTrafficTab === "history") { return trafficHistoryMarkup(); }
+        var q = state.monthlyTrafficQuery;
+        var rows = filteredMonthlyTrafficRows();
+        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
+        state.monthlyTrafficPage = Math.max(1, Math.min(state.monthlyTrafficPage, totalPages));
+        var pageRows = rows.slice((state.monthlyTrafficPage - 1) * 20, state.monthlyTrafficPage * 20);
+        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page">' +
+          monthlyTrafficTabsMarkup() +
+          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-records">' +
+          '<div class="filters"><div class="filter-grid">' +
+            simTrafficInputMarkup("monthlyTrafficMin", q.monthlyTrafficMin, "流量最小值（MB）", true) +
+            simTrafficInputMarkup("monthlyTrafficMax", q.monthlyTrafficMax, "流量最大值（MB）", true) +
+            '<label>' + comboMarkup("monthlyTrafficVendor", q.monthlyTrafficVendor, vendors, "请输入或选择供应商") + '</label>' +
+            '<label>' + comboMarkup("monthlyTrafficMerchant", q.monthlyTrafficMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label>' +
+            '<label>' + selectMarkup("monthlyTrafficCarrier", q.monthlyTrafficCarrier, carriers, "请选择运营商", true) + '</label>' +
+            simTrafficInputMarkup("monthlyTrafficIccid", q.monthlyTrafficIccid, "请输入ICCID", false) +
+            '<label>' + monthlyTrafficMonthMarkup() + '</label>' +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="monthly-traffic-search">搜索</button>' +
+            '<button class="btn btn-gray" data-action="monthly-traffic-reset">重置</button></div>' +
+            (state.monthlyTrafficError ? '<div class="traffic-filter-error" id="trafficFilterError" role="alert">' + esc(state.monthlyTrafficError) + '</div>' : '') +
+          '</div><div class="operate-bar"><button class="btn btn-primary" data-action="export-monthly-traffic">导出</button></div>' +
+          '<div class="table-shell"><table><colgroup>' + monthlyTrafficColumns.map(function (column) {
+            return '<col style="width:' + column.width + 'px">';
+          }).join("") + '</colgroup><thead><tr>' + monthlyTrafficColumns.map(function (column) {
+            return '<th scope="col">' + esc(column.name) + '</th>';
+          }).join("") + '</tr></thead><tbody>' + (pageRows.length ? pageRows.map(function (row) {
+            return '<tr>' + monthlyTrafficColumns.map(function (column) {
+              if (column.key === "currentUsage") { return '<td data-monthly-usage="' + row.id + '">' + monthlyTrafficUsageMarkup(row) + '</td>'; }
+              var value = monthlyTrafficValue(row, column.key);
+              if (column.key === "monthFlow" || column.key === "cumulativeFlow") { value += "MB"; }
+              return '<td' + (column.key === "updated" ? ' data-monthly-updated="' + row.id + '"' : '') + ' title="' + esc(value) + '">' + esc(value) + '</td>';
+            }).join("") + '</tr>';
+          }).join("") : '<tr class="empty-row"><td colspan="10">暂无符合条件的数据，请调整筛选条件或重置</td></tr>') +
+          '</tbody></table></div>' + simTrafficPaginationMarkup(rows.length, totalPages, true) + '</div></div>';
+      }
+
+      function monthlyTrafficTabsMarkup() {
+        return '<div class="inner-tabs monthly-traffic-tabs" role="tablist" aria-label="SIM卡月流量记录类型">' +
+          [{ id: "records", label: "SIM卡月流量记录" }, { id: "history", label: "SIM卡历史流量记录" }].map(function (tab) {
+            var active = state.monthlyTrafficTab === tab.id;
+            return '<button class="inner-tab ' + (active ? "active" : "") + '" id="monthlyTrafficTab-' + tab.id +
+              '" role="tab" aria-selected="' + active + '" aria-controls="monthlyTrafficTabPanel" tabindex="' + (active ? "0" : "-1") +
+              '" data-action="monthly-traffic-tab" data-tab="' + tab.id + '">' + tab.label + '</button>';
+          }).join("") + '</div>';
+      }
+
+      function setMonthlyTrafficTab(tab) {
+        if ((tab !== "records" && tab !== "history") || tab === state.monthlyTrafficTab) { return; }
+        state.monthlyTrafficTab = tab;
+        state.openSelect = "";
+        state.openCombo = "";
+        state.simDateOpen = false;
+        renderContent();
+      }
+
+      function trafficHistoryYearOptions() {
+        var years = new Set(state.monthlyTrafficRows.map(function (row) { return row.month.slice(0, 4); }));
+        var currentYear = Number(trafficHistoryCurrentYear());
+        for (var offset = 0; offset < 5; offset += 1) { years.add(String(currentYear - offset)); }
+        return Array.from(years).sort(function (a, b) { return Number(b) - Number(a); });
+      }
+
+      function filteredTrafficHistoryRows() {
+        var q = state.trafficHistoryApplied;
+        var cards = new Map();
+        state.monthlyTrafficRows.forEach(function (record) {
+          if (record.month.slice(0, 4) !== q.trafficHistoryYear) { return; }
+          if (!cards.has(record.iccid)) {
+            var card = state.simRows.find(function (item) { return item.iccid === record.iccid; });
+            cards.set(record.iccid, {
+              msisdn: card ? card.msisdn : "--", iccid: record.iccid,
+              vendor: record.vendor, merchant: record.merchant, carrier: record.carrier, months: {}
+            });
+          }
+          var row = cards.get(record.iccid);
+          row.months[record.month] = (row.months[record.month] || 0) + Math.round(record.monthFlow * 100);
+        });
+        var keyword = q.trafficHistoryKeyword.toLowerCase();
+        return Array.from(cards.values()).filter(function (row) {
+          return (!keyword || row.iccid.toLowerCase().indexOf(keyword) !== -1 || row.msisdn.toLowerCase().indexOf(keyword) !== -1) &&
+            (!q.trafficHistoryVendor || row.vendor.indexOf(q.trafficHistoryVendor) !== -1) &&
+            (!q.trafficHistoryMerchant || row.merchant.indexOf(q.trafficHistoryMerchant) !== -1) &&
+            (!q.trafficHistoryCarrier || row.carrier === q.trafficHistoryCarrier);
+        }).sort(function (a, b) { return a.iccid.localeCompare(b.iccid); });
+      }
+
+      function trafficHistoryColumns() {
+        var columns = [
+          { key: "msisdn", name: "MSISDN", width: 140 }, { key: "iccid", name: "ICCID", width: 240 },
+          { key: "vendor", name: "供应商", width: 190 }, { key: "merchant", name: "商户名称", width: 150 },
+          { key: "carrier", name: "运营商", width: 100 },
+          { key: "annualFlow", name: "年度使用流量总计", width: 180 }
+        ];
+        for (var month = 1; month <= 12; month += 1) {
+          var key = state.trafficHistoryApplied.trafficHistoryYear + "-" + String(month).padStart(2, "0");
+          columns.push({ key: key, name: key + "（MB）", width: 130, isMonth: true });
+        }
+        return columns;
+      }
+
+      function trafficHistoryValue(row, column) {
+        if (column.key === "annualFlow") {
+          var totalCents = 0;
+          for (var month = 1; month <= 12; month += 1) {
+            var key = state.trafficHistoryApplied.trafficHistoryYear + "-" + String(month).padStart(2, "0");
+            totalCents += row.months[key] || 0;
+          }
+          return (totalCents / 100).toFixed(3);
+        }
+        if (!column.isMonth) { return row[column.key]; }
+        return Object.prototype.hasOwnProperty.call(row.months, column.key) ? (row.months[column.key] / 100).toFixed(3) : "--";
+      }
+
+      function searchTrafficHistory() {
+        var q = state.trafficHistoryQuery;
+        state.trafficHistoryApplied = Object.assign({}, q, {
+          trafficHistoryKeyword: q.trafficHistoryKeyword.trim(), trafficHistoryVendor: q.trafficHistoryVendor.trim(), trafficHistoryMerchant: q.trafficHistoryMerchant.trim()
+        });
+        state.trafficHistoryPage = 1;
+        state.openSelect = "";
+        state.openCombo = "";
+        state.simDateOpen = false;
+        renderContent();
+        toast("已更新SIM卡历史流量记录查询结果");
+      }
+
+      function trafficHistoryMarkup() {
+        var q = state.trafficHistoryQuery;
+        var rows = filteredTrafficHistoryRows();
+        var columns = trafficHistoryColumns();
+        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
+        state.trafficHistoryPage = Math.max(1, Math.min(state.trafficHistoryPage, totalPages));
+        var pageRows = rows.slice((state.trafficHistoryPage - 1) * 20, state.trafficHistoryPage * 20);
+        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page traffic-history-page">' + monthlyTrafficTabsMarkup() +
+          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-history">' +
+          '<div class="filters"><div class="filter-grid">' +
+            '<label>' + selectMarkup("trafficHistoryYear", q.trafficHistoryYear, trafficHistoryYearOptions(), "请选择年份", false) + '</label>' +
+            simTrafficInputMarkup("trafficHistoryKeyword", q.trafficHistoryKeyword, "请输入ICCID/MSISDN", false) +
+            '<label>' + comboMarkup("trafficHistoryVendor", q.trafficHistoryVendor, vendors, "请输入或选择供应商") + '</label>' +
+            '<label>' + comboMarkup("trafficHistoryMerchant", q.trafficHistoryMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label>' +
+            '<label>' + selectMarkup("trafficHistoryCarrier", q.trafficHistoryCarrier, carriers, "请选择运营商", true) + '</label>' +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="traffic-history-search">搜索</button>' +
+            '<button class="btn btn-gray" data-action="traffic-history-reset">重置</button></div></div>' +
+          '<div class="operate-bar"><div class="operate-actions"><button class="btn btn-primary" data-action="export-traffic-history">导出</button>' +
+            infoIconMarkup("traffic-history-info", "流量统计说明") + '</div></div>' +
+          '<div class="table-shell"><table><colgroup>' + columns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join("") +
+            '</colgroup><thead><tr>' + columns.map(function (column) { return '<th scope="col">' + esc(column.name) + '</th>'; }).join("") + '</tr></thead><tbody>' +
+            (pageRows.length ? pageRows.map(function (row) {
+              return '<tr>' + columns.map(function (column) {
+                var value = trafficHistoryValue(row, column);
+                return '<td title="' + esc(value === "--" && column.isMonth ? "暂无该月流量记录" : value) + '">' + esc(value) + '</td>';
+              }).join("") + '</tr>';
+            }).join("") : '<tr class="empty-row"><td colspan="' + columns.length + '">暂无符合条件的数据，请调整筛选条件或年份</td></tr>') +
+          '</tbody></table></div>' + simTrafficPaginationMarkup(rows.length, totalPages, true, true) + '</div></div>';
+      }
+
+      function exportTrafficHistory() {
+        var rows = filteredTrafficHistoryRows();
+        if (!rows.length) { toast("暂无可导出的历史流量记录，请调整筛选条件"); return; }
+        var columns = trafficHistoryColumns();
+        var lines = [columns.map(function (column) { return column.name; })].concat(rows.map(function (row) {
+          return columns.map(function (column) {
+            return trafficHistoryValue(row, column) + (column.key === "iccid" || column.key === "msisdn" ? "\t" : "");
+          });
+        }));
+        downloadTrafficCsv(lines, "SIM卡历史流量记录-" + state.trafficHistoryApplied.trafficHistoryYear + ".csv");
+        toast("已导出 " + rows.length + " 条SIM卡历史流量记录");
+      }
+
+      function refreshMonthlyTraffic(id, button) {
+        var row = state.monthlyTrafficRows.find(function (item) { return item.id === id; });
+        if (!row || state.monthlyTrafficRefreshing.has(id)) { return; }
+        state.monthlyTrafficRefreshing.add(id);
+        button.disabled = true;
+        button.classList.add("spinning");
+        button.parentNode.setAttribute("aria-busy", "true");
+        window.setTimeout(function () {
+          var latest = state.monthlyTrafficRows.find(function (item) {
+            return item.iccid === row.iccid && item.month === monthlyTrafficRowsSeed[0].month;
+          });
+          row.currentUsage = latest ? latest.monthFlow : 0;
+          row.updated = new Intl.DateTimeFormat("sv-SE", {
+            timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit",
+            hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+          }).format(new Date());
+          state.monthlyTrafficRefreshing.delete(id);
+          if (state.activePage === "simMonthlyTraffic") {
+            var usageCell = document.querySelector('[data-monthly-usage="' + id + '"]');
+            var timeCell = document.querySelector('[data-monthly-updated="' + id + '"]');
+            if (usageCell) { usageCell.innerHTML = monthlyTrafficUsageMarkup(row); }
+            if (timeCell) { timeCell.textContent = row.updated; timeCell.title = row.updated; }
+            toast("已刷新本月数据用量：" + row.iccid);
+          }
+        }, 600);
+      }
+
+      function exportMonthlyTraffic() {
+        var rows = filteredMonthlyTrafficRows();
+        if (!rows.length) { toast("暂无可导出的月流量记录，请调整筛选条件"); return; }
+        var headers = monthlyTrafficColumns.map(function (column) {
+          return column.key === "currentUsage" ? column.name + "（MB）" : column.name;
+        });
+        var lines = [headers].concat(rows.map(function (row) {
+          return monthlyTrafficColumns.map(function (column) {
+            return monthlyTrafficValue(row, column.key) + (column.key === "iccid" ? "\t" : "");
+          });
+        }));
+        downloadTrafficCsv(lines, "SIM卡月流量.csv");
+        toast("已导出 " + rows.length + " 条SIM卡月流量记录");
+      }
+
+      function prepareSimTrafficFields() {
+        var content = $("#content");
+        Array.prototype.forEach.call(content.querySelectorAll(".select, .combo:not(.traffic-input)"), function (container) {
+          var control = container.querySelector("input, .select-trigger");
+          var key = control.dataset.key;
+          var isOpen = container.classList.contains("open");
+          var fieldName = { trafficVendor: "供应商", trafficMerchant: "商户", trafficCarrier: "运营商",
+            monthlyTrafficVendor: "供应商", monthlyTrafficMerchant: "商户", monthlyTrafficCarrier: "运营商",
+            trafficHistoryYear: "年份", trafficHistoryVendor: "供应商", trafficHistoryMerchant: "商户", trafficHistoryCarrier: "运营商" }[key];
+          control.setAttribute("aria-label", fieldName);
+          control.setAttribute("aria-expanded", String(isOpen));
+          control.setAttribute("aria-haspopup", "listbox");
+          if (control.tagName === "INPUT") {
+            control.setAttribute("role", "combobox");
+            control.setAttribute("aria-autocomplete", "list");
+          }
+          var popup = container.querySelector(".select-options");
+          if (popup) {
+            popup.id = key + "Options";
+            popup.setAttribute("role", "listbox");
+            popup.setAttribute("aria-label", fieldName);
+            control.setAttribute("aria-controls", popup.id);
+            Array.prototype.forEach.call(popup.querySelectorAll(".select-option"), function (option) {
+              option.setAttribute("role", "option");
+              option.setAttribute("aria-selected", String(option.classList.contains("selected")));
+            });
+          }
+        });
+        var dateTrigger = content.querySelector('[data-action="toggle-sim-traffic-date"]');
+        if (dateTrigger) { dateTrigger.setAttribute("aria-label", "选择日期"); }
+      }
+
+      function exportSimTraffic() {
+        var rows = filteredSimTrafficRows();
+        if (!rows.length) { toast("暂无可导出的流量记录，请调整筛选条件"); return; }
+        var lines = [["日期", "ICCID", "供应商", "商户名称", "运营商", "流量值（MB）", "创建时间"]].concat(rows.map(function (row) {
+          return [row.date, row.iccid + "\t", row.vendor, row.merchant, row.carrier, row.flow.toFixed(2), row.created];
+        }));
+        downloadTrafficCsv(lines, "SIM卡日流量.csv");
+        toast("已导出 " + rows.length + " 条SIM卡日流量记录");
+      }
+
+      function downloadTrafficCsv(lines, filename) {
+        var csvCell = function (value) { return '"' + String(value).replace(/"/g, '""') + '"'; };
+        var blob = new Blob(["\ufeff" + lines.map(function (line) { return line.map(csvCell).join(","); }).join("\r\n")], { type: "text/csv;charset=utf-8" });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
       }
 
       function esimQueryFieldMarkup() {
@@ -5250,6 +6143,10 @@
           markup = homeMarkup();
         } else if (state.activePage === "sim") {
           markup = simCardMarkup();
+        } else if (state.activePage === "simTraffic") {
+          markup = simTrafficMarkup();
+        } else if (state.activePage === "simMonthlyTraffic") {
+          markup = monthlyTrafficMarkup();
         } else if (state.activePage === "esim") {
           markup = esimCardMarkup();
         } else if (state.activePage === "esimChangeDetail") {
@@ -5276,6 +6173,7 @@
           markup = accountMarkup();
         }
         $("#content").innerHTML = markup;
+        if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic") { prepareSimTrafficFields(); }
         applyDocumentationAnchors();
         renderPageDocumentation();
       }
@@ -5582,9 +6480,20 @@
         "</div>";
       }
 
+      function simDataResetConfirmMarkup() {
+        return '<div class="modal-mask"><section class="confirm-dialog sim-reset-dialog" role="dialog" aria-modal="true" aria-labelledby="simDataResetTitle" aria-describedby="simDataResetDescription">' +
+          '<header class="modal-head"><h2 id="simDataResetTitle">重置数据服务确认</h2><button class="modal-close" data-action="cancel-sim-data-reset" aria-label="关闭重置数据服务确认">×</button></header>' +
+          '<div class="confirm-content">确定重置以下SIM卡的数据服务吗？<small>ICCID：' + esc(state.simDataResetConfirmIccid) + '</small>' +
+            '<small id="simDataResetDescription">同一卡3分钟内仅可重置1次。</small></div>' +
+          '<div class="dialog-actions"><button class="btn btn-gray" data-action="cancel-sim-data-reset">取消</button>' +
+            '<button class="btn btn-primary" data-action="confirm-sim-data-reset">重置数据服务</button></div></section></div>';
+      }
+
       function renderOverlay() {
         var overlay = $("#overlay");
-        if (state.manageStopRiskOpen) {
+        if (state.simDataResetConfirmIccid) {
+          overlay.innerHTML = simDataResetConfirmMarkup();
+        } else if (state.manageStopRiskOpen) {
           overlay.innerHTML = manageStopRiskMarkup();
         } else if (state.authConfigOpen) {
           overlay.innerHTML = authConfigMarkup();
@@ -5621,15 +6530,35 @@
       }
 
       function showManageStopPopover(target) {
-        var popover = $("#floating-popover");
-        var rect = target.getBoundingClientRect();
-        popover.innerHTML =
+        var markup =
           '<div>停用原因：' + esc(target.dataset.reason) + "</div>" +
           '<div>停用时间：' + esc(target.dataset.time) + "</div>" +
           '<div>停用人：' + esc(target.dataset.user) + "</div>" +
           '<div>操作业务平台：' + esc(target.dataset.platform) + "</div>" +
           '<div>备注：' + esc(target.dataset.remark) + "</div>";
+        showFloatingPopover(target, markup);
+      }
+
+      function infoIconMarkup(action, label) {
+        return '<button class="info-trigger" data-action="' + esc(action) + '" aria-label="' + esc(label) + '" aria-describedby="floating-popover" aria-expanded="false">' +
+          '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 7v5M8 4v.4" stroke-linecap="round"></path></svg></button>';
+      }
+
+      function showInlineInfo(target) {
+        var text = target.dataset.action === "sim-reset-info" ? simDataResetNote : pageDocumentation.simTrafficHistory.page.description;
+        showFloatingPopover(target, esc(text));
+      }
+
+      function isInlineInfoPinned(target) {
+        return target.dataset.action === "sim-reset-info" ? state.simResetInfoOpen : state.trafficHistoryInfoOpen;
+      }
+
+      function showFloatingPopover(target, markup) {
+        var popover = $("#floating-popover");
+        var rect = target.getBoundingClientRect();
+        popover.innerHTML = markup;
         popover.style.display = "block";
+        popover.setAttribute("aria-hidden", "false");
         var width = popover.offsetWidth || 282;
         var left = rect.left + rect.width / 2 - width / 2;
         left = Math.max(12, Math.min(left, window.innerWidth - width - 12));
@@ -5644,12 +6573,22 @@
       function hideManageStopPopover() {
         var popover = $("#floating-popover");
         popover.style.display = "none";
+        popover.setAttribute("aria-hidden", "true");
         popover.innerHTML = "";
+        state.trafficHistoryInfoOpen = false;
+        state.simResetInfoOpen = false;
+        Array.prototype.forEach.call(document.querySelectorAll('[data-action="traffic-history-info"], [data-action="sim-reset-info"]'), function (button) {
+          button.setAttribute("aria-expanded", "false");
+        });
       }
 
       document.addEventListener("input", function (event) {
         var target = event.target;
-        if (target.dataset.action === "sim-input") {
+        if (target.dataset.action === "sim-traffic-input") {
+          setQueryValue(target.dataset.key, target.value);
+          var clearButton = target.parentNode.querySelector(".clear-value");
+          if (clearButton) { clearButton.hidden = target.value === ""; }
+        } else if (target.dataset.action === "sim-input") {
           state.simQuery[target.dataset.key] = target.value;
         } else if (target.dataset.action === "esim-input") {
           state.esimQuery[target.dataset.key] = target.value;
@@ -5716,7 +6655,102 @@
         }
       });
 
+      document.addEventListener("keydown", function (event) {
+        var target = event.target;
+        if (event.isComposing || event.keyCode === 229) { return; }
+        if (state.simDataResetConfirmIccid) {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeSimDataResetDialog(true);
+          } else if (event.key === "Tab") {
+            var controls = Array.prototype.slice.call(document.querySelectorAll(".sim-reset-dialog button:not(:disabled)"));
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && target === last) { event.preventDefault(); first.focus(); }
+          }
+          return;
+        }
+        if (event.key === "Escape" && (state.simResetInfoOpen || target.closest('[data-action="sim-reset-info"]'))) {
+          hideManageStopPopover();
+          event.preventDefault();
+          return;
+        }
+        if (state.activePage !== "simTraffic" && state.activePage !== "simMonthlyTraffic") { return; }
+        var monthly = state.activePage === "simMonthlyTraffic";
+        var history = monthly && state.monthlyTrafficTab === "history";
+        if (event.key === "Escape" && (state.trafficHistoryInfoOpen || target.closest('[data-action="traffic-history-info"]'))) {
+          hideManageStopPopover();
+          event.preventDefault();
+        } else if (target.dataset.action === "monthly-traffic-tab" && ["ArrowLeft", "ArrowRight", "Home", "End"].indexOf(event.key) !== -1) {
+          var tab = event.key === "Home" ? "records" : (event.key === "End" ? "history" : (history ? "records" : "history"));
+          event.preventDefault();
+          setMonthlyTrafficTab(tab);
+          document.getElementById("monthlyTrafficTab-" + tab).focus();
+        } else if (target.dataset.action === "monthly-traffic-month-select" && ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].indexOf(event.key) !== -1) {
+          var monthIndex = Number(target.dataset.value.slice(-2)) - 1;
+          var offset = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -3, ArrowDown: 3 }[event.key] || 0;
+          var nextMonth = event.key === "Home" ? 0 : (event.key === "End" ? 11 : monthIndex + offset);
+          if (nextMonth < 0 || nextMonth > 11) {
+            state.monthlyTrafficCalendarYear += nextMonth < 0 ? -1 : 1;
+            nextMonth = (nextMonth + 12) % 12;
+            renderContent();
+          }
+          document.querySelector('[data-action="monthly-traffic-month-select"][data-value="' + state.monthlyTrafficCalendarYear + '-' + String(nextMonth + 1).padStart(2, "0") + '"]').focus();
+          event.preventDefault();
+        } else if (event.key === "Escape" && (state.openCombo || state.openSelect || state.simDateOpen)) {
+          var focusKey = state.openCombo;
+          var selectKey = state.openSelect;
+          var hadDate = state.simDateOpen;
+          state.openCombo = "";
+          state.openSelect = "";
+          state.simDateOpen = false;
+          renderContent();
+          var returnTarget = focusKey ? document.getElementById(focusKey) :
+            document.querySelector(hadDate ? (monthly ? '[data-action="toggle-monthly-traffic-month"]' : '[data-action="toggle-sim-traffic-date"]') : '[data-action="toggle-select"][data-key="' + selectKey + '"]');
+          if (returnTarget) { returnTarget.focus(); }
+          event.preventDefault();
+        } else if ((event.key === "ArrowDown" || event.key === "ArrowUp") && target.closest(".select, .combo")) {
+          var container = target.closest(".select, .combo");
+          var options = Array.prototype.slice.call(container.querySelectorAll(".select-option"));
+          if (!options.length) {
+            var controlKey = target.dataset.key;
+            target.click();
+            var reopened = document.querySelector('#content [data-key="' + controlKey + '"]');
+            var firstOption = reopened && reopened.closest(".select, .combo").querySelector(".select-option");
+            if (firstOption) { firstOption.focus(); }
+            event.preventDefault();
+            return;
+          }
+          var currentIndex = options.indexOf(target);
+          var nextIndex = event.key === "ArrowDown" ? (currentIndex + 1) % options.length : (currentIndex <= 0 ? options.length - 1 : currentIndex - 1);
+          options[nextIndex].focus();
+          event.preventDefault();
+        } else if (event.key === "Enter" && target.dataset.action === "traffic-history-jump") {
+          event.preventDefault();
+          var historyPages = Math.max(1, Math.ceil(filteredTrafficHistoryRows().length / 20));
+          state.trafficHistoryPage = Math.max(1, Math.min(historyPages, Math.floor(Number(target.value) || 1)));
+          renderContent();
+        } else if (event.key === "Enter" && target.dataset.action === "monthly-traffic-jump") {
+          event.preventDefault();
+          var monthlyPages = Math.max(1, Math.ceil(filteredMonthlyTrafficRows().length / 20));
+          state.monthlyTrafficPage = Math.max(1, Math.min(monthlyPages, Math.floor(Number(target.value) || 1)));
+          renderContent();
+        } else if (event.key === "Enter" && target.dataset.action === "sim-traffic-jump") {
+          event.preventDefault();
+          var totalPages = Math.max(1, Math.ceil(filteredSimTrafficRows().length / state.simTrafficPageSize));
+          state.simTrafficPage = Math.max(1, Math.min(totalPages, Math.floor(Number(target.value) || 1)));
+          renderContent();
+        } else if (event.key === "Enter" && (target.dataset.action === "sim-traffic-input" || target.dataset.action === "combo-input")) {
+          event.preventDefault();
+          if (history) { searchTrafficHistory(); }
+          else { searchSimTraffic(monthly); }
+        }
+      });
+
       document.addEventListener("mouseover", function (event) {
+        var infoTarget = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        if (infoTarget) { showInlineInfo(infoTarget); return; }
         var target = event.target.closest(".manage-stop-cell.has-popover");
         if (target) {
           showManageStopPopover(target);
@@ -5724,14 +6758,33 @@
       });
 
       document.addEventListener("mouseout", function (event) {
+        var infoTarget = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        if (infoTarget && !isInlineInfoPinned(infoTarget) &&
+            (!event.relatedTarget || !infoTarget.contains(event.relatedTarget)) && document.activeElement !== infoTarget) {
+          hideManageStopPopover();
+        }
         var target = event.target.closest(".manage-stop-cell.has-popover");
         if (target && (!event.relatedTarget || !target.contains(event.relatedTarget))) {
           hideManageStopPopover();
         }
       });
 
+      document.addEventListener("focusin", function (event) {
+        var target = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        if (target) { showInlineInfo(target); }
+      });
+
+      document.addEventListener("focusout", function (event) {
+        var target = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        if (target && !isInlineInfoPinned(target) && !target.matches(":hover")) { hideManageStopPopover(); }
+      });
+
       document.addEventListener("click", function (event) {
         var target = event.target.closest("[data-action]");
+        var infoAction = target && (target.dataset.action === "traffic-history-info" || target.dataset.action === "sim-reset-info");
+        if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen) && !infoAction) {
+          hideManageStopPopover();
+        }
         if (!target) {
           if (state.openSelect || state.openCombo || state.simDateOpen) {
             state.openSelect = "";
@@ -5745,7 +6798,22 @@
         var key = target.dataset.key;
         var row;
 
-        if (action === "toggle-page-doc") {
+        if (action === "traffic-history-info" || action === "sim-reset-info") {
+          var pinned = isInlineInfoPinned(target);
+          hideManageStopPopover();
+          if (!pinned) {
+            if (action === "sim-reset-info") { state.simResetInfoOpen = true; }
+            else { state.trafficHistoryInfoOpen = true; }
+            target.setAttribute("aria-expanded", "true");
+            showInlineInfo(target);
+          }
+        } else if (action === "reset-sim-data-service") {
+          openSimDataResetDialog(target.dataset.iccid);
+        } else if (action === "cancel-sim-data-reset") {
+          closeSimDataResetDialog(true);
+        } else if (action === "confirm-sim-data-reset") {
+          confirmSimDataReset();
+        } else if (action === "toggle-page-doc") {
           var shouldRefreshContent = state.openSelect || state.openCombo || state.simDateOpen;
           var nextPageDocOpen = !state.pageDocOpen;
           state.pageDocOpen = nextPageDocOpen;
@@ -5788,6 +6856,99 @@
         } else if (action === "open-sim") {
           openPage("sim");
           render();
+        } else if (action === "open-sim-traffic") {
+          openPage("simTraffic");
+          render();
+        } else if (action === "open-monthly-traffic") {
+          openPage("simMonthlyTraffic");
+          render();
+        } else if (action === "monthly-traffic-tab") {
+          setMonthlyTrafficTab(target.dataset.tab);
+        } else if (action === "traffic-history-search") {
+          searchTrafficHistory();
+        } else if (action === "traffic-history-reset") {
+          state.trafficHistoryQuery = blankTrafficHistoryQuery();
+          state.trafficHistoryApplied = blankTrafficHistoryQuery();
+          state.trafficHistoryPage = 1;
+          state.openSelect = "";
+          state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+          toast("SIM卡历史流量记录筛选条件已重置");
+        } else if (action === "traffic-history-page") {
+          var historyTotalPages = Math.max(1, Math.ceil(filteredTrafficHistoryRows().length / 20));
+          state.trafficHistoryPage = Math.max(1, Math.min(historyTotalPages, Number(target.dataset.page) || 1));
+          renderContent();
+        } else if (action === "export-traffic-history") {
+          exportTrafficHistory();
+        } else if (action === "monthly-traffic-search") {
+          searchSimTraffic(true);
+        } else if (action === "monthly-traffic-reset") {
+          state.monthlyTrafficQuery = blankMonthlyTrafficQuery();
+          state.monthlyTrafficApplied = blankMonthlyTrafficQuery();
+          state.monthlyTrafficPage = 1;
+          state.monthlyTrafficError = "";
+          state.openSelect = "";
+          state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+          toast("SIM卡月流量筛选条件已重置");
+        } else if (action === "monthly-traffic-page") {
+          var monthlyTotalPages = Math.max(1, Math.ceil(filteredMonthlyTrafficRows().length / 20));
+          state.monthlyTrafficPage = Math.max(1, Math.min(monthlyTotalPages, Number(target.dataset.page) || 1));
+          renderContent();
+        } else if (action === "toggle-monthly-traffic-month") {
+          var monthOpen = !(state.simDateOpen && state.dateTarget === "monthlyTraffic");
+          state.dateTarget = "monthlyTraffic";
+          state.simDateOpen = monthOpen;
+          state.openSelect = "";
+          state.openCombo = "";
+          state.monthlyTrafficDraftMonth = state.monthlyTrafficQuery.monthlyTrafficMonth;
+          state.monthlyTrafficCalendarYear = Number((state.monthlyTrafficDraftMonth || monthlyTrafficRowsSeed[0].month).slice(0, 4));
+          renderContent();
+        } else if (action === "monthly-traffic-year-prev" || action === "monthly-traffic-year-next") {
+          state.monthlyTrafficCalendarYear += action === "monthly-traffic-year-prev" ? -1 : 1;
+          renderContent();
+        } else if (action === "monthly-traffic-month-select") {
+          state.monthlyTrafficDraftMonth = target.dataset.value;
+          renderContent();
+          document.querySelector('[data-action="monthly-traffic-month-select"][data-value="' + state.monthlyTrafficDraftMonth + '"]').focus();
+        } else if (action === "monthly-traffic-month-clear") {
+          state.monthlyTrafficDraftMonth = "";
+          renderContent();
+        } else if (action === "monthly-traffic-month-confirm") {
+          state.monthlyTrafficQuery.monthlyTrafficMonth = state.monthlyTrafficDraftMonth;
+          state.simDateOpen = false;
+          renderContent();
+          document.querySelector('[data-action="toggle-monthly-traffic-month"]').focus();
+        } else if (action === "refresh-monthly-traffic") {
+          refreshMonthlyTraffic(target.dataset.id, target);
+        } else if (action === "export-monthly-traffic") {
+          exportMonthlyTraffic();
+        } else if (action === "sim-traffic-search") {
+          searchSimTraffic();
+        } else if (action === "sim-traffic-reset") {
+          state.simTrafficQuery = blankSimTrafficQuery();
+          state.simTrafficApplied = blankSimTrafficQuery();
+          state.simTrafficPage = 1;
+          state.simTrafficError = "";
+          state.openSelect = "";
+          state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+          toast("SIM卡日流量筛选条件已重置");
+        } else if (action === "clear-sim-traffic-input") {
+          setQueryValue(key, "");
+          if (state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab !== "history") { state.monthlyTrafficError = ""; }
+          else if (state.activePage === "simTraffic") { state.simTrafficError = ""; }
+          renderContent();
+          document.getElementById(key).focus();
+        } else if (action === "sim-traffic-page") {
+          var trafficTotalPages = Math.max(1, Math.ceil(filteredSimTrafficRows().length / state.simTrafficPageSize));
+          state.simTrafficPage = Math.max(1, Math.min(trafficTotalPages, Number(target.dataset.page) || 1));
+          renderContent();
+        } else if (action === "export-sim-traffic") {
+          exportSimTraffic();
         } else if (action === "open-esim") {
           state.esimActiveTab = "list";
           openPage("esim");
@@ -5853,6 +7014,10 @@
             renderOverlay();
           } else {
             renderContent();
+            if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic") {
+              var trafficSelect = document.querySelector('[data-action="toggle-select"][data-key="' + key + '"]');
+              if (trafficSelect) { trafficSelect.focus(); }
+            }
           }
         } else if (action === "clear-select") {
           event.stopPropagation();
@@ -5863,7 +7028,7 @@
           } else {
             renderContent();
           }
-        } else if (action === "sim-input" || action === "esim-input" || action === "esim-chip-input" || action === "chip-record-input" || action === "esim-write-task-input" || action === "imei-input" || action === "detection-input" || action === "chip-detection-input") {
+        } else if (action === "sim-input" || action === "sim-traffic-input" || action === "esim-input" || action === "esim-chip-input" || action === "chip-record-input" || action === "esim-write-task-input" || action === "imei-input" || action === "detection-input" || action === "chip-detection-input") {
           state.openSelect = "";
           state.openCombo = "";
           state.simDateOpen = false;
@@ -5877,12 +7042,13 @@
           setQueryValue(key, target.dataset.value);
           state.openCombo = "";
           renderContent();
+          if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic") { focusField(key); }
         } else if (action === "clear-combo") {
           event.stopPropagation();
           setQueryValue(key, "");
           state.openCombo = "";
           renderContent();
-        } else if (action === "toggle-sim-date" || action === "toggle-esim-date" || action === "toggle-esim-disabled-date" || action === "toggle-esim-chip-import-date" || action === "toggle-chip-record-operation-date" || action === "toggle-write-task-apply-date" || action === "toggle-write-task-update-date") {
+        } else if (action === "toggle-sim-date" || action === "toggle-sim-traffic-date" || action === "toggle-esim-date" || action === "toggle-esim-disabled-date" || action === "toggle-esim-chip-import-date" || action === "toggle-chip-record-operation-date" || action === "toggle-write-task-apply-date" || action === "toggle-write-task-update-date") {
           var dateTarget = action === "toggle-esim-date" ? "esim" : (action === "toggle-esim-disabled-date" ? "esimDisabled" : (action === "toggle-esim-chip-import-date" ? "esimChipImport" : (action === "toggle-write-task-apply-date" ? "writeTaskApply" : (action === "toggle-write-task-update-date" ? "writeTaskUpdate" : "sim"))));
           if (action === "toggle-chip-record-operation-date") { dateTarget = "chipRecordOperation"; }
           var dateQuery = dateTarget === "esim" ? state.esimQuery : (dateTarget === "esimChipImport" ? state.esimChipQuery : (dateTarget === "writeTaskApply" || dateTarget === "writeTaskUpdate" ? state.esimWriteTaskQuery : state.simQuery));
@@ -5893,6 +7059,13 @@
           if (dateTarget === "chipRecordOperation") {
             dateStartKey = "chipRecordStart";
             dateEndKey = "chipRecordEnd";
+          }
+          if (action === "toggle-sim-traffic-date") {
+            dateTarget = "simTraffic";
+            dateQuery = state.simTrafficQuery;
+            dateStartKey = "trafficDate";
+            dateEndKey = "trafficDate";
+            state.simMonth = new Date((dateQuery.trafficDate || simTrafficRowsSeed[0].date) + "T00:00:00");
           }
           var nextDateOpen = !(state.simDateOpen && state.dateTarget === dateTarget);
           state.dateTarget = dateTarget;
@@ -5907,7 +7080,10 @@
           renderContent();
         } else if (action === "choose-sim-day") {
           var value = target.dataset.value;
-          if (!state.simDraftStart || state.simDraftEnd) {
+          if (state.dateTarget === "simTraffic") {
+            state.simDraftStart = value;
+            state.simDraftEnd = value;
+          } else if (!state.simDraftStart || state.simDraftEnd) {
             state.simDraftStart = value;
             state.simDraftEnd = "";
           } else if (value < state.simDraftStart) {
@@ -5922,7 +7098,9 @@
           state.simDraftEnd = "";
           renderContent();
         } else if (action === "sim-date-confirm") {
-          if (state.dateTarget === "esim") {
+          if (state.dateTarget === "simTraffic") {
+            state.simTrafficQuery.trafficDate = state.simDraftStart;
+          } else if (state.dateTarget === "esim") {
             state.esimQuery.esimActivationStart = state.simDraftStart;
             state.esimQuery.esimActivationEnd = state.simDraftEnd || state.simDraftStart;
           } else if (state.dateTarget === "esimDisabled") {
@@ -6617,6 +7795,11 @@
           render();
           toast("账户配置已删除");
         }
+      });
+
+      window.addEventListener("storage", function (event) {
+        if (event.key !== simDataResetStorageKey) { return; }
+        Object.assign(state.simDataResetCooldowns, readSimDataResetCooldowns() || {});
       });
 
       render();
