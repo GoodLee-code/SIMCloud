@@ -1217,6 +1217,51 @@
       flex-wrap: wrap;
     }
 
+    .redlist-page table {
+      min-width: 1420px;
+    }
+
+    .redlist-quota-range {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .redlist-page .date-trigger {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .redlist-update-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+    }
+
+    .redlist-page .operate-bar {
+      justify-content: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .redlist-update-note svg {
+      flex: 0 0 14px;
+      color: var(--blue);
+    }
+
+    .redlist-status-expired {
+      color: #f05252;
+    }
+
+    .redlist-status-current {
+      color: var(--green);
+    }
+
     .info-trigger {
       position: relative;
       width: 16px;
@@ -1309,6 +1354,13 @@
     .date-field.open .date-trigger {
       border-color: var(--blue);
       box-shadow: 0 0 0 2px rgba(22, 135, 232, 0.08);
+    }
+
+    .date-trigger > span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .calendar-icon {
@@ -1411,6 +1463,169 @@
       margin-top: 10px;
       padding-top: 10px;
       border-top: 1px solid #f0f3f7;
+    }
+
+    .range-date-popover.date-popover {
+      position: fixed;
+      z-index: 90;
+      top: auto;
+      right: auto;
+      width: min(688px, calc(100vw - 24px));
+      max-height: calc(100vh - 24px);
+      overflow: auto;
+      padding: 0;
+    }
+
+    .range-date-body {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+    }
+
+    .date-shortcuts {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding: 12px 8px;
+      background: #f7f9fc;
+      border-right: 1px solid var(--border);
+    }
+
+    .date-shortcut {
+      min-height: 30px;
+      padding: 0 10px;
+      color: #596273;
+      border-radius: 3px;
+      text-align: left;
+    }
+
+    .date-shortcut:hover,
+    .date-shortcut.active {
+      color: var(--blue);
+      background: #eaf4ff;
+    }
+
+    .date-months {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .date-calendar-month {
+      min-width: 0;
+      padding: 12px;
+    }
+
+    .date-calendar-month + .date-calendar-month {
+      border-left: 1px solid var(--border);
+    }
+
+    .range-date-popover .calendar-header {
+      position: relative;
+      height: 32px;
+      justify-content: center;
+      margin-bottom: 6px;
+      color: #354154;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .range-date-popover .month-btn {
+      position: absolute;
+      top: 3px;
+      left: 0;
+    }
+
+    .range-date-popover .month-btn.next {
+      right: 0;
+      left: auto;
+    }
+
+    .range-date-popover .days {
+      display: block;
+    }
+
+    .calendar-week-row {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .range-date-popover .day {
+      height: 30px;
+      line-height: 30px;
+      font-size: 13px;
+    }
+
+    .range-date-popover .day.outside {
+      color: #c3ccda;
+    }
+
+    .range-date-popover .day[aria-current="date"]:not(.start):not(.end) {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .range-date-popover .calendar-footer {
+      align-items: center;
+      margin: 0;
+      padding: 10px 12px;
+    }
+
+    .date-range-summary {
+      flex: 1;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .range-date-popover :focus-visible {
+      position: relative;
+      z-index: 1;
+      outline: 2px solid var(--blue);
+      outline-offset: -2px;
+    }
+
+    .range-date-popover .month-btn:focus-visible {
+      position: absolute;
+    }
+
+    @media (max-width: 600px) {
+      .range-date-body {
+        grid-template-columns: 1fr;
+      }
+
+      .date-shortcuts {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 2px;
+        padding: 8px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .date-shortcut {
+        min-height: 28px;
+        padding: 0 8px;
+      }
+
+      .date-calendar-month {
+        padding: 8px 5px;
+      }
+
+      .range-date-popover .calendar-header {
+        font-size: 13px;
+      }
+
+      .range-date-popover .day {
+        height: 28px;
+        line-height: 28px;
+        font-size: 12px;
+      }
+
+      .range-date-popover .calendar-footer {
+        flex-wrap: wrap;
+      }
+
+      .date-range-summary {
+        flex-basis: 100%;
+      }
     }
 
     .actions {
@@ -1944,7 +2159,18 @@
     }
 
     .sim-management-table table {
-      min-width: 2750px;
+      min-width: 2940px;
+    }
+
+    [data-action="toggle-sim-first-activation-date"] {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    [data-action="toggle-sim-first-activation-date"]:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
     }
 
     .sim-management-table .sim-operations-head,
@@ -2763,10 +2989,13 @@
   <div id="overlay"></div>
   <div id="toast"></div>
   <div id="floating-popover" class="floating-popover" role="tooltip" aria-hidden="true"></div>
+  <div id="datePickerLayer"></div>
 
   <script>
     (function () {
       var vendors = ["中国移动终端公司", "联通物联网有限公司", "天翼物联科技有限公司", "中移物联网有限公司"];
+      var redlistVendors = ["中国移动终端公司", "中移物联网有限公司", "广州华米", "广州5G", "TS移动"];
+      var redlistExpiryOptions = ["未到期", "已到期"];
       var carriers = ["中国移动", "中国联通", "中国电信"];
       var simDataResetNote = "物联卡上网功能异常的时候可以通过重置数据服务来重置恢复 GPRS 上网功能，3分钟内仅可重置1次。";
       var simDataResetCooldownMs = 3 * 60 * 1000;
@@ -2816,13 +3045,36 @@
         { id: 8, vendor: "中移物联网有限公司", carrier: "中国移动", platform: "CMP连接管理平台", note: "备用运营账户", creator: "孙悦", created: "2026-05-22", updated: "2026-05-26 17:12" }
       ];
 
+      var redlistRowsSeed = [];
+      for (var redlistIndex = 0; redlistIndex < 24; redlistIndex += 1) {
+        redlistRowsSeed.push({
+          id: redlistIndex + 1,
+          vendor: redlistVendors[redlistIndex % redlistVendors.length],
+          carrier: "中国移动",
+          platform: "OneLink（移动）",
+          accountName: ["生产红名单账户", "物联网业务账户", "智能穿戴账户", "备用红名单账户"][redlistIndex % 4] + String(redlistIndex + 1).padStart(2, "0"),
+          accountId: "OL" + String(20260001 + redlistIndex),
+          startsAt: ["2026-01-01", "2026-05-01", "2026-09-01", "2025-10-01"][redlistIndex % 4] + " 00:00:00",
+          expiresAt: ["2026-10-28", "2026-11-30", "2026-12-31", "2027-03-31", "2026-09-30", "2027-01-31"][redlistIndex % 6] + " 23:59:59",
+          quota: [0, 500, 1000, 2000, 5000, 10000][redlistIndex % 6]
+        });
+      }
+
+      var redlistColumns = [
+        { key: "vendor", name: "供应商", width: 190 }, { key: "carrier", name: "运营商", width: 110 },
+        { key: "platform", name: "运营商平台", width: 170 }, { key: "accountName", name: "账户名称", width: 180 },
+        { key: "accountId", name: "账户ID", width: 150 }, { key: "startsAt", name: "红名单开始时间", width: 190 },
+        { key: "expiresAt", name: "红名单到期时间", width: 190 }, { key: "quota", name: "红名单额度", width: 130 },
+        { key: "expiryStatus", name: "到期状态", width: 110 }
+      ];
+
       var simRowsSeed = [
-        { id: 1, imsi: "460001234567890", iccid: "89860488192540182881", msisdn: "14775280001", merchant: "星河智能科技", vendor: "中国移动终端公司", carrier: "中国移动", carrierPackage: "物联50GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "已激活", needRealName: "是", realNameResult: "已实名", speedLimit: "否", form: "插拔卡", totalFlow: 51200, monthFlow: 12842, lastMonthFlow: 11830, authSwitch: "开启", adMode: "关闭", serviceStart: "2026-05-01", serviceEnd: "2027-04-30", created: "2026-04-28 10:21", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "正常", activationTime: "2026-05-01" },
-        { id: 2, imsi: "460011234567891", iccid: "89860122801030577124", msisdn: "14610123002", merchant: "远航设备租赁", vendor: "联通物联网有限公司", carrier: "中国联通", carrierPackage: "畅享20GB", userPackage: "用户基础10GB", merchantPackage: "商户共享100GB", cardStatus: "待激活", needRealName: "否", realNameResult: "无需实名", speedLimit: "否", form: "eSIM", totalFlow: 20480, monthFlow: 0, lastMonthFlow: 0, authSwitch: "关闭", adMode: "关闭", serviceStart: "2026-06-01", serviceEnd: "2027-05-31", created: "2026-05-12 14:02", cardUsage: "启动卡", fastNetwork: "不支持", trafficStatus: "未开通", activationTime: "2026-06-01" },
-        { id: 3, imsi: "460031234567892", iccid: "89860321012568900137", msisdn: "14922810003", merchant: "云上出行", vendor: "天翼物联科技有限公司", carrier: "中国电信", carrierPackage: "基础10GB", userPackage: "用户基础10GB", merchantPackage: "启动卡体验包", cardStatus: "已停用", needRealName: "是", realNameResult: "实名失败", speedLimit: "是", form: "插拔卡", totalFlow: 10240, monthFlow: 9800, lastMonthFlow: 10120, authSwitch: "开启", adMode: "开启", serviceStart: "2026-03-15", serviceEnd: "2027-03-14", created: "2026-03-10 09:18", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "低流量", activationTime: "2026-03-15" },
-        { id: 4, imsi: "460001234567893", iccid: "89860477193200654328", msisdn: "14775280004", merchant: "童联穿戴", vendor: "中移物联网有限公司", carrier: "中国移动", carrierPackage: "商户共享100GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "库存", needRealName: "否", realNameResult: "未提交", speedLimit: "否", form: "贴片卡", totalFlow: 102400, monthFlow: 0, lastMonthFlow: 0, authSwitch: "关闭", adMode: "开启", serviceStart: "2026-05-20", serviceEnd: "2027-05-19", created: "2026-05-20 16:46", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "未开通", activationTime: "2026-05-20" },
-        { id: 5, imsi: "460011234567894", iccid: "89860120881230076145", msisdn: "14610123005", merchant: "迅捷物流", vendor: "联通物联网有限公司", carrier: "中国联通", carrierPackage: "物联50GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "可测试", needRealName: "是", realNameResult: "待实名", speedLimit: "否", form: "插拔卡", totalFlow: 51200, monthFlow: 50500, lastMonthFlow: 49230, authSwitch: "开启", adMode: "关闭", serviceStart: "2026-04-01", serviceEnd: "2027-03-31", created: "2026-03-26 11:35", cardUsage: "启动卡", fastNetwork: "不支持", trafficStatus: "流量不足", activationTime: "2026-04-01" },
-        { id: 6, imsi: "460031234567895", iccid: "89860320987654321876", msisdn: "14922810006", merchant: "北辰能源", vendor: "天翼物联科技有限公司", carrier: "中国电信", carrierPackage: "基础10GB", userPackage: "用户基础10GB", merchantPackage: "基础10GB", cardStatus: "已销号", needRealName: "否", realNameResult: "无需实名", speedLimit: "是", form: "eSIM", totalFlow: 10240, monthFlow: 3500, lastMonthFlow: 4200, authSwitch: "关闭", adMode: "关闭", serviceStart: "2025-12-01", serviceEnd: "2026-11-30", created: "2025-11-28 13:09", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "正常", activationTime: "2025-12-01" }
+        { id: 1, imsi: "460001234567890", iccid: "89860488192540182881", msisdn: "14775280001", merchant: "星河智能科技", vendor: "中国移动终端公司", carrier: "中国移动", carrierPackage: "物联50GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "已激活", needRealName: "是", realNameResult: "已实名", speedLimit: "否", form: "插拔卡", totalFlow: 51200, monthFlow: 12842, lastMonthFlow: 11830, authSwitch: "开启", adMode: "关闭", serviceStart: "2026-05-01", serviceEnd: "2027-04-30", created: "2026-04-28 10:21", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "正常", activationTime: "2026-05-01", firstActivationTime: "2026-05-01" },
+        { id: 2, imsi: "460011234567891", iccid: "89860122801030577124", msisdn: "14610123002", merchant: "远航设备租赁", vendor: "联通物联网有限公司", carrier: "中国联通", carrierPackage: "畅享20GB", userPackage: "用户基础10GB", merchantPackage: "商户共享100GB", cardStatus: "待激活", needRealName: "否", realNameResult: "无需实名", speedLimit: "否", form: "eSIM", totalFlow: 20480, monthFlow: 0, lastMonthFlow: 0, authSwitch: "关闭", adMode: "关闭", serviceStart: "2026-06-01", serviceEnd: "2027-05-31", created: "2026-05-12 14:02", cardUsage: "启动卡", fastNetwork: "不支持", trafficStatus: "未开通", activationTime: "2026-06-01", firstActivationTime: "" },
+        { id: 3, imsi: "460031234567892", iccid: "89860321012568900137", msisdn: "14922810003", merchant: "云上出行", vendor: "天翼物联科技有限公司", carrier: "中国电信", carrierPackage: "基础10GB", userPackage: "用户基础10GB", merchantPackage: "启动卡体验包", cardStatus: "已停用", needRealName: "是", realNameResult: "实名失败", speedLimit: "是", form: "插拔卡", totalFlow: 10240, monthFlow: 9800, lastMonthFlow: 10120, authSwitch: "开启", adMode: "开启", serviceStart: "2026-03-15", serviceEnd: "2027-03-14", created: "2026-03-10 09:18", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "低流量", activationTime: "2026-03-15", firstActivationTime: "2026-03-15" },
+        { id: 4, imsi: "460001234567893", iccid: "89860477193200654328", msisdn: "14775280004", merchant: "童联穿戴", vendor: "中移物联网有限公司", carrier: "中国移动", carrierPackage: "商户共享100GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "库存", needRealName: "否", realNameResult: "未提交", speedLimit: "否", form: "贴片卡", totalFlow: 102400, monthFlow: 0, lastMonthFlow: 0, authSwitch: "关闭", adMode: "开启", serviceStart: "2026-05-20", serviceEnd: "2027-05-19", created: "2026-05-20 16:46", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "未开通", activationTime: "2026-05-20", firstActivationTime: "" },
+        { id: 5, imsi: "460011234567894", iccid: "89860120881230076145", msisdn: "14610123005", merchant: "迅捷物流", vendor: "联通物联网有限公司", carrier: "中国联通", carrierPackage: "物联50GB", userPackage: "用户畅享20GB", merchantPackage: "商户共享100GB", cardStatus: "可测试", needRealName: "是", realNameResult: "待实名", speedLimit: "否", form: "插拔卡", totalFlow: 51200, monthFlow: 50500, lastMonthFlow: 49230, authSwitch: "开启", adMode: "关闭", serviceStart: "2026-04-01", serviceEnd: "2027-03-31", created: "2026-03-26 11:35", cardUsage: "启动卡", fastNetwork: "不支持", trafficStatus: "流量不足", activationTime: "2026-04-01", firstActivationTime: "" },
+        { id: 6, imsi: "460031234567895", iccid: "89860320987654321876", msisdn: "14922810006", merchant: "北辰能源", vendor: "天翼物联科技有限公司", carrier: "中国电信", carrierPackage: "基础10GB", userPackage: "用户基础10GB", merchantPackage: "基础10GB", cardStatus: "已销号", needRealName: "否", realNameResult: "无需实名", speedLimit: "是", form: "eSIM", totalFlow: 10240, monthFlow: 3500, lastMonthFlow: 4200, authSwitch: "关闭", adMode: "关闭", serviceStart: "2025-12-01", serviceEnd: "2026-11-30", created: "2025-11-28 13:09", cardUsage: "卡池卡", fastNetwork: "支持", trafficStatus: "正常", activationTime: "2025-12-01", firstActivationTime: "2025-12-01" }
       ];
 
       var simTrafficRowsSeed = [];
@@ -3077,6 +3329,14 @@
         return { groupShort: "", groupVendor: "", groupFlowType: "" };
       };
 
+      var blankRedlistQuery = function () {
+        return {
+          redlistVendor: "", redlistName: "", redlistAccountId: "",
+          redlistStartFrom: "", redlistStartTo: "", redlistEndFrom: "", redlistEndTo: "",
+          redlistQuotaMin: "", redlistQuotaMax: "", redlistExpiryStatus: ""
+        };
+      };
+
       var blankBatchTaskQuery = function () {
         return { taskBatchNo: "", taskType: "", taskStatus: "" };
       };
@@ -3086,7 +3346,7 @@
       };
 
       var blankSimTrafficQuery = function () {
-        return { trafficMin: "", trafficMax: "", trafficVendor: "", trafficMerchant: "", trafficCarrier: "", trafficIccid: "", trafficDate: "" };
+        return { trafficMin: "", trafficMax: "", trafficVendor: "", trafficMerchant: "", trafficCarrier: "", trafficIccid: "", trafficDate: "", trafficDateEnd: "" };
       };
 
       var blankMonthlyTrafficQuery = function () {
@@ -3112,6 +3372,8 @@
           simMerchant: "",
           simFastNetwork: "",
           simCardStatus: "",
+          simFirstActivationStart: "",
+          simFirstActivationEnd: "",
           simTrafficStatus: "",
           simRealName: "",
           simSpeedLimit: "",
@@ -3235,6 +3497,11 @@
         groupQuery: blankGroupQuery(),
         groupApplied: blankGroupQuery(),
         groupPage: 1,
+        redlistRows: redlistRowsSeed.slice(),
+        redlistQuery: blankRedlistQuery(),
+        redlistApplied: blankRedlistQuery(),
+        redlistPage: 1,
+        redlistError: "",
         batchTaskRows: batchTaskRowsSeed.slice(),
         batchTaskQuery: blankBatchTaskQuery(),
         batchTaskApplied: blankBatchTaskQuery(),
@@ -3315,6 +3582,8 @@
         simMonth: new Date(2026, 4, 1),
         simDraftStart: "",
         simDraftEnd: "",
+        dateFocusDay: "",
+        datePreset: "",
         openSelect: "",
         openCombo: "",
         addOpen: false,
@@ -3357,6 +3626,12 @@
       };
 
       var fieldDocLabels = {
+        "账户名称": "accountName",
+        "账户ID": "accountId",
+        "红名单开始时间": "redlistStartsAt",
+        "红名单到期时间": "redlistExpiresAt",
+        "红名单额度": "redlistQuota",
+        "到期状态": "expiryStatus",
         "年度使用流量总计": "annualFlow",
         "月份": "trafficMonth",
         "商户名称": "merchant",
@@ -3389,6 +3664,7 @@
         "卡用途": "cardUsage",
         "卡极速上网": "fastNetwork",
         "卡状态": "cardStatus",
+        "首次激活时间": "firstActivationTime",
         "流量状态": "trafficStatus",
         "是否需要实名": "needRealName",
         "实名结果": "realNameResult",
@@ -3449,6 +3725,9 @@
       };
 
       var queryKeyDocFields = {
+        redlistVendor: "vendor",
+        redlistName: "accountName", redlistAccountId: "accountId", redlistQuotaMin: "redlistQuota",
+        redlistQuotaMax: "redlistQuota", redlistExpiryStatus: "expiryStatus",
         trafficHistoryYear: "year",
         trafficHistoryKeyword: "iccid",
         trafficHistoryVendor: "vendor",
@@ -3549,6 +3828,9 @@
       };
 
       var actionDocFields = {
+        "toggle-sim-first-activation-date": "firstActivationTime",
+        "toggle-redlist-start-date": "redlistStartsAt",
+        "toggle-redlist-end-date": "redlistExpiresAt",
         "toggle-monthly-traffic-month": "trafficMonth",
         "toggle-sim-traffic-date": "trafficDate",
         "toggle-sim-date": "activationTime",
@@ -3585,6 +3867,7 @@
         simDetail: emptyPageDocumentation("SIM卡详情"),
         account: emptyPageDocumentation("运营商账户配置"),
         group: emptyPageDocumentation("群组管理"),
+        redlist: emptyPageDocumentation("红名单账户"),
         batchTask: {
           page: { title: "", description: "" },
           fields: [],
@@ -3814,6 +4097,7 @@
           simDetail: "SIM卡详情",
           account: "运营商账户配置",
           group: "群组管理",
+          redlist: "红名单账户",
           batchTask: "批量任务",
           batchTaskDetail: "批量任务详情"
         }[page] || page;
@@ -3907,6 +4191,7 @@
             '<div class="submenu">' +
               '<button class="submenu-btn ' + (state.activePage === "account" ? "active" : "") + '" data-action="open-account">运营商账户配置</button>' +
               '<button class="submenu-btn ' + (state.activePage === "group" ? "active" : "") + '" data-action="open-group">群组管理</button>' +
+              '<button class="submenu-btn ' + (state.activePage === "redlist" ? "active" : "") + '" data-action="open-redlist">红名单账户</button>' +
             "</div>" +
           "</div>" +
           '<div class="' + (state.taskMenuCollapsed ? "collapsed" : "") + '">' +
@@ -3973,102 +4258,212 @@
         return value ? value.replace(/-/g, "/") : "";
       }
 
-      function dayMarkup(day, monthDate) {
-        var date = monthDate.getFullYear() + "-" +
-          String(monthDate.getMonth() + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+      var dateFilterDefinitions = {
+        sim: { query: "simQuery", start: "simActivationStart", end: "simActivationEnd", action: "toggle-sim-date", placeholder: "请选择激活时间" },
+        simFirstActivation: { query: "simQuery", start: "simFirstActivationStart", end: "simFirstActivationEnd", action: "toggle-sim-first-activation-date", placeholder: "请选择首次激活时间" },
+        simTraffic: { query: "simTrafficQuery", start: "trafficDate", end: "trafficDateEnd", action: "toggle-sim-traffic-date", placeholder: "请选择日期" },
+        esim: { query: "esimQuery", start: "esimActivationStart", end: "esimActivationEnd", action: "toggle-esim-date", placeholder: "请选择激活时间" },
+        esimDisabled: { query: "esimQuery", start: "esimDisabledStart", end: "esimDisabledEnd", action: "toggle-esim-disabled-date", placeholder: "请选择停用时间" },
+        esimChipImport: { query: "esimChipQuery", start: "chipImportStart", end: "chipImportEnd", action: "toggle-esim-chip-import-date", placeholder: "请选择导入时间" },
+        chipRecordOperation: { query: "esimChipRecordQuery", start: "chipRecordStart", end: "chipRecordEnd", action: "toggle-chip-record-operation-date", placeholder: "请选择操作时间" },
+        writeTaskApply: { query: "esimWriteTaskQuery", start: "writeTaskApplyStart", end: "writeTaskApplyEnd", action: "toggle-write-task-apply-date", placeholder: "请选择申请时间" },
+        writeTaskUpdate: { query: "esimWriteTaskQuery", start: "writeTaskUpdateStart", end: "writeTaskUpdateEnd", action: "toggle-write-task-update-date", placeholder: "请选择更新时间" },
+        redlistStart: { query: "redlistQuery", start: "redlistStartFrom", end: "redlistStartTo", action: "toggle-redlist-start-date", placeholder: "请选择红名单开始时间" },
+        redlistEnd: { query: "redlistQuery", start: "redlistEndFrom", end: "redlistEndTo", action: "toggle-redlist-end-date", placeholder: "请选择红名单到期时间" }
+      };
+
+      var dateShortcuts = [
+        { id: "week", label: "最近一周" }, { id: "month", label: "最近一个月" },
+        { id: "quarter", label: "最近3个月" }, { id: "halfYear", label: "最近半年" },
+        { id: "year", label: "最近一年" }, { id: "lastMonth", label: "上月" }, { id: "thisMonth", label: "本月" }
+      ];
+
+      function dateKey(date) {
+        return date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0") + "-" + String(date.getDate()).padStart(2, "0");
+      }
+
+      function dateFromKey(value) {
+        var parts = value.split("-").map(Number);
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+      }
+
+      function dateFilterToday() {
+        return new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      }
+
+      function shiftDateMonths(date, months) {
+        var first = new Date(date.getFullYear(), date.getMonth() + months, 1);
+        var lastDay = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+        return new Date(first.getFullYear(), first.getMonth(), Math.min(date.getDate(), lastDay));
+      }
+
+      function dayMarkup(day, monthDate, focusDay, today) {
+        var date = dateKey(new Date(monthDate.getFullYear(), monthDate.getMonth(), day));
         var className = "day";
         if (date === state.simDraftStart) { className += " start"; }
         if (date === state.simDraftEnd) { className += " end"; }
-        if (state.simDraftStart && state.simDraftEnd && date > state.simDraftStart && date < state.simDraftEnd) {
-          className += " in-range";
+        if (state.simDraftStart && state.simDraftEnd && date > state.simDraftStart && date < state.simDraftEnd) { className += " in-range"; }
+        return '<button class="' + className + '" role="gridcell" data-action="choose-sim-day" data-value="' + date +
+          '" tabindex="' + (date === focusDay ? '0' : '-1') + '" aria-label="' + date.replace(/-/, "年").replace(/-/, "月") +
+          '日" aria-selected="' + (className !== "day") + '"' + (date === today ? ' aria-current="date"' : '') + '>' + day + '</button>';
+      }
+
+      function calendarMonthMarkup(monthDate, index, focusDay, today) {
+        var firstWeekDay = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1).getDay();
+        var weeks = "";
+        for (var week = 0; week < 6; week += 1) {
+          var cells = "";
+          for (var weekday = 0; weekday < 7; weekday += 1) {
+            var date = new Date(monthDate.getFullYear(), monthDate.getMonth(), week * 7 + weekday - firstWeekDay + 1);
+            cells += date.getMonth() === monthDate.getMonth() ? dayMarkup(date.getDate(), monthDate, focusDay, today) :
+              '<span class="day outside" role="gridcell" aria-disabled="true">' + date.getDate() + '</span>';
+          }
+          weeks += '<div class="calendar-week-row" role="row">' + cells + '</div>';
         }
-        return '<button class="' + className + '" data-action="choose-sim-day" data-value="' + date + '">' + day + "</button>";
+        return '<section class="date-calendar-month"><div class="calendar-header">' +
+          (index === 0 ? '<button class="month-btn" data-action="sim-month-prev" aria-label="上一月">‹</button>' : '') +
+          '<span id="dateMonthTitle' + index + '">' + monthDate.getFullYear() + ' 年 ' + String(monthDate.getMonth() + 1).padStart(2, "0") + ' 月</span>' +
+          (index === 1 ? '<button class="month-btn next" data-action="sim-month-next" aria-label="下一月">›</button>' : '') +
+          '</div><div class="week" aria-hidden="true"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>' +
+          '<div class="days" role="grid" aria-labelledby="dateMonthTitle' + index + '">' + weeks + '</div></section>';
       }
 
       function calendarMarkup() {
-        var year = state.simMonth.getFullYear();
-        var month = state.simMonth.getMonth();
-        var firstWeekDay = new Date(year, month, 1).getDay();
-        var lastDay = new Date(year, month + 1, 0).getDate();
-        var cells = "";
-        var i;
-        for (i = 0; i < firstWeekDay; i += 1) { cells += '<span class="day empty"></span>'; }
-        for (i = 1; i <= lastDay; i += 1) { cells += dayMarkup(i, state.simMonth); }
-        return '<div class="date-popover">' +
-          '<div class="calendar-header">' +
-            '<button class="month-btn" data-action="sim-month-prev">‹</button>' +
-            "<span>" + year + "年 " + String(month + 1).padStart(2, "0") + "月</span>" +
-            '<button class="month-btn" data-action="sim-month-next">›</button>' +
-          "</div>" +
-          '<div class="week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>' +
-          '<div class="days">' + cells + "</div>" +
-          '<div class="calendar-footer">' +
-            '<button class="btn btn-gray" data-action="sim-date-clear">清空</button>' +
-            '<button class="btn btn-primary" data-action="sim-date-confirm">确定</button>' +
-          "</div>" +
-        "</div>";
+        var today = dateFilterToday();
+        var left = new Date(state.simMonth.getFullYear(), state.simMonth.getMonth(), 1);
+        var right = new Date(left.getFullYear(), left.getMonth() + 1, 1);
+        var focusDay = state.dateFocusDay;
+        if (!focusDay || (focusDay.slice(0, 7) !== dateKey(left).slice(0, 7) && focusDay.slice(0, 7) !== dateKey(right).slice(0, 7))) {
+          focusDay = dateKey(left);
+        }
+        var summary = state.simDraftStart ? formatDate(state.simDraftStart) + ' - ' + (state.simDraftEnd ? formatDate(state.simDraftEnd) : '请选择结束日期') : '请选择开始日期和结束日期';
+        return '<div class="date-popover range-date-popover" id="dateFilterPopover" role="dialog" aria-modal="false" aria-label="日期范围选择">' +
+          '<div class="range-date-body"><nav class="date-shortcuts" aria-label="快捷日期范围">' + dateShortcuts.map(function (shortcut) {
+            return '<button class="date-shortcut ' + (state.datePreset === shortcut.id ? 'active' : '') + '" data-action="date-range-shortcut" data-value="' + shortcut.id +
+              '" aria-pressed="' + (state.datePreset === shortcut.id) + '">' + shortcut.label + '</button>';
+          }).join('') + '</nav><div class="date-months">' + calendarMonthMarkup(left, 0, focusDay, today) + calendarMonthMarkup(right, 1, focusDay, today) + '</div></div>' +
+          '<div class="calendar-footer"><span class="date-range-summary" aria-live="polite">' + esc(summary) + '</span>' +
+          '<button class="btn btn-gray" data-action="sim-date-clear">清空</button><button class="btn btn-primary" data-action="sim-date-confirm">确定</button></div></div>';
+      }
+
+      function positionDatePicker() {
+        var popup = document.getElementById("dateFilterPopover");
+        var definition = dateFilterDefinitions[state.dateTarget];
+        var anchor = definition && document.querySelector('[data-action="' + definition.action + '"]');
+        if (!popup || !anchor) { return; }
+        var rect = anchor.getBoundingClientRect();
+        var width = popup.offsetWidth;
+        var height = popup.offsetHeight;
+        var left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12));
+        var top = rect.bottom + 6;
+        if (top + height > window.innerHeight - 12 && rect.top - height - 6 >= 12) { top = rect.top - height - 6; }
+        top = Math.max(12, Math.min(top, window.innerHeight - height - 12));
+        popup.style.left = left + "px";
+        popup.style.top = top + "px";
+      }
+
+      function renderDatePicker(focusSelector) {
+        var layer = document.getElementById("datePickerLayer");
+        var definition = dateFilterDefinitions[state.dateTarget];
+        var anchor = definition && document.querySelector('[data-action="' + definition.action + '"]');
+        if (state.simDateOpen && definition && !anchor) { state.simDateOpen = false; }
+        if (!state.simDateOpen || !definition || !anchor) { layer.innerHTML = ""; return; }
+        layer.innerHTML = calendarMarkup();
+        positionDatePicker();
+        var control = focusSelector && layer.querySelector(focusSelector);
+        if (control) { control.focus({ preventScroll: true }); }
+      }
+
+      function dismissDatePicker() {
+        state.simDateOpen = false;
+        document.getElementById("datePickerLayer").innerHTML = "";
+        Array.prototype.forEach.call(document.querySelectorAll(".date-field.open"), function (field) {
+          field.classList.remove("open");
+          var trigger = field.querySelector(".date-trigger");
+          trigger.setAttribute("aria-expanded", "false");
+          trigger.removeAttribute("aria-controls");
+        });
+      }
+
+      function closeDatePicker(restoreFocus) {
+        var definition = dateFilterDefinitions[state.dateTarget];
+        dismissDatePicker();
+        renderContent();
+        var anchor = definition && document.querySelector('[data-action="' + definition.action + '"]');
+        if (restoreFocus && anchor) { anchor.focus({ preventScroll: true }); }
+      }
+
+      function toggleDateFilter(target) {
+        var definition = dateFilterDefinitions[target];
+        if (state.simDateOpen && state.dateTarget === target) { closeDatePicker(true); return; }
+        var query = state[definition.query];
+        state.dateTarget = target;
+        state.simDateOpen = true;
+        state.openSelect = "";
+        state.openCombo = "";
+        state.simDraftStart = query[definition.start] || "";
+        state.simDraftEnd = query[definition.end] || "";
+        state.dateFocusDay = state.simDraftStart || dateFilterToday();
+        state.datePreset = "";
+        var date = dateFromKey(state.dateFocusDay);
+        state.simMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+        renderContent();
+        var day = document.querySelector('#dateFilterPopover .day[tabindex="0"]');
+        if (day) { day.focus({ preventScroll: true }); }
+      }
+
+      function applyDateShortcut(preset) {
+        var today = dateFromKey(dateFilterToday());
+        var start = new Date(today);
+        var end = new Date(today);
+        var months = { month: 1, quarter: 3, halfYear: 6, year: 12 }[preset];
+        if (preset === "week") { start.setDate(start.getDate() - 6); }
+        else if (months) { start = shiftDateMonths(today, -months); }
+        else if (preset === "lastMonth") {
+          start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+          end = new Date(today.getFullYear(), today.getMonth(), 0);
+        } else if (preset === "thisMonth") {
+          start = new Date(today.getFullYear(), today.getMonth(), 1);
+          end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        }
+        state.simDraftStart = dateKey(start);
+        state.simDraftEnd = dateKey(end);
+        state.dateFocusDay = state.simDraftStart;
+        state.datePreset = preset;
+        state.simMonth = new Date(start.getFullYear(), start.getMonth(), 1);
+        renderDatePicker('[data-action="date-range-shortcut"][data-value="' + preset + '"]');
+      }
+
+      function focusDatePickerDay(value) {
+        var date = dateFromKey(value);
+        var offset = (date.getFullYear() - state.simMonth.getFullYear()) * 12 + date.getMonth() - state.simMonth.getMonth();
+        if (offset < 0) { state.simMonth = new Date(date.getFullYear(), date.getMonth(), 1); }
+        if (offset > 1) { state.simMonth = new Date(date.getFullYear(), date.getMonth() - 1, 1); }
+        state.dateFocusDay = value;
+        renderDatePicker('[data-action="choose-sim-day"][data-value="' + value + '"]');
       }
 
       function dateRangeMarkup(targetName) {
         var target = targetName || "sim";
-        var query = state.esimQuery;
-        var startKey = "esimActivationStart";
-        var endKey = "esimActivationEnd";
-        var action = "toggle-esim-date";
-        var placeholder = "请选择激活时间";
-        if (target === "sim") {
-          query = state.simQuery;
-          startKey = "simActivationStart";
-          endKey = "simActivationEnd";
-          action = "toggle-sim-date";
-        } else if (target === "simTraffic") {
-          query = state.simTrafficQuery;
-          startKey = "trafficDate";
-          endKey = "trafficDate";
-          action = "toggle-sim-traffic-date";
-          placeholder = "请选择日期";
-        } else if (target === "esimDisabled") {
-          query = state.esimQuery;
-          startKey = "esimDisabledStart";
-          endKey = "esimDisabledEnd";
-          action = "toggle-esim-disabled-date";
-          placeholder = "请选择停用时间";
-        } else if (target === "esimChipImport") {
-          query = state.esimChipQuery;
-          startKey = "chipImportStart";
-          endKey = "chipImportEnd";
-          action = "toggle-esim-chip-import-date";
-          placeholder = "请选择导入时间";
-        } else if (target === "chipRecordOperation") {
-          query = state.esimChipRecordQuery;
-          startKey = "chipRecordStart";
-          endKey = "chipRecordEnd";
-          action = "toggle-chip-record-operation-date";
-          placeholder = "请选择操作时间";
-        } else if (target === "writeTaskApply") {
-          query = state.esimWriteTaskQuery;
-          startKey = "writeTaskApplyStart";
-          endKey = "writeTaskApplyEnd";
-          action = "toggle-write-task-apply-date";
-          placeholder = "请选择申请时间";
-        } else if (target === "writeTaskUpdate") {
-          query = state.esimWriteTaskQuery;
-          startKey = "writeTaskUpdateStart";
-          endKey = "writeTaskUpdateEnd";
-          action = "toggle-write-task-update-date";
-          placeholder = "请选择更新时间";
-        }
-        var start = query[startKey];
-        var end = query[endKey];
-        var text = start && end ? formatDate(start) + " - " + formatDate(end) : "";
-        if (target === "simTraffic") { text = formatDate(start); }
-        return '<div class="date-field ' + (state.simDateOpen && state.dateTarget === target ? "open" : "") + '">' +
-          '<button class="date-trigger" data-action="' + action + '">' +
-            (text ? esc(text) : '<span class="placeholder">' + esc(placeholder) + "</span>") +
-          '</button><span class="calendar-icon"></span>' +
-          (state.simDateOpen && state.dateTarget === target ? calendarMarkup() : "") +
-        "</div>";
+        var definition = dateFilterDefinitions[target];
+        var query = state[definition.query];
+        var start = query[definition.start];
+        var end = query[definition.end] || start;
+        var text = start ? formatDate(start) + " - " + formatDate(end) : "";
+        var open = state.simDateOpen && state.dateTarget === target;
+        return '<div class="date-field ' + (open ? "open" : "") + '">' +
+          '<button class="date-trigger" data-action="' + definition.action + '" aria-label="' + esc(definition.placeholder) +
+          '" aria-haspopup="dialog" aria-expanded="' + open + '"' + (open ? ' aria-controls="dateFilterPopover"' : '') +
+          ' title="' + esc(text || definition.placeholder) + '">' +
+          '<span class="' + (text ? '' : 'placeholder') + '">' + esc(text || definition.placeholder) + '</span>' +
+          '</button><span class="calendar-icon"></span></div>';
       }
+
+      window.addEventListener("resize", positionDatePicker);
+      document.addEventListener("scroll", function (event) {
+        var popup = document.getElementById("dateFilterPopover");
+        if (popup && !popup.contains(event.target)) { positionDatePicker(); }
+      }, true);
 
       function isSimKey(key) {
         return key.indexOf("sim") === 0;
@@ -4172,6 +4567,8 @@
           state.esimChipQuery[key] = value;
         } else if (isEsimKey(key)) {
           state.esimQuery[key] = value;
+        } else if (key.indexOf("redlist") === 0) {
+          state.redlistQuery[key] = value;
         } else if (key.indexOf("trafficHistory") === 0) {
           state.trafficHistoryQuery[key] = value;
         } else if (key.indexOf("monthlyTraffic") === 0) {
@@ -4270,6 +4667,7 @@
         var q = state.simApplied;
         return state.simRows.filter(function (row) {
           var keyword = q.simKeyword.toLowerCase();
+          var firstActivationDate = (row.firstActivationTime || "").slice(0, 10);
           var inPackage = !q.simPackage || [row.carrierPackage, row.userPackage, row.merchantPackage].indexOf(q.simPackage) !== -1;
           return (!keyword || [row.imsi, row.iccid, row.msisdn].join(" ").toLowerCase().indexOf(keyword) !== -1) &&
             (!q.simCarrier || row.carrier === q.simCarrier) &&
@@ -4280,6 +4678,8 @@
             (!q.simMerchant || row.merchant.indexOf(q.simMerchant) !== -1) &&
             (!q.simFastNetwork || row.fastNetwork === q.simFastNetwork) &&
             (!q.simCardStatus || row.cardStatus === q.simCardStatus) &&
+            (!q.simFirstActivationStart || (firstActivationDate && firstActivationDate >= q.simFirstActivationStart)) &&
+            (!q.simFirstActivationEnd || (firstActivationDate && firstActivationDate <= q.simFirstActivationEnd)) &&
             (!q.simTrafficStatus || row.trafficStatus === q.simTrafficStatus) &&
             (!q.simRealName || row.needRealName === q.simRealName) &&
             (!q.simSpeedLimit || row.speedLimit === q.simSpeedLimit) &&
@@ -4739,6 +5139,7 @@
           "<td>" + esc(row.userPackage) + "</td>" +
           "<td>" + esc(row.merchantPackage) + "</td>" +
           "<td>" + esc(row.cardStatus) + "</td>" +
+          "<td>" + esc(row.firstActivationTime ? row.firstActivationTime.slice(0, 10) : "--") + "</td>" +
           "<td>" + esc(row.needRealName) + "</td>" +
           "<td>" + esc(row.realNameResult) + "</td>" +
           "<td>" + esc(row.speedLimit) + "</td>" +
@@ -5098,6 +5499,7 @@
           '<label>' + textInputMarkup("simMerchant", q.simMerchant, "请输入商户名称") + "</label>",
           '<label>' + selectMarkup("simFastNetwork", q.simFastNetwork, fastNetworkOptions, "请选择卡极速上网", true) + "</label>",
           '<label>' + selectMarkup("simCardStatus", q.simCardStatus, cardStatusOptions, "请选择卡状态", true) + "</label>",
+          '<label>' + dateRangeMarkup("simFirstActivation") + "</label>",
           '<label>' + selectMarkup("simTrafficStatus", q.simTrafficStatus, trafficStatusOptions, "请选择流量状态", true) + "</label>",
           '<label>' + selectMarkup("simRealName", q.simRealName, yesNoOptions, "请选择是否需要实名", true) + "</label>",
           '<label>' + selectMarkup("simSpeedLimit", q.simSpeedLimit, yesNoOptions, "请选择是否限速", true) + "</label>",
@@ -5126,9 +5528,9 @@
             "</div>" +
           "</div>" +
           '<div class="table-shell sim-table sim-management-table">' +
-            '<table><colgroup><col style="width:240px"><col style="width:110px"><col style="width:120px"><col style="width:150px"><col style="width:90px"><col style="width:120px"><col style="width:120px"><col style="width:130px"><col style="width:90px"><col style="width:95px"><col style="width:90px"><col style="width:80px"><col style="width:80px"><col style="width:105px"><col style="width:105px"><col style="width:105px"><col style="width:120px"><col style="width:135px"><col style="width:120px"><col style="width:120px"><col style="width:140px"><col style="width:180px"></colgroup>' +
-              '<thead><tr><th>ICCID</th><th>MSISDN</th><th>所属商户</th><th>供应商</th><th>运营商</th><th>运营商套餐</th><th>用户套餐</th><th>商户套餐</th><th>卡状态</th><th>是否需要实名</th><th>实名结果</th><th>是否限速</th><th>卡形态</th><th>总流量（MB）</th><th>本月流量（MB）</th><th>上月流量（MB）</th><th>二次认证开关</th><th>二次认证广告模式</th><th>服务开始时间</th><th>服务到期时间</th><th>创建时间</th><th class="sim-operations-head"><div class="sim-operations-title"><span>操作</span>' + infoIconMarkup("sim-reset-info", "重置数据服务说明") + '</div></th></tr></thead>' +
-              "<tbody>" + (rows.length ? rows.map(simRowMarkup).join("") : '<tr class="empty-row"><td colspan="22">暂无符合条件的数据</td></tr>') + "</tbody>" +
+            '<table><colgroup><col style="width:240px"><col style="width:110px"><col style="width:120px"><col style="width:150px"><col style="width:90px"><col style="width:120px"><col style="width:120px"><col style="width:130px"><col style="width:90px"><col style="width:190px"><col style="width:95px"><col style="width:90px"><col style="width:80px"><col style="width:80px"><col style="width:105px"><col style="width:105px"><col style="width:105px"><col style="width:120px"><col style="width:135px"><col style="width:120px"><col style="width:120px"><col style="width:140px"><col style="width:180px"></colgroup>' +
+              '<thead><tr><th>ICCID</th><th>MSISDN</th><th>所属商户</th><th>供应商</th><th>运营商</th><th>运营商套餐</th><th>用户套餐</th><th>商户套餐</th><th>卡状态</th><th>首次激活时间</th><th>是否需要实名</th><th>实名结果</th><th>是否限速</th><th>卡形态</th><th>总流量（MB）</th><th>本月流量（MB）</th><th>上月流量（MB）</th><th>二次认证开关</th><th>二次认证广告模式</th><th>服务开始时间</th><th>服务到期时间</th><th>创建时间</th><th class="sim-operations-head"><div class="sim-operations-title"><span>操作</span>' + infoIconMarkup("sim-reset-info", "重置数据服务说明") + '</div></th></tr></thead>' +
+              "<tbody>" + (rows.length ? rows.map(simRowMarkup).join("") : '<tr class="empty-row"><td colspan="23">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
           "</div>" +
           '<div class="pagination"><span>共' + rows.length + '条</span><span class="select-mini">20条/页&nbsp;⌄</span><span class="page-box">1</span><span>前往</span><input class="jump-input" value="1" readonly><span>页</span></div>' +
@@ -5144,7 +5546,8 @@
             (!q.trafficMerchant || row.merchant.indexOf(q.trafficMerchant) !== -1) &&
             (!q.trafficCarrier || row.carrier === q.trafficCarrier) &&
             (!q.trafficIccid || row.iccid.toLowerCase().indexOf(q.trafficIccid.toLowerCase()) !== -1) &&
-            (!q.trafficDate || row.date === q.trafficDate);
+            (!q.trafficDate || row.date >= q.trafficDate) &&
+            (!q.trafficDateEnd || row.date <= q.trafficDateEnd);
         });
       }
 
@@ -5200,16 +5603,25 @@
       }
 
       function simTrafficPaginationMarkup(total, totalPages, monthly, history) {
-        var currentPage = history ? state.trafficHistoryPage : (monthly ? state.monthlyTrafficPage : state.simTrafficPage);
-        var pageAction = history ? "traffic-history-page" : (monthly ? "monthly-traffic-page" : "sim-traffic-page");
-        var jumpAction = history ? "traffic-history-jump" : (monthly ? "monthly-traffic-jump" : "sim-traffic-jump");
+        return listPaginationMarkup(total, totalPages, {
+          currentPage: history ? state.trafficHistoryPage : (monthly ? state.monthlyTrafficPage : state.simTrafficPage),
+          pageAction: history ? "traffic-history-page" : (monthly ? "monthly-traffic-page" : "sim-traffic-page"),
+          jumpAction: history ? "traffic-history-jump" : (monthly ? "monthly-traffic-jump" : "sim-traffic-jump"),
+          label: history ? "SIM卡历史流量记录分页" : (monthly ? "SIM卡月流量分页" : "SIM卡日流量分页")
+        });
+      }
+
+      function listPaginationMarkup(total, totalPages, options) {
+        var currentPage = options.currentPage;
+        var pageAction = options.pageAction;
+        var jumpAction = options.jumpAction;
         var buttons = "";
         for (var page = 1; page <= totalPages; page += 1) {
           buttons += '<button class="page-btn ' + (currentPage === page ? "active" : "") +
             '" data-action="' + pageAction + '" data-page="' + page + '" aria-label="第' + page + '页"' +
             (currentPage === page ? ' aria-current="page"' : "") + '>' + page + "</button>";
         }
-        return '<div class="pagination" aria-label="' + (history ? "SIM卡历史流量记录分页" : (monthly ? "SIM卡月流量分页" : "SIM卡日流量分页")) + '"><span>共 ' + total + ' 条</span>' +
+        return '<div class="pagination" aria-label="' + esc(options.label) + '"><span>共 ' + total + ' 条</span>' +
           '<span class="select-mini">20条/页</span>' +
           '<button class="page-nav" data-action="' + pageAction + '" data-page="' + (currentPage - 1) +
           '" aria-label="上一页"' + (currentPage <= 1 ? " disabled" : "") + '>‹</button>' + buttons +
@@ -5523,7 +5935,8 @@
           var isOpen = container.classList.contains("open");
           var fieldName = { trafficVendor: "供应商", trafficMerchant: "商户", trafficCarrier: "运营商",
             monthlyTrafficVendor: "供应商", monthlyTrafficMerchant: "商户", monthlyTrafficCarrier: "运营商",
-            trafficHistoryYear: "年份", trafficHistoryVendor: "供应商", trafficHistoryMerchant: "商户", trafficHistoryCarrier: "运营商" }[key];
+            trafficHistoryYear: "年份", trafficHistoryVendor: "供应商", trafficHistoryMerchant: "商户", trafficHistoryCarrier: "运营商",
+            redlistVendor: "供应商", redlistExpiryStatus: "到期状态" }[key];
           control.setAttribute("aria-label", fieldName);
           control.setAttribute("aria-expanded", String(isOpen));
           control.setAttribute("aria-haspopup", "listbox");
@@ -6013,6 +6426,102 @@
         "</div>";
       }
 
+      function redlistExpiryStatus(row) {
+        return Date.parse(row.expiresAt.replace(" ", "T") + "+08:00") <= Date.now() ? "已到期" : "未到期";
+      }
+
+      function filteredRedlistRows() {
+        var q = state.redlistApplied;
+        var name = q.redlistName.toLowerCase();
+        var accountId = q.redlistAccountId.toLowerCase();
+        return state.redlistRows.filter(function (row) {
+          var start = row.startsAt.slice(0, 10);
+          var end = row.expiresAt.slice(0, 10);
+          return (!q.redlistVendor || row.vendor.indexOf(q.redlistVendor) !== -1) &&
+            (!name || row.accountName.toLowerCase().indexOf(name) !== -1) &&
+            (!accountId || row.accountId.toLowerCase().indexOf(accountId) !== -1) &&
+            (!q.redlistStartFrom || start >= q.redlistStartFrom) &&
+            (!q.redlistStartTo || start <= q.redlistStartTo) &&
+            (!q.redlistEndFrom || end >= q.redlistEndFrom) &&
+            (!q.redlistEndTo || end <= q.redlistEndTo) &&
+            (q.redlistQuotaMin === "" || row.quota >= Number(q.redlistQuotaMin)) &&
+            (q.redlistQuotaMax === "" || row.quota <= Number(q.redlistQuotaMax)) &&
+            (!q.redlistExpiryStatus || redlistExpiryStatus(row) === q.redlistExpiryStatus);
+        });
+      }
+
+      function searchRedlist() {
+        var q = state.redlistQuery;
+        var invalidKey = ["redlistQuotaMin", "redlistQuotaMax"].find(function (key) {
+          var input = document.getElementById(key);
+          return (input && input.validity.badInput) || (q[key] !== "" && (!isFinite(Number(q[key])) || Number(q[key]) < 0));
+        });
+        state.redlistError = invalidKey ? "红名单额度需为大于或等于0的有效数字" : "";
+        if (!invalidKey && q.redlistQuotaMin !== "" && q.redlistQuotaMax !== "" && Number(q.redlistQuotaMin) > Number(q.redlistQuotaMax)) {
+          invalidKey = "redlistQuotaMax";
+          state.redlistError = "红名单额度最大值不能小于最小值";
+        }
+        if (invalidKey) {
+          renderContent();
+          var input = document.getElementById(invalidKey);
+          input.setAttribute("aria-invalid", "true");
+          input.setAttribute("aria-describedby", "redlistFilterError");
+          input.focus();
+          return;
+        }
+        state.redlistApplied = Object.assign({}, q, {
+          redlistVendor: q.redlistVendor.trim(), redlistName: q.redlistName.trim(), redlistAccountId: q.redlistAccountId.trim()
+        });
+        state.redlistPage = 1;
+        state.openSelect = "";
+        state.openCombo = "";
+        state.simDateOpen = false;
+        renderContent();
+        toast("已更新红名单账户查询结果");
+      }
+
+      function redlistMarkup() {
+        var q = state.redlistQuery;
+        var rows = filteredRedlistRows();
+        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
+        state.redlistPage = Math.max(1, Math.min(state.redlistPage, totalPages));
+        var pageRows = rows.slice((state.redlistPage - 1) * 20, state.redlistPage * 20);
+        return '<div class="panel page-panel sim-traffic-page redlist-page">' +
+          '<div class="filters"><div class="filter-grid">' +
+            '<label>' + comboMarkup("redlistVendor", q.redlistVendor, redlistVendors, "请输入或选择供应商") + '</label>' +
+            simTrafficInputMarkup("redlistName", q.redlistName, "请输入账户名称", false) +
+            simTrafficInputMarkup("redlistAccountId", q.redlistAccountId, "请输入账户ID", false) +
+            '<label>' + dateRangeMarkup("redlistStart") + '</label>' +
+            '<label>' + dateRangeMarkup("redlistEnd") + '</label>' +
+            '<div class="redlist-quota-range" role="group" aria-label="红名单额度范围">' +
+              simTrafficInputMarkup("redlistQuotaMin", q.redlistQuotaMin, "额度最小值", true) +
+              simTrafficInputMarkup("redlistQuotaMax", q.redlistQuotaMax, "额度最大值", true) + '</div>' +
+            '<label>' + selectMarkup("redlistExpiryStatus", q.redlistExpiryStatus, redlistExpiryOptions, "请选择到期状态", true) + '</label>' +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="redlist-search">搜索</button>' +
+            '<button class="btn btn-gray" data-action="redlist-reset">重置</button></div>' +
+            (state.redlistError ? '<div class="traffic-filter-error" id="redlistFilterError" role="alert">' + esc(state.redlistError) + '</div>' : '') +
+          '</div><div class="operate-bar"><button class="btn btn-primary" data-action="redlist-update">更新红名单账户</button>' +
+          '<div class="redlist-update-note" role="note">' +
+            '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="M8 4v4l2.5 1.5" stroke-linecap="round"></path></svg>' +
+            '<span>每日凌晨1点更新红名单数据信息</span></div></div>' +
+          '<div class="table-shell"><table><colgroup>' + redlistColumns.map(function (column) {
+            return '<col style="width:' + column.width + 'px">';
+          }).join("") + '</colgroup><thead><tr>' + redlistColumns.map(function (column) {
+            return '<th scope="col">' + esc(column.name) + '</th>';
+          }).join("") + '</tr></thead><tbody>' + (pageRows.length ? pageRows.map(function (row) {
+            return '<tr>' + redlistColumns.map(function (column) {
+              if (column.key === "expiryStatus") {
+                var status = redlistExpiryStatus(row);
+                return '<td><span class="' + (status === "已到期" ? "redlist-status-expired" : "redlist-status-current") + '">' + status + '</span></td>';
+              }
+              return '<td title="' + esc(row[column.key]) + '">' + esc(row[column.key]) + '</td>';
+            }).join("") + '</tr>';
+          }).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据，请调整筛选条件或重置</td></tr>') +
+          '</tbody></table></div>' + listPaginationMarkup(rows.length, totalPages, {
+            currentPage: state.redlistPage, pageAction: "redlist-page", jumpAction: "redlist-jump", label: "红名单账户分页"
+          }) + '</div>';
+      }
+
       function accountMarkup() {
         var rows = filteredAccountRows();
         return '<div class="panel page-panel">' +
@@ -6165,6 +6674,8 @@
           markup = simDetailMarkup();
         } else if (state.activePage === "group") {
           markup = groupMarkup();
+        } else if (state.activePage === "redlist") {
+          markup = redlistMarkup();
         } else if (state.activePage === "batchTask") {
           markup = batchTaskMarkup();
         } else if (state.activePage === "batchTaskDetail") {
@@ -6173,9 +6684,10 @@
           markup = accountMarkup();
         }
         $("#content").innerHTML = markup;
-        if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic") { prepareSimTrafficFields(); }
+        if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist") { prepareSimTrafficFields(); }
         applyDocumentationAnchors();
         renderPageDocumentation();
+        renderDatePicker();
       }
 
       function choiceGroupMarkup(action, current, options, extraName) {
@@ -6676,7 +7188,29 @@
           event.preventDefault();
           return;
         }
-        if (state.activePage !== "simTraffic" && state.activePage !== "simMonthlyTraffic") { return; }
+        if (state.simDateOpen && dateFilterDefinitions[state.dateTarget]) {
+          if (event.key === "Escape") {
+            closeDatePicker(true);
+            event.preventDefault();
+            return;
+          }
+          if (target.dataset.action === "choose-sim-day" && ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"].indexOf(event.key) !== -1) {
+            var focusedDate = dateFromKey(target.dataset.value);
+            if (event.key === "PageUp" || event.key === "PageDown") {
+              focusedDate = shiftDateMonths(focusedDate, (event.key === "PageUp" ? -1 : 1) * (event.shiftKey ? 12 : 1));
+            } else {
+              var dayOffset = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[event.key];
+              if (event.key === "Home") { dayOffset = -focusedDate.getDay(); }
+              if (event.key === "End") { dayOffset = 6 - focusedDate.getDay(); }
+              focusedDate.setDate(focusedDate.getDate() + dayOffset);
+            }
+            focusDatePickerDay(dateKey(focusedDate));
+            event.preventDefault();
+            return;
+          }
+        }
+        if (state.activePage !== "simTraffic" && state.activePage !== "simMonthlyTraffic" && state.activePage !== "redlist") { return; }
+        var redlist = state.activePage === "redlist";
         var monthly = state.activePage === "simMonthlyTraffic";
         var history = monthly && state.monthlyTrafficTab === "history";
         if (event.key === "Escape" && (state.trafficHistoryInfoOpen || target.closest('[data-action="traffic-history-info"]'))) {
@@ -6706,8 +7240,10 @@
           state.openSelect = "";
           state.simDateOpen = false;
           renderContent();
+          var dateAction = redlist ? (state.dateTarget === "redlistStart" ? "toggle-redlist-start-date" : "toggle-redlist-end-date") :
+            (monthly ? "toggle-monthly-traffic-month" : "toggle-sim-traffic-date");
           var returnTarget = focusKey ? document.getElementById(focusKey) :
-            document.querySelector(hadDate ? (monthly ? '[data-action="toggle-monthly-traffic-month"]' : '[data-action="toggle-sim-traffic-date"]') : '[data-action="toggle-select"][data-key="' + selectKey + '"]');
+            document.querySelector(hadDate ? '[data-action="' + dateAction + '"]' : '[data-action="toggle-select"][data-key="' + selectKey + '"]');
           if (returnTarget) { returnTarget.focus(); }
           event.preventDefault();
         } else if ((event.key === "ArrowDown" || event.key === "ArrowUp") && target.closest(".select, .combo")) {
@@ -6726,6 +7262,11 @@
           var nextIndex = event.key === "ArrowDown" ? (currentIndex + 1) % options.length : (currentIndex <= 0 ? options.length - 1 : currentIndex - 1);
           options[nextIndex].focus();
           event.preventDefault();
+        } else if (event.key === "Enter" && target.dataset.action === "redlist-jump") {
+          event.preventDefault();
+          var redlistPages = Math.max(1, Math.ceil(filteredRedlistRows().length / 20));
+          state.redlistPage = Math.max(1, Math.min(redlistPages, Math.floor(Number(target.value) || 1)));
+          renderContent();
         } else if (event.key === "Enter" && target.dataset.action === "traffic-history-jump") {
           event.preventDefault();
           var historyPages = Math.max(1, Math.ceil(filteredTrafficHistoryRows().length / 20));
@@ -6743,7 +7284,8 @@
           renderContent();
         } else if (event.key === "Enter" && (target.dataset.action === "sim-traffic-input" || target.dataset.action === "combo-input")) {
           event.preventDefault();
-          if (history) { searchTrafficHistory(); }
+          if (redlist) { searchRedlist(); }
+          else if (history) { searchTrafficHistory(); }
           else { searchSimTraffic(monthly); }
         }
       });
@@ -6781,11 +7323,17 @@
 
       document.addEventListener("click", function (event) {
         var target = event.target.closest("[data-action]");
+        var openDateDefinition = state.simDateOpen && dateFilterDefinitions[state.dateTarget];
+        if (openDateDefinition && !event.target.closest("#datePickerLayer") &&
+            (!target || target.dataset.action !== openDateDefinition.action)) {
+          dismissDatePicker();
+        }
         var infoAction = target && (target.dataset.action === "traffic-history-info" || target.dataset.action === "sim-reset-info");
         if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen) && !infoAction) {
           hideManageStopPopover();
         }
         if (!target) {
+          if (event.target.closest("#datePickerLayer")) { return; }
           if (state.openSelect || state.openCombo || state.simDateOpen) {
             state.openSelect = "";
             state.openCombo = "";
@@ -6797,6 +7345,7 @@
         var action = target.dataset.action;
         var key = target.dataset.key;
         var row;
+        var dateFilterTarget = Object.keys(dateFilterDefinitions).find(function (name) { return dateFilterDefinitions[name].action === action; });
 
         if (action === "traffic-history-info" || action === "sim-reset-info") {
           var pinned = isInlineInfoPinned(target);
@@ -6939,7 +7488,8 @@
           toast("SIM卡日流量筛选条件已重置");
         } else if (action === "clear-sim-traffic-input") {
           setQueryValue(key, "");
-          if (state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab !== "history") { state.monthlyTrafficError = ""; }
+          if (state.activePage === "redlist") { state.redlistError = ""; }
+          else if (state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab !== "history") { state.monthlyTrafficError = ""; }
           else if (state.activePage === "simTraffic") { state.simTrafficError = ""; }
           renderContent();
           document.getElementById(key).focus();
@@ -6969,6 +7519,31 @@
         } else if (action === "open-group") {
           openPage("group");
           render();
+        } else if (action === "open-redlist") {
+          openPage("redlist");
+          render();
+        } else if (action === "redlist-search") {
+          searchRedlist();
+        } else if (action === "redlist-update") {
+          state.openSelect = "";
+          state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+          toast("红名单账户数据已更新（模拟数据）");
+        } else if (action === "redlist-reset") {
+          state.redlistQuery = blankRedlistQuery();
+          state.redlistApplied = blankRedlistQuery();
+          state.redlistPage = 1;
+          state.redlistError = "";
+          state.openSelect = "";
+          state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+          toast("红名单账户筛选条件已重置");
+        } else if (action === "redlist-page") {
+          var redlistTotalPages = Math.max(1, Math.ceil(filteredRedlistRows().length / 20));
+          state.redlistPage = Math.max(1, Math.min(redlistTotalPages, Number(target.dataset.page) || 1));
+          renderContent();
         } else if (action === "open-batch-task") {
           openPage("batchTask");
           render();
@@ -7014,7 +7589,7 @@
             renderOverlay();
           } else {
             renderContent();
-            if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic") {
+            if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist") {
               var trafficSelect = document.querySelector('[data-action="toggle-select"][data-key="' + key + '"]');
               if (trafficSelect) { trafficSelect.focus(); }
             }
@@ -7042,48 +7617,23 @@
           setQueryValue(key, target.dataset.value);
           state.openCombo = "";
           renderContent();
-          if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic") { focusField(key); }
+          if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist") { focusField(key); }
         } else if (action === "clear-combo") {
           event.stopPropagation();
           setQueryValue(key, "");
           state.openCombo = "";
           renderContent();
-        } else if (action === "toggle-sim-date" || action === "toggle-sim-traffic-date" || action === "toggle-esim-date" || action === "toggle-esim-disabled-date" || action === "toggle-esim-chip-import-date" || action === "toggle-chip-record-operation-date" || action === "toggle-write-task-apply-date" || action === "toggle-write-task-update-date") {
-          var dateTarget = action === "toggle-esim-date" ? "esim" : (action === "toggle-esim-disabled-date" ? "esimDisabled" : (action === "toggle-esim-chip-import-date" ? "esimChipImport" : (action === "toggle-write-task-apply-date" ? "writeTaskApply" : (action === "toggle-write-task-update-date" ? "writeTaskUpdate" : "sim"))));
-          if (action === "toggle-chip-record-operation-date") { dateTarget = "chipRecordOperation"; }
-          var dateQuery = dateTarget === "esim" ? state.esimQuery : (dateTarget === "esimChipImport" ? state.esimChipQuery : (dateTarget === "writeTaskApply" || dateTarget === "writeTaskUpdate" ? state.esimWriteTaskQuery : state.simQuery));
-          if (dateTarget === "esimDisabled") { dateQuery = state.esimQuery; }
-          if (dateTarget === "chipRecordOperation") { dateQuery = state.esimChipRecordQuery; }
-          var dateStartKey = dateTarget === "esim" ? "esimActivationStart" : (dateTarget === "esimDisabled" ? "esimDisabledStart" : (dateTarget === "esimChipImport" ? "chipImportStart" : (dateTarget === "writeTaskApply" ? "writeTaskApplyStart" : (dateTarget === "writeTaskUpdate" ? "writeTaskUpdateStart" : "simActivationStart"))));
-          var dateEndKey = dateTarget === "esim" ? "esimActivationEnd" : (dateTarget === "esimDisabled" ? "esimDisabledEnd" : (dateTarget === "esimChipImport" ? "chipImportEnd" : (dateTarget === "writeTaskApply" ? "writeTaskApplyEnd" : (dateTarget === "writeTaskUpdate" ? "writeTaskUpdateEnd" : "simActivationEnd"))));
-          if (dateTarget === "chipRecordOperation") {
-            dateStartKey = "chipRecordStart";
-            dateEndKey = "chipRecordEnd";
-          }
-          if (action === "toggle-sim-traffic-date") {
-            dateTarget = "simTraffic";
-            dateQuery = state.simTrafficQuery;
-            dateStartKey = "trafficDate";
-            dateEndKey = "trafficDate";
-            state.simMonth = new Date((dateQuery.trafficDate || simTrafficRowsSeed[0].date) + "T00:00:00");
-          }
-          var nextDateOpen = !(state.simDateOpen && state.dateTarget === dateTarget);
-          state.dateTarget = dateTarget;
-          state.simDateOpen = nextDateOpen;
-          state.openSelect = "";
-          state.openCombo = "";
-          state.simDraftStart = dateQuery[dateStartKey];
-          state.simDraftEnd = dateQuery[dateEndKey];
-          renderContent();
+        } else if (dateFilterTarget) {
+          toggleDateFilter(dateFilterTarget);
+        } else if (action === "date-range-shortcut") {
+          applyDateShortcut(target.dataset.value);
         } else if (action === "sim-month-prev" || action === "sim-month-next") {
           state.simMonth = new Date(state.simMonth.getFullYear(), state.simMonth.getMonth() + (action === "sim-month-next" ? 1 : -1), 1);
-          renderContent();
+          state.dateFocusDay = dateKey(state.simMonth);
+          renderDatePicker('[data-action="' + action + '"]');
         } else if (action === "choose-sim-day") {
           var value = target.dataset.value;
-          if (state.dateTarget === "simTraffic") {
-            state.simDraftStart = value;
-            state.simDraftEnd = value;
-          } else if (!state.simDraftStart || state.simDraftEnd) {
+          if (!state.simDraftStart || state.simDraftEnd) {
             state.simDraftStart = value;
             state.simDraftEnd = "";
           } else if (value < state.simDraftStart) {
@@ -7092,38 +7642,19 @@
           } else {
             state.simDraftEnd = value;
           }
-          renderContent();
+          state.datePreset = "";
+          state.dateFocusDay = value;
+          renderDatePicker('[data-action="choose-sim-day"][data-value="' + value + '"]');
         } else if (action === "sim-date-clear") {
           state.simDraftStart = "";
           state.simDraftEnd = "";
-          renderContent();
+          state.datePreset = "";
+          renderDatePicker('[data-action="sim-date-clear"]');
         } else if (action === "sim-date-confirm") {
-          if (state.dateTarget === "simTraffic") {
-            state.simTrafficQuery.trafficDate = state.simDraftStart;
-          } else if (state.dateTarget === "esim") {
-            state.esimQuery.esimActivationStart = state.simDraftStart;
-            state.esimQuery.esimActivationEnd = state.simDraftEnd || state.simDraftStart;
-          } else if (state.dateTarget === "esimDisabled") {
-            state.esimQuery.esimDisabledStart = state.simDraftStart;
-            state.esimQuery.esimDisabledEnd = state.simDraftEnd || state.simDraftStart;
-          } else if (state.dateTarget === "esimChipImport") {
-            state.esimChipQuery.chipImportStart = state.simDraftStart;
-            state.esimChipQuery.chipImportEnd = state.simDraftEnd || state.simDraftStart;
-          } else if (state.dateTarget === "chipRecordOperation") {
-            state.esimChipRecordQuery.chipRecordStart = state.simDraftStart;
-            state.esimChipRecordQuery.chipRecordEnd = state.simDraftEnd || state.simDraftStart;
-          } else if (state.dateTarget === "writeTaskApply") {
-            state.esimWriteTaskQuery.writeTaskApplyStart = state.simDraftStart;
-            state.esimWriteTaskQuery.writeTaskApplyEnd = state.simDraftEnd || state.simDraftStart;
-          } else if (state.dateTarget === "writeTaskUpdate") {
-            state.esimWriteTaskQuery.writeTaskUpdateStart = state.simDraftStart;
-            state.esimWriteTaskQuery.writeTaskUpdateEnd = state.simDraftEnd || state.simDraftStart;
-          } else {
-            state.simQuery.simActivationStart = state.simDraftStart;
-            state.simQuery.simActivationEnd = state.simDraftEnd || state.simDraftStart;
-          }
-          state.simDateOpen = false;
-          renderContent();
+          var dateDefinition = dateFilterDefinitions[state.dateTarget];
+          state[dateDefinition.query][dateDefinition.start] = state.simDraftStart;
+          state[dateDefinition.query][dateDefinition.end] = state.simDraftEnd || state.simDraftStart;
+          closeDatePicker(true);
         } else if (action === "toggle-sim-filters") {
           syncSimTextInputs();
           state.simExpanded = !state.simExpanded;
