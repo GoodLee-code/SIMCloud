@@ -953,7 +953,7 @@
     }
 
     .resource-table table {
-      min-width: 1080px;
+      min-width: 1260px;
       font-size: 12px;
     }
 
@@ -1241,7 +1241,7 @@
     }
 
     .redlist-page table {
-      min-width: 1420px;
+      min-width: 1710px;
     }
 
     .redlist-quota-range {
@@ -2257,7 +2257,40 @@
     }
 
     .group-table table {
-      min-width: 1180px;
+      min-width: 1520px;
+    }
+
+    .group-field-title,
+    .redlist-column-title,
+    .resource-column-title {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .group-field-title .info-trigger,
+    .redlist-column-title .info-trigger,
+    .resource-column-title .info-trigger {
+      width: 12px;
+      height: 12px;
+      flex-basis: 12px;
+    }
+
+    .group-field-title .info-trigger svg,
+    .redlist-column-title .info-trigger svg,
+    .resource-column-title .info-trigger svg {
+      width: 9px;
+      height: 9px;
+      flex-basis: 9px;
+    }
+
+    .group-field-title .info-trigger:focus-visible,
+    .redlist-column-title .info-trigger:focus-visible,
+    .resource-column-title .info-trigger:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
     }
 
     .sim-table th:first-child,
@@ -2395,6 +2428,162 @@
       min-width: 1680px;
     }
 
+    .sim-detail-page {
+      container-type: inline-size;
+    }
+
+    .sim-detail-content {
+      padding: 14px 18px 24px;
+    }
+
+    .sim-info-section + .sim-info-section {
+      margin-top: 28px;
+    }
+
+    .sim-info-head {
+      min-height: 40px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      background: #f0f3f8;
+      border: 1px solid var(--border);
+    }
+
+    .sim-info-head h3 {
+      margin: 0;
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .sim-info-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .sim-info-actions .btn {
+      min-width: 56px;
+      height: 28px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+
+    .sim-info-grid {
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-left: 1px solid var(--border);
+    }
+
+    .sim-info-item {
+      display: grid;
+      grid-template-columns: 36% minmax(0, 1fr);
+      min-height: 38px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      color: #596273;
+    }
+
+    .sim-info-item dt,
+    .sim-info-item dd {
+      margin: 0;
+      padding: 10px 12px;
+      line-height: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .sim-info-item dt {
+      background: #f3f6fc;
+      text-align: right;
+    }
+
+    .sim-info-item dd {
+      background: #fff;
+      color: #333;
+    }
+
+    .sim-info-value {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .sim-detail-page .table-shell {
+      margin: 0;
+    }
+
+    .sim-detail-empty {
+      padding: 80px 20px;
+      color: #8b96a6;
+      text-align: center;
+    }
+
+    .sim-detail-context {
+      margin: 0 0 14px;
+      color: #657182;
+      overflow-wrap: anywhere;
+    }
+
+    .sim-detail-dialog .config-body {
+      padding: 24px;
+    }
+
+    body.sim-detail-dialog-open,
+    body.sim-data-reset-open,
+    body.group-edit-open {
+      overflow: hidden;
+    }
+
+    body.sim-detail-dialog-open .page-doc-trigger,
+    body.sim-data-reset-open .page-doc-trigger,
+    body.group-edit-open .page-doc-trigger {
+      visibility: hidden;
+    }
+
+    .sim-detail-dialog .form-label {
+      width: 86px;
+    }
+
+    .sim-detail-dialog .dialog-actions {
+      margin-top: 24px;
+    }
+
+    .sim-detail-tabs {
+      overflow-x: auto;
+      flex: 0 0 44px;
+      gap: 24px;
+    }
+
+    .sim-detail-tabs .inner-tab {
+      flex-shrink: 0;
+    }
+
+    .sim-detail-page button:focus-visible,
+    .sim-detail-dialog button:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    @container (max-width: 1080px) {
+      .sim-info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @container (max-width: 640px) {
+      .sim-detail-content { padding: 12px; }
+      .sim-info-grid { grid-template-columns: minmax(0, 1fr); }
+      .sim-info-item { grid-template-columns: 120px minmax(0, 1fr); }
+      .sim-info-head { align-items: flex-start; }
+      .sim-info-actions { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sim-detail-page .refresh-card.spinning { animation: none; }
+    }
+
     .pagination {
       height: 56px;
       padding: 0 18px;
@@ -2514,6 +2703,47 @@
       width: 600px;
     }
 
+    .modal-mask.redlist-notify-mask { padding: 24px 16px; }
+    .redlist-notify-dialog {
+      width: min(640px, calc(100vw - 32px));
+      max-height: calc(100dvh - 48px);
+      display: flex;
+      flex-direction: column;
+    }
+    .redlist-notify-dialog .dialog-body { min-height: 0; overflow-y: auto; padding: 22px 24px 4px; }
+    .redlist-notify-dialog .form-label { width: 112px; flex-shrink: 0; }
+    .redlist-notify-dialog .form-row { margin-bottom: 18px; }
+    .redlist-notify-dialog .dialog-actions { flex-shrink: 0; margin: 0; padding: 16px 24px; border-top: 1px solid #eef1f5; }
+    .redlist-notify-dialog :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+    .redlist-notify-inline,
+    .redlist-notify-frequency { min-height: 32px; display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .redlist-notify-inline .text-input { width: 112px; }
+    .redlist-notify-help { margin-top: 6px; color: #8a95a5; line-height: 1.6; }
+    .redlist-notify-frequency { min-width: 0; margin: 0; padding: 0; border: 0; gap: 22px; }
+    .redlist-notify-frequency label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .redlist-notify-dialog input[type="checkbox"],
+    .redlist-notify-dialog input[type="radio"] { accent-color: var(--blue); cursor: pointer; }
+    .redlist-notify-search { position: relative; margin-bottom: 8px; }
+    .redlist-notify-account-list { max-height: 220px; overflow: auto; border: 1px solid #e6ebf2; border-radius: 3px; }
+    .redlist-notify-dialog table { min-width: 0; }
+    .redlist-notify-dialog th { position: sticky; top: 0; z-index: 1; height: 34px; }
+    .redlist-notify-dialog td { height: 38px; }
+    .redlist-notify-selected { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .redlist-notify-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; color: #1687e8; background: #edf6ff; border: 1px solid #d5eaff; border-radius: 3px; }
+    .redlist-notify-chip button { width: 20px; height: 20px; color: inherit; border-radius: 2px; }
+    .redlist-notify-chip button:hover { background: #d9ecff; }
+    .redlist-notify-error { margin-top: 6px; color: #f05252; line-height: 1.6; }
+    .redlist-notify-dialog [aria-invalid="true"] { border-color: #f05252; }
+    .redlist-notify-dialog [hidden] { display: none !important; }
+    body.redlist-notify-open { overflow: hidden; }
+    body.redlist-notify-open .page-doc-trigger { visibility: hidden; }
+    @media (max-width: 520px) {
+      .redlist-notify-dialog .dialog-body { padding: 18px 16px 0; }
+      .redlist-notify-dialog .form-row { display: block; }
+      .redlist-notify-dialog .form-label { width: auto; justify-content: flex-start; padding: 0 0 6px; min-height: 24px; }
+      .redlist-notify-dialog .dialog-actions { padding: 14px 16px; }
+    }
+
     .batch-task-add-dialog {
       width: min(600px, calc(100vw - 32px));
       max-height: calc(100dvh - 48px);
@@ -2527,7 +2757,7 @@
     }
 
     .batch-task-add-dialog .form-label {
-      width: 108px;
+      width: 156px;
       flex-shrink: 0;
     }
 
@@ -2540,8 +2770,94 @@
       overflow-wrap: anywhere;
     }
 
+    .batch-task-file-state {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      flex: 1 1 180px;
+      min-width: 0;
+      gap: 6px;
+    }
+
+    .batch-task-upload-status {
+      padding: 2px 6px;
+      border: 1px solid #d6e8fc;
+      border-radius: 3px;
+      color: var(--blue);
+      background: #f0f7ff;
+      line-height: 18px;
+      white-space: nowrap;
+    }
+
+    .batch-task-upload-status.ready {
+      color: var(--green);
+      background: #effaf5;
+      border-color: #ccebdd;
+    }
+
+    .batch-task-upload-status.error {
+      color: #f05252;
+      background: #fff3f2;
+      border-color: #f4d8d5;
+    }
+
     .batch-task-add-dialog .batch-hint {
       line-height: 1.6;
+    }
+
+    .batch-task-add-dialog .pool-usage-label {
+      white-space: normal;
+      line-height: 20px;
+    }
+
+    .batch-task-pool-usage {
+      min-width: 0;
+      min-height: 40px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+    }
+
+    .batch-task-pool-usage label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      cursor: pointer;
+    }
+
+    .batch-task-pool-usage input {
+      margin: 0;
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    .batch-task-pool-usage input:focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    td.batch-operation-type {
+      white-space: normal;
+      line-height: 20px;
+    }
+
+    .batch-task-table table {
+      min-width: 1280px;
+    }
+
+    @media (max-width: 520px) {
+      .batch-task-add-dialog .form-row { display: block; }
+      .batch-task-add-dialog .form-label {
+        width: auto;
+        justify-content: flex-start;
+        padding: 0 0 6px;
+        min-height: 24px;
+      }
     }
 
     .batch-task-file-summary {
@@ -2561,6 +2877,19 @@
     .batch-task-file-summary strong {
       color: var(--blue);
       font-size: 16px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .batch-task-pool-estimate {
+      flex: 0 0 100%;
+      min-width: 0;
+      line-height: 1.7;
+      overflow-wrap: anywhere;
+    }
+
+    .batch-task-pool-estimate b {
+      color: var(--blue);
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
 
@@ -2637,8 +2966,11 @@
     }
 
     .group-edit-dialog {
-      width: 760px;
-      min-height: 410px;
+      width: min(760px, calc(100vw - 32px));
+      min-height: min(410px, calc(100dvh - 64px));
+      max-height: calc(100dvh - 64px);
+      display: flex;
+      flex-direction: column;
       background: #fff;
       border-radius: 4px;
       box-shadow: 0 16px 43px rgba(12, 27, 50, 0.22);
@@ -2649,10 +2981,11 @@
     }
 
     .group-edit-body {
-      min-height: 350px;
+      min-height: 0;
       padding: 28px 22px 20px 58px;
       display: flex;
       flex-direction: column;
+      overflow-y: auto;
     }
 
     .group-edit-body .form-row {
@@ -2660,7 +2993,8 @@
     }
 
     .group-edit-body .form-label {
-      width: 88px;
+      width: 140px;
+      flex-shrink: 0;
       font-size: 14px;
     }
 
@@ -2671,6 +3005,32 @@
     .group-edit-body .dialog-actions {
       margin-top: auto;
       padding-right: 0;
+    }
+
+    .group-edit-error {
+      margin: 6px 0 0;
+      color: #f05252;
+      line-height: 1.6;
+    }
+
+    .group-edit-dialog [aria-invalid="true"] {
+      border-color: #f05252;
+    }
+
+    .group-edit-dialog :focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 520px) {
+      .group-edit-body { padding: 18px 16px; }
+      .group-edit-body .form-row { display: block; }
+      .group-edit-body .form-label {
+        width: auto;
+        justify-content: flex-start;
+        padding: 0 0 6px;
+      }
+      .group-edit-body .form-control { width: 100%; }
     }
 
     .config-body {
@@ -3045,7 +3405,7 @@
       }
 
       .home-middle {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .content {
@@ -3315,8 +3675,28 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       var vendors = ["中国移动终端公司", "联通物联网有限公司", "天翼物联科技有限公司", "中移物联网有限公司"];
       var redlistVendors = ["中国移动终端公司", "中移物联网有限公司", "广州华米", "广州5G", "TS移动"];
       var redlistExpiryOptions = ["未到期", "已到期"];
+      var redlistNotificationStorageKey = "simcloud.redlist.notification.v1";
+      var redlistNotificationAccounts = [
+        { id: "user-1", name: "徐振颂", phone: "13800000001" },
+        { id: "user-2", name: "李明", phone: "13800000002" },
+        { id: "user-3", name: "王芳", phone: "13800000003" },
+        { id: "user-4", name: "周伟", phone: "13800000004" },
+        { id: "user-5", name: "赵洁", phone: "13800000005" },
+        { id: "user-6", name: "陈浩", phone: "13800000006" },
+        { id: "user-7", name: "孙悦", phone: "13800000007" },
+        { id: "user-8", name: "张伟", phone: "13800000008" },
+        { id: "user-9", name: "李娜", phone: "13800000009" },
+        { id: "user-10", name: "刘洋", phone: "13800000010" }
+      ];
       var carriers = ["中国移动", "中国联通", "中国电信"];
       var simDataResetNote = "物联卡上网功能异常的时候可以通过重置数据服务来重置恢复 GPRS 上网功能，3分钟内仅可重置1次。";
+      var groupSupplyNotes = {
+        singleCardSupply: "每往资源池中加入一张卡，资源池总流量增加x G；",
+        replenishmentPrice: "每激活一张资源池补池的卡需要花费的账户余额。"
+      };
+      var resourceReplenishmentNote = "建议补卡数量（张）=资源池最近7天流量平均使用量/单卡流量补给量；";
+      var redlistRemainingBalanceNote = "剩余余额=红名单额度+账户余额；";
+      var inlineInfoSelector = '[data-action="traffic-history-info"], [data-action="sim-reset-info"], [data-action="group-field-info"], [data-action="resource-replenishment-info"], [data-action="redlist-balance-info"]';
       var simDataResetCooldownMs = 3 * 60 * 1000;
       var simDataResetStorageKey = "simcloud.data-service-reset.cooldowns";
       var platforms = ["OneLink平台", "物联网连接管理平台", "天翼物联平台", "CMP连接管理平台"];
@@ -3375,6 +3755,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           accountId: "OL" + String(20260001 + redlistIndex),
           startsAt: ["2026-01-01", "2026-05-01", "2026-09-01", "2025-10-01"][redlistIndex % 4] + " 00:00:00",
           expiresAt: ["2026-10-28", "2026-11-30", "2026-12-31", "2027-03-31", "2026-09-30", "2027-01-31"][redlistIndex % 6] + " 23:59:59",
+          balance: [12580.50, 9800, 25630.75, 0, 5800.20, 31560][redlistIndex % 6].toFixed(2),
           quota: [0, 500, 1000, 2000, 5000, 10000][redlistIndex % 6]
         });
       }
@@ -3383,7 +3764,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         { key: "vendor", name: "供应商", width: 190 }, { key: "carrier", name: "运营商", width: 110 },
         { key: "platform", name: "运营商平台", width: 170 }, { key: "accountName", name: "账户名称", width: 180 },
         { key: "accountId", name: "账户ID", width: 150 }, { key: "startsAt", name: "红名单开始时间", width: 190 },
-        { key: "expiresAt", name: "红名单到期时间", width: 190 }, { key: "quota", name: "红名单额度", width: 130 },
+        { key: "expiresAt", name: "红名单到期时间", width: 190 }, { key: "balance", name: "账户余额", width: 140 },
+        { key: "quota", name: "红名单额度", width: 130 },
+        { key: "remainingBalance", name: "剩余余额", width: 150 },
         { key: "expiryStatus", name: "到期状态", width: 110 }
       ];
 
@@ -3566,21 +3949,21 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       });
 
       var resourceLargeRows = [
-        { supplier: "广州华米", group: "4G-30G通用", shortName: "", remain: "257307.62", used: "7515122.38", avg: "250504.08", percent: "96.69%", time: "2026-05-28 15:18:29" },
-        { supplier: "TS移动", group: "200元40G流量", shortName: "TS移动40G", remain: "1020611.76", used: "22325468.24", avg: "744182.27", percent: "95.63%", time: "2026-05-28 15:15:56" },
-        { supplier: "石家庄移动", group: "物联卡集团通用流量共享", shortName: "", remain: "406.62", used: "8077.75", avg: "269.26", percent: "95.21%", time: "2026-05-28 15:17:44" },
-        { supplier: "广州5G", group: "4G卡20G群组", shortName: "52", remain: "1063839.95", used: "17780840.05", avg: "592694.67", percent: "94.35%", time: "2026-05-28 15:16:53" },
-        { supplier: "广州5G", group: "5G-30G-群组", shortName: "", remain: "419534.07", used: "5485305.93", avg: "182843.53", percent: "92.90%", time: "2026-05-28 15:17:12" },
-        { supplier: "江苏移动", group: "臻品通用20G", shortName: "", remain: "83627.09", used: "882912.91", avg: "29430.43", percent: "91.35%", time: "2026-05-28 15:18:48" },
-        { supplier: "广州5G", group: "5G-50G-群组", shortName: "5G-50G-群组", remain: "232070.40", used: "2444329.60", avg: "81477.65", percent: "91.33%", time: "2026-05-28 15:17:17" },
-        { supplier: "石家庄桥西移动", group: "语音卡100M", shortName: "", remain: "1067.13", used: "6880.72", avg: "229.36", percent: "86.57%", time: "2026-05-28 15:18:01" }
+        { supplier: "广州华米", group: "4G-30G通用", shortName: "", remain: "257307.62", used: "7515122.38", avg: "250504.08", percent: "96.69%", totalCards: 259081, recent7DaysUsed: "1816523.00", time: "2026-05-28 15:18:29" },
+        { supplier: "TS移动", group: "200元40G流量", shortName: "TS移动40G", remain: "1020611.76", used: "22325468.24", avg: "744182.27", percent: "95.63%", totalCards: 583652, recent7DaysUsed: "5414803.00", time: "2026-05-28 15:15:56" },
+        { supplier: "石家庄移动", group: "物联卡集团通用流量共享", shortName: "", remain: "406.62", used: "8077.75", avg: "269.26", percent: "95.21%", totalCards: 400, recent7DaysUsed: "2046.35", time: "2026-05-28 15:17:44" },
+        { supplier: "广州5G", group: "4G卡20G群组", shortName: "52", remain: "1063839.95", used: "17780840.05", avg: "592694.67", percent: "94.35%", totalCards: 942234, recent7DaysUsed: "4509120.50", time: "2026-05-28 15:16:53" },
+        { supplier: "广州5G", group: "5G-30G-群组", shortName: "", remain: "419534.07", used: "5485305.93", avg: "182843.53", percent: "92.90%", totalCards: 196828, recent7DaysUsed: "1350820.25", time: "2026-05-28 15:17:12" },
+        { supplier: "江苏移动", group: "臻品通用20G", shortName: "", remain: "83627.09", used: "882912.91", avg: "29430.43", percent: "91.35%", totalCards: 48327, recent7DaysUsed: "221580.40", time: "2026-05-28 15:18:48" },
+        { supplier: "广州5G", group: "5G-50G-群组", shortName: "5G-50G-群组", remain: "232070.40", used: "2444329.60", avg: "81477.65", percent: "91.33%", totalCards: 53528, recent7DaysUsed: "584205.30", time: "2026-05-28 15:17:17" },
+        { supplier: "石家庄桥西移动", group: "语音卡100M", shortName: "", remain: "1067.13", used: "6880.72", avg: "229.36", percent: "86.57%", totalCards: 80000, recent7DaysUsed: "1705.15", time: "2026-05-28 15:18:01" }
       ];
 
       var resourceSmallRows = [
-        { supplier: "广州5G", group: "5G-1G-群组", shortName: "1G套餐", remain: "6800.25", used: "212.45", avg: "7.08", percent: "3.03%", time: "2026-05-28 15:12:19" },
-        { supplier: "TS移动", group: "测试卡500M", shortName: "TS测试", remain: "4201.33", used: "96.67", avg: "3.22", percent: "2.25%", time: "2026-05-28 15:11:08" },
-        { supplier: "江苏移动", group: "启动卡体验包", shortName: "启动卡", remain: "15320.00", used: "318.50", avg: "10.62", percent: "2.04%", time: "2026-05-28 15:10:43" },
-        { supplier: "广州华米", group: "儿童手表小流量", shortName: "手表卡", remain: "8760.90", used: "124.10", avg: "4.14", percent: "1.40%", time: "2026-05-28 15:08:55" }
+        { supplier: "广州5G", group: "5G-1G-群组", shortName: "1G套餐", remain: "6800.25", used: "212.45", avg: "7.08", percent: "3.03%", totalCards: 7013, recent7DaysUsed: "50.29", time: "2026-05-28 15:12:19" },
+        { supplier: "TS移动", group: "测试卡500M", shortName: "TS测试", remain: "4201.33", used: "96.67", avg: "3.22", percent: "2.25%", totalCards: 8596, recent7DaysUsed: "0.00", time: "2026-05-28 15:11:08" },
+        { supplier: "江苏移动", group: "启动卡体验包", shortName: "启动卡", remain: "15320.00", used: "318.50", avg: "10.62", percent: "2.04%", totalCards: 15638, recent7DaysUsed: "76.05", time: "2026-05-28 15:10:43" },
+        { supplier: "广州华米", group: "儿童手表小流量", shortName: "手表卡", remain: "8760.90", used: "124.10", avg: "4.14", percent: "1.40%", totalCards: 35000, recent7DaysUsed: "31.20", time: "2026-05-28 15:08:55" }
       ];
 
       var resourceHistoryRowsSeed = createResourceHistoryRows();
@@ -3592,46 +3975,16 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       ];
 
       var groupRowsSeed = [
-        { id: 1, supplier: "广州5G", groupName: "高速臻品35元通用-1点2折", shortName: "广州35", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "123" },
-        { id: 2, supplier: "TS移动", groupName: "200元40G流量", shortName: "TS移动40G", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 3, supplier: "广州5G", groupName: "5GSA高速臻品50元通用-1折", shortName: "广州50", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 4, supplier: "惠州移动", groupName: "20G全国", shortName: "惠州20G", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 5, supplier: "ZS移动4G", groupName: "30M流量群组", shortName: "ZS移动30", operator: "1111", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 6, supplier: "ZS移动4G", groupName: "100M通用流量共享", shortName: "ZS100M", operator: "1111", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 7, supplier: "ZS移动4G", groupName: "2G通用流量共享", shortName: "ZS移动2G", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 8, supplier: "ZS移动4G", groupName: "1G通用流量共享", shortName: "ZS移动1G", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
-        { id: 9, supplier: "ZS-PCWY", groupName: "新30M通用流量共享", shortName: "111", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 10, supplier: "XT移动", groupName: "物联卡集团通用流量共享", shortName: "40", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 11, supplier: "ZS-PCWY", groupName: "物联卡集团通用流量共享-20220224新建", shortName: "23", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 12, supplier: "广州5G", groupName: "物联卡集团通用流量共享", shortName: "52", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 13, supplier: "XT移动", groupName: "物联卡集团通用流量共享（100M）", shortName: "60", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 14, supplier: "ZS-PCWY", groupName: "新30M流量共享2G", shortName: "中山30", operator: "徐振颂", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 15, supplier: "TS-30MB-FSD", groupName: "2024年3月30日2年期", shortName: "89", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 16, supplier: "ZS-PCWY", groupName: "物联卡集团通用流量共享", shortName: "9888", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 17, supplier: "TS-30MB-FSD", groupName: "富思德2024年5月定向共享", shortName: "447", operator: "1111", updatedAt: "2024-07-27 18:00:51", remark: "" },
-        { id: 18, supplier: "广州5G", groupName: "5G-30G-群组", shortName: "5G30G", operator: "徐振颂", updatedAt: "2024-08-02 10:18:29", remark: "" },
-        { id: 19, supplier: "TS移动", groupName: "测试卡500M", shortName: "TS测试", operator: "1111", updatedAt: "2024-08-02 10:18:29", remark: "" },
-        { id: 20, supplier: "江苏移动", groupName: "臻品通用20G", shortName: "江苏20G", operator: "徐振颂", updatedAt: "2024-08-02 10:18:29", remark: "" }
+        { id: 1, supplier: "广州5G", groupName: "高速臻品35元通用-1点2折", shortName: "广州35", singleCardSupply: "35", replenishmentPrice: "4.20", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "123" },
+        { id: 2, supplier: "TS移动", groupName: "200元40G流量", shortName: "TS移动40G", singleCardSupply: "40", replenishmentPrice: "8.80", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
+        { id: 3, supplier: "广州5G", groupName: "5GSA高速臻品50元通用-1折", shortName: "广州50", singleCardSupply: "50", replenishmentPrice: "5.00", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
+        { id: 4, supplier: "惠州移动", groupName: "20G全国", shortName: "惠州20G", singleCardSupply: "20", replenishmentPrice: "3.60", operator: "徐振颂", updatedAt: "2024-03-19 09:41:57", remark: "" },
+        { id: 5, supplier: "ZS移动4G", groupName: "30M流量群组", shortName: "ZS移动30", singleCardSupply: "0.03", replenishmentPrice: "0.60", operator: "1111", updatedAt: "2024-03-19 09:41:57", remark: "" }
       ];
 
       groupRowsSeed.forEach(function (row, index) {
         row.flowType = index % 5 === 1 ? "小流量" : "大流量";
       });
-
-      while (groupRowsSeed.length < 40) {
-        var index = groupRowsSeed.length + 1;
-        var base = groupRowsSeed[(index - 1) % 20];
-        groupRowsSeed.push({
-          id: index,
-          supplier: base.supplier,
-          groupName: base.groupName + "-" + String(index).padStart(2, "0"),
-          shortName: base.shortName + "-" + String(index).padStart(2, "0"),
-          flowType: base.flowType,
-          operator: index % 3 === 0 ? "徐振颂" : "1111",
-          updatedAt: index % 2 === 0 ? "2024-08-16 16:20:18" : "2024-09-03 11:09:42",
-          remark: index % 5 === 0 ? "同步数据" : ""
-        });
-      }
 
       // Static card ownership used by the local activation-file validation demo.
       var activationGroupByCardId = { 1: 1, 2: 2, 3: 1, 4: 2, 5: 3, 6: 3 };
@@ -3650,6 +4003,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       batchTaskRowsSeed.forEach(function (task) {
         if (task.operationType !== "激活卡") { return; }
+        task.poolUsage = "资源池补池";
         task.targetGroupId = 2;
         task.targetGroupName = groupRowsSeed[1].groupName;
         task.details = activationTaskDetails(task, simRowsSeed.map(function (card) { return card.iccid; }), simRowsSeed);
@@ -3852,18 +4206,25 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         redlistApplied: blankRedlistQuery(),
         redlistPage: 1,
         redlistError: "",
+        redlistNotifyConfig: readRedlistNotificationConfig(),
+        redlistNotifyOpen: false,
+        redlistNotifyDraft: null,
+        redlistNotifySearch: "",
+        redlistNotifyErrors: {},
         batchTaskRows: batchTaskRowsSeed.slice(),
         batchTaskQuery: blankBatchTaskQuery(),
         batchTaskApplied: blankBatchTaskQuery(),
         batchTaskAddOpen: false,
         batchTaskFileName: "",
         batchTaskFile: null,
+        batchTaskFileIsDemo: false,
         batchTaskIccids: null,
         batchTaskFileDetecting: false,
         batchTaskFileDetectionId: 0,
         batchTaskFileDetectionError: "",
         batchTaskAddType: "",
         batchTaskAddGroup: null,
+        batchTaskAddPoolUsage: "",
         batchTaskAddRemark: "",
         batchTaskAddError: "",
         batchTaskAddErrorField: "",
@@ -3895,6 +4256,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         trafficHistoryPage: 1,
         trafficHistoryInfoOpen: false,
         simResetInfoOpen: false,
+        groupFieldInfoOpen: "",
+        resourceReplenishmentInfoOpen: false,
+        redlistBalanceInfoOpen: false,
         simDataResetConfirmIccid: "",
         simDataResetCooldowns: readSimDataResetCooldowns() || {},
         simDataResetBusy: {},
@@ -3972,8 +4336,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         manageStopRiskRows: [],
         groupEditId: null,
         groupEditDraft: null,
+        groupEditErrors: {},
         editId: null,
         selectedSimIccid: "",
+        selectedSimSource: "sim",
+        simDetailTab: "info",
+        simDetailLogs: [],
+        simDetailOperation: "",
+        simDetailOperationValue: "",
+        simDetailReturnFocus: null,
         selectedEsimChipEid: "",
         confirmId: null
       };
@@ -3993,7 +4364,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         "账户ID": "accountId",
         "红名单开始时间": "redlistStartsAt",
         "红名单到期时间": "redlistExpiresAt",
+        "账户余额": "accountBalance",
         "红名单额度": "redlistQuota",
+        "剩余余额": "remainingBalance",
         "到期状态": "expiryStatus",
         "年度使用流量总计": "annualFlow",
         "月份": "trafficMonth",
@@ -4235,7 +4608,24 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         simDetail: emptyPageDocumentation("SIM卡详情"),
         account: emptyPageDocumentation("运营商账户配置"),
         group: emptyPageDocumentation("群组管理"),
-        redlist: emptyPageDocumentation("红名单账户"),
+        redlist: {
+          page: { title: "", description: "" },
+          fields: [],
+          functions: [
+            {
+              name: "集团账户信息查询",
+              version: "待补充",
+              text: "接口编号：CMIOT_API23E10；用途：查询集团下所有账户，获取 accountId。"
+            },
+            {
+              name: "客户红名单账户信息查询",
+              version: "待补充",
+              text: "接口编号：CMIOT_API23B07；用途：根据 accountId 查询是否为红名单，以及红名单详情。"
+            }
+          ],
+          businessRules: [],
+          interactions: []
+        },
         batchTask: {
           page: { title: "", description: "" },
           fields: [],
@@ -4958,7 +5348,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function setQueryValue(key, value) {
-        if (isHomeResourceKey(key)) {
+        if (key === "simDetailOperationValue") {
+          state.simDetailOperationValue = value;
+        } else if (isHomeResourceKey(key)) {
           state.homeResourceQuery[key] = value;
         } else if (key.indexOf("poolHistory") === 0) {
           state.resourceHistoryQuery[state.resourceHistoryMode][key] = value;
@@ -5004,9 +5396,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           if (key === "groupEditFlowType") { state.groupEditDraft.flowType = value; }
         } else if (isBatchTaskAddKey(key)) {
           if (key === "batchTaskAddType") {
+            var previousType = state.batchTaskAddType;
             state.batchTaskAddType = value;
+            if (value === "激活卡") {
+              if (previousType !== value) { state.batchTaskAddPoolUsage = "资源池补池"; }
+              loadBatchTaskDemoFile();
+            }
             if (value !== "激活卡") {
               state.batchTaskAddGroup = null;
+              state.batchTaskAddPoolUsage = "";
               state.batchTaskFileDetectionId += 1;
               state.batchTaskFileDetecting = false;
             }
@@ -5244,8 +5642,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function currentSimDetailRow() {
-        return state.esimRows.find(function (row) { return row.iccid === state.selectedSimIccid; }) ||
-          state.simRows.find(function (row) { return row.iccid === state.selectedSimIccid; }) ||
+        var preferred = state.selectedSimSource === "esim" ? state.esimRows : state.simRows;
+        var fallback = state.selectedSimSource === "esim" ? state.simRows : state.esimRows;
+        return preferred.find(function (row) { return row.iccid === state.selectedSimIccid; }) ||
+          fallback.find(function (row) { return row.iccid === state.selectedSimIccid; }) ||
           state.simRows[0];
       }
 
@@ -5370,6 +5770,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         });
       }
 
+      function groupedGroupRows() {
+        var groups = new Map();
+        filteredGroupRows().forEach(function (row) {
+          if (!groups.has(row.groupName)) { groups.set(row.groupName, []); }
+          groups.get(row.groupName).push(row);
+        });
+        return Array.from(groups.values());
+      }
+
       function filteredBatchTaskRows() {
         var q = state.batchTaskApplied;
         return state.batchTaskRows.filter(function (row) {
@@ -5430,13 +5839,18 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return group.groupName + "（" + group.supplier + "）";
       }
 
+      function cardMatchesActivationGroup(card, groupId) {
+        return !!card && card.groupId === groupId;
+      }
+
       function activationTaskDetails(task, codes, cards) {
         var cardsByIccid = new Map(cards.map(function (card) { return [card.iccid, card]; }));
         return codes.map(function (iccid, index) {
           var card = cardsByIccid.get(iccid);
-          var matches = !!card && card.groupId === task.targetGroupId;
+          var matches = cardMatchesActivationGroup(card, task.targetGroupId);
           return {
             seq: index + 1, batchNo: task.batchNo, iccid: iccid, operationType: task.operationType,
+            poolUsage: task.poolUsage || "",
             beforeStatus: card ? card.cardStatus : "--", result: matches ? "激活成功" : "处理失败",
             supplier: card ? card.vendor : "--", carrier: card ? card.carrier : "--",
             status: matches ? "成功" : "失败",
@@ -5489,16 +5903,40 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.batchTaskFileDetectionId += 1;
         state.batchTaskFileName = "";
         state.batchTaskFile = null;
+        state.batchTaskFileIsDemo = false;
         state.batchTaskIccids = null;
         state.batchTaskFileDetecting = false;
         state.batchTaskFileDetectionError = "";
         state.batchTaskAddType = "";
         state.batchTaskAddGroup = null;
+        state.batchTaskAddPoolUsage = "";
         state.batchTaskAddRemark = "";
         state.batchTaskAddError = "";
         state.batchTaskAddErrorField = "";
         state.batchTaskSubmitting = false;
         state.openSelect = "";
+      }
+
+      function loadBatchTaskDemoFile() {
+        if (state.batchTaskFile) { return; }
+        try {
+          if (!state.simRows.length) { throw new Error("没有示例码号"); }
+          var workbook = XLSX.utils.book_new();
+          var rows = [["ICCID"]].concat(state.simRows.map(function (card) { return [card.iccid]; }));
+          XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(rows), "SIM卡");
+          var bytes = XLSX.write(workbook, { type: "array", bookType: "xlsx" });
+          var file = new File([bytes], "SIM卡激活示例.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+          state.batchTaskFile = file;
+          state.batchTaskFileName = file.name;
+          state.batchTaskFileIsDemo = true;
+          state.batchTaskIccids = null;
+          state.batchTaskFileDetectionError = "";
+          state.batchTaskFileDetectionId += 1;
+        } catch (error) {
+          state.batchTaskFileDetectionError = "示例文件生成失败，请手动上传SIM卡文件";
+          state.batchTaskAddErrorField = "batchTaskFile";
+          state.batchTaskAddError = state.batchTaskFileDetectionError;
+        }
       }
 
       async function detectBatchTaskFile() {
@@ -5530,6 +5968,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         // Update only file feedback so typing and open dropdowns keep their focus.
         var feedback = document.getElementById("batchTaskFileFeedback");
         if (feedback) { feedback.innerHTML = batchTaskFileFeedbackMarkup(); }
+        var fileState = document.getElementById("batchTaskFileState");
+        if (fileState) { fileState.innerHTML = batchTaskFileStateMarkup(); }
         prepareBatchTaskAddFields();
       }
 
@@ -5538,7 +5978,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.batchTaskAddError = message;
         renderOverlay();
         var target = field === "batchTaskFile" ? document.getElementById("batchTaskUpload") :
-          document.querySelector('#overlay [data-action="toggle-select"][data-key="' + field + '"]');
+          (field === "batchTaskAddPoolUsage" ? document.querySelector('[name="batchTaskAddPoolUsage"]') :
+            document.querySelector('#overlay [data-action="toggle-select"][data-key="' + field + '"]'));
         if (target) { target.focus(); }
       }
 
@@ -5553,11 +5994,16 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           batchTaskAddError("batchTaskFile", state.batchTaskFileDetectionError || "请重新上传文件并完成ICCID数量检测");
           return;
         }
+        if (activation && ["资源池补池", "非资源池补池"].indexOf(state.batchTaskAddPoolUsage) === -1) {
+          batchTaskAddError("batchTaskAddPoolUsage", "请选择是否用于资源池补池");
+          return;
+        }
         if (activation && !group) { batchTaskAddError("batchTaskAddGroup", "请选择所属群组"); return; }
         var task = {
           id: state.batchTaskRows.reduce(function (max, item) { return Math.max(max, item.id); }, 10000) + 1,
           batchNo: "BT" + dateFilterToday().replace(/-/g, "") + String(state.batchTaskRows.length + 1).padStart(4, "0"),
           operationType: state.batchTaskAddType, count: 0, status: "未完成",
+          poolUsage: activation ? state.batchTaskAddPoolUsage : "",
           remark: state.batchTaskAddRemark.trim() || ("文件：" + state.batchTaskFileName),
           operator: "admin", operatedAt: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" })
         };
@@ -5596,7 +6042,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function groupPageCount() {
-        return Math.max(1, Math.ceil(filteredGroupRows().length / 20));
+        return Math.max(1, Math.ceil(groupedGroupRows().length / 20));
       }
 
       function accountRowMarkup(row) {
@@ -5613,12 +6059,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         "</tr>";
       }
 
-      function groupRowMarkup(row) {
+      function groupRowMarkup(row, nameRowSpan) {
         return "<tr>" +
+          (nameRowSpan ? '<td class="group-name-cell" rowspan="' + nameRowSpan + '" title="' + esc(row.groupName) + '">' + esc(row.groupName) + '</td>' : '') +
           "<td>" + esc(row.supplier) + "</td>" +
-          '<td title="' + esc(row.groupName) + '">' + esc(row.groupName) + "</td>" +
           "<td>" + esc(row.shortName) + "</td>" +
           "<td>" + esc(row.flowType) + "</td>" +
+          "<td>" + esc(row.singleCardSupply == null || row.singleCardSupply === "" ? "--" : row.singleCardSupply) + "</td>" +
+          "<td>" + esc(row.replenishmentPrice == null || row.replenishmentPrice === "" ? "--" : row.replenishmentPrice) + "</td>" +
           "<td>" + esc(row.operator) + "</td>" +
           "<td>" + esc(row.updatedAt) + "</td>" +
           '<td title="' + esc(row.remark) + '">' + esc(row.remark) + "</td>" +
@@ -5626,11 +6074,16 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         "</tr>";
       }
 
+      function batchTaskOperationLabel(row) {
+        return row.operationType === "激活卡" && ["资源池补池", "非资源池补池"].indexOf(row.poolUsage) !== -1 ?
+          "激活卡（" + row.poolUsage + "）" : row.operationType;
+      }
+
       function batchTaskRowMarkup(row) {
         return "<tr>" +
           "<td>" + esc(row.id) + "</td>" +
           '<td><button class="batch-link ' + (state.selectedBatchTaskId === row.id ? "active" : "") + '" data-action="open-batch-task-detail" data-id="' + row.id + '">' + esc(row.batchNo) + "</button></td>" +
-          "<td>" + esc(row.operationType) + "</td>" +
+          '<td class="batch-operation-type" title="' + esc(batchTaskOperationLabel(row)) + '">' + esc(batchTaskOperationLabel(row)) + '</td>' +
           "<td>" + esc(row.count) + "</td>" +
           "<td>" + esc(row.status) + "</td>" +
           '<td title="' + esc(row.remark) + '">' + esc(row.remark) + "</td>" +
@@ -5645,7 +6098,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           "<td>" + esc(row.seq) + "</td>" +
           "<td>" + esc(row.batchNo) + "</td>" +
           "<td>" + esc(row.iccid) + "</td>" +
-          "<td>" + esc(row.operationType) + "</td>" +
+          '<td class="batch-operation-type" title="' + esc(batchTaskOperationLabel(row)) + '">' + esc(batchTaskOperationLabel(row)) + '</td>' +
           "<td>" + esc(row.beforeStatus) + "</td>" +
           "<td>" + esc(row.result) + "</td>" +
           "<td>" + esc(row.supplier) + "</td>" +
@@ -5692,6 +6145,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function closeSimDataResetDialog(restoreFocus) {
         var iccid = state.simDataResetConfirmIccid;
         state.simDataResetConfirmIccid = "";
+        document.body.classList.remove("sim-data-reset-open");
         renderOverlay();
         setSimResetBackgroundInert(false);
         var cell = document.querySelector('[data-sim-reset-cell="' + iccid + '"]');
@@ -5702,7 +6156,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function openSimDataResetDialog(iccid) {
-        var row = state.simRows.find(function (item) { return item.iccid === iccid; });
+        var row = state.simRows.find(function (item) { return item.iccid === iccid; }) ||
+          state.esimRows.find(function (item) { return item.iccid === iccid; });
         if (!row) { return; }
         Object.assign(state.simDataResetCooldowns, readSimDataResetCooldowns() || {});
         if (state.simDataResetBusy[iccid] || simDataResetRemaining(iccid)) {
@@ -5711,6 +6166,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }
         hideManageStopPopover();
         state.simDataResetConfirmIccid = iccid;
+        document.body.classList.add("sim-data-reset-open");
         renderOverlay();
         setSimResetBackgroundInert(true);
         document.querySelector('[data-action="cancel-sim-data-reset"]').focus();
@@ -6119,6 +6575,63 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return (used / resourceUsedDays(row)).toFixed(2);
       }
 
+      function resourceReplenishmentAdvice(row) {
+        var raw = [row.remain, row.used, row.recent7DaysUsed, row.totalCards];
+        if (raw.some(function (value) { return value == null || String(value).trim() === "" || ["number", "string"].indexOf(typeof value) === -1; })) { return null; }
+        var values = raw.map(function (value) { return Number(String(value).replace(/,/g, "")); });
+        if (values.some(function (value) { return !isFinite(value) || value < 0; }) || !Number.isSafeInteger(values[3]) || values[3] < 1) { return null; }
+        // Resource flows use hundredths of GB; integer division avoids rounding an exact result up again.
+        var totalCents = Math.round(values[0] * 100) + Math.round(values[1] * 100);
+        var recentCents = Math.round(values[2] * 100);
+        if (!Number.isSafeInteger(totalCents) || totalCents <= 0 || !Number.isSafeInteger(recentCents)) { return null; }
+        var numerator = BigInt(recentCents) * BigInt(values[3]);
+        var denominator = BigInt(totalCents);
+        return {
+          cards: ((numerator + denominator - BigInt(1)) / denominator).toString(),
+          recentUsage: (recentCents / 100).toFixed(2), totalCards: values[3], totalFlow: (totalCents / 100).toFixed(2)
+        };
+      }
+
+      function resourcePoolCoverageForecast(pool, singleCardSupply, cardCount, now) {
+        if (!pool) { return { reason: "所选群组暂无资源池用量数据，暂无法估算。" }; }
+        if (singleCardSupply == null || String(singleCardSupply).trim() === "") {
+          return { reason: "请先在群组管理配置单卡流量补给量，暂无法估算。" };
+        }
+        var supply = Number(singleCardSupply);
+        if (!isFinite(supply) || supply < 0 || !Number.isSafeInteger(cardCount) || cardCount < 1) {
+          return { reason: "单卡流量补给量或可补池卡数量无效，暂无法估算。" };
+        }
+        var raw = [pool.remain, pool.recent7DaysUsed];
+        if (raw.some(function (value) { return value == null || String(value).trim() === ""; })) {
+          return { reason: "资源池缺少剩余流量或最近7天用量数据，暂无法估算。" };
+        }
+        var values = raw.map(function (value) { return Number(String(value).replace(/,/g, "")); });
+        if (values.some(function (value) { return !isFinite(value) || value < 0; })) {
+          return { reason: "资源池流量数据无效，暂无法估算。" };
+        }
+        if (values[1] === 0) { return { reason: "该资源池最近7天无流量消耗，暂无法估算可用天数和日期。" }; }
+        var dailyUsage = values[1] / 7;
+        var addedFlow = cardCount * supply;
+        var days = (values[0] + addedFlow) / dailyUsage;
+        var deadline = new Date((now == null ? Date.now() : new Date(now).getTime()) + days * 86400000);
+        if (!isFinite(days) || !isFinite(deadline.getTime())) {
+          return { reason: "预计使用周期超出可计算范围，暂无法估算。" };
+        }
+        return {
+          days: days, daysText: days > 0 && days < 0.01 ? "<0.01" : days.toFixed(2),
+          untilDate: new Intl.DateTimeFormat("zh-CN", { timeZone: "Asia/Shanghai", year: "numeric", month: "long", day: "numeric" }).format(deadline),
+          cardCount: cardCount, dailyUsage: dailyUsage, addedFlow: addedFlow
+        };
+      }
+
+      function resourceReplenishmentMarkup(row) {
+        var advice = resourceReplenishmentAdvice(row);
+        if (!advice) { return '<td title="缺少有效的最近7天使用量、资源池总卡数或资源池总流量，暂无法计算">--</td>'; }
+        var title = "建议补充 " + advice.cards + " 张卡；最近7天使用量：" + advice.recentUsage + " GB；资源池总流量（剩余用量+使用量）：" + advice.totalFlow +
+          " GB；资源池总卡数：" + advice.totalCards + " 张；建议卡数 = 最近7天使用量 /（资源池总流量 / 资源池总卡数），向上取整";
+        return '<td title="' + esc(title) + '">' + esc(advice.cards) + '</td>';
+      }
+
       function resourceRowMarkup(row) {
         return "<tr>" +
           "<td>" + esc(row.supplier) + "</td>" +
@@ -6128,6 +6641,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           "<td>" + esc(row.used) + "</td>" +
           '<td title="本月已用量 / 本月已用天数">' + esc(resourceAverageUsage(row)) + "</td>" +
           "<td>" + esc(row.percent) + "</td>" +
+          resourceReplenishmentMarkup(row) +
           "<td>" + esc(row.time) + "</td>" +
         "</tr>";
       }
@@ -6148,9 +6662,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               "</div>" +
             "</div>" +
             '<div class="resource-table">' +
-              '<table><colgroup><col style="width:12%"><col style="width:15%"><col style="width:12%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:11%"><col style="width:16%"></colgroup>' +
-                '<thead><tr><th>供应商</th><th>群组名称</th><th>群组简称</th><th>剩余用量(GB)</th><th>使用量(GB)</th><th title="本月已用量 / 本月已用天数">本月日均用量（GB）</th><th>使用量百分比</th><th>时间</th></tr></thead>' +
-                "<tbody>" + rows.map(resourceRowMarkup).join("") + "</tbody>" +
+              '<table><colgroup><col style="width:12%"><col style="width:15%"><col style="width:12%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:11%"><col style="width:18%"><col style="width:16%"></colgroup>' +
+                '<thead><tr><th>供应商</th><th>群组名称</th><th>群组简称</th><th>剩余用量(GB)</th><th>使用量(GB)</th><th title="本月已用量 / 本月已用天数">本月日均用量（GB）</th><th>使用量百分比</th>' +
+                  '<th><span class="resource-column-title">建议补卡数量（张）' + infoIconMarkup("resource-replenishment-info", "建议补卡数量（张）计算说明") + '</span></th><th>时间</th></tr></thead>' +
+                "<tbody>" + (rows.length ? rows.map(resourceRowMarkup).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的资源池</td></tr>') + "</tbody>" +
               "</table>" +
             "</div>" +
           "</div>" +
@@ -7161,25 +7676,167 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function simDetailMarkup() {
         var row = currentSimDetailRow();
-        return '<div class="panel page-panel">' +
-          '<div class="detail-grid">' +
-            detailItemMarkup("ICCID", row.iccid) +
-            detailItemMarkup("MSISDN", row.msisdn) +
-            detailItemMarkup("IMSI", row.imsi) +
-            detailItemMarkup("所属商户", row.merchant) +
-            detailItemMarkup("供应商", row.vendor) +
-            detailItemMarkup("运营商", row.carrier) +
-            detailItemMarkup("卡状态", row.cardStatus) +
-            detailItemMarkup("卡形态", row.form) +
-            detailItemMarkup("写卡状态", row.writeStatus) +
-            detailItemMarkup("是否分配", row.allocated) +
-            detailItemMarkup("ESIM芯片供应商", row.esimChipVendor) +
-            detailItemMarkup("所属业务平台", row.businessPlatform) +
-            detailItemMarkup("服务开始时间", row.serviceStart) +
-            detailItemMarkup("服务到期时间", row.serviceEnd) +
-            detailItemMarkup("创建时间", row.created) +
-          "</div>" +
-        "</div>";
+        var tabs = [{ id: "info", name: "SIM卡信息" }, { id: "logs", name: "操作日志" },
+          { id: "usage", name: "单卡用量" }, { id: "whitelist", name: "白名单" }];
+        return '<div class="panel page-panel sim-detail-page">' +
+          '<div class="inner-tabs sim-detail-tabs" role="tablist" aria-label="SIM卡详情">' + tabs.map(function (tab) {
+            var active = state.simDetailTab === tab.id;
+            return '<button class="inner-tab ' + (active ? 'active' : '') + '" role="tab" id="simDetailTab-' + tab.id +
+              '" aria-controls="simDetailPanel" aria-selected="' + active + '" tabindex="' + (active ? '0' : '-1') +
+              '" data-action="sim-detail-tab" data-tab="' + tab.id + '">' + tab.name + '</button>';
+          }).join("") + '</div>' +
+          '<div class="sim-detail-content" id="simDetailPanel" role="tabpanel" aria-labelledby="simDetailTab-' + state.simDetailTab + '">' +
+            (state.simDetailTab === "info" ? simDetailInfoMarkup(row) : simDetailTabContent(row)) + '</div></div>';
+      }
+
+      function simInfoItemMarkup(label, value, key, refresh) {
+        var text = value === null || value === undefined || value === "" ? "--" : String(value);
+        return '<div class="sim-info-item" data-doc-field="' + esc(key) + '"><dt>' + esc(label) + '</dt><dd><span class="sim-info-value">' +
+          '<span>' + esc(text) + '</span>' + (refresh ? '<button class="refresh-card" data-action="sim-detail-refresh" data-field="' + esc(key) +
+            '" aria-label="刷新' + esc(label) + '" title="刷新' + esc(label) + '">↻</button>' : '') + '</span></dd></div>';
+      }
+
+      function simDetailInfoMarkup(row) {
+        var today = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Shanghai" });
+        var dailyRecords = simTrafficRowsSeed.filter(function (item) { return item.iccid === row.iccid && item.date === today; });
+        var dailyFlow = dailyRecords.length ? dailyRecords.reduce(function (sum, item) { return sum + item.flow; }, 0).toFixed(2) : row.dayFlow;
+        return '<section class="sim-info-section" aria-labelledby="simBasicTitle"><header class="sim-info-head"><h3 id="simBasicTitle">卡片基本信息</h3></header>' +
+          '<dl class="sim-info-grid">' +
+            simInfoItemMarkup("ICCID", row.iccid, "iccid") +
+            simInfoItemMarkup("IMSI", row.imsi, "imsi") +
+            simInfoItemMarkup("MSISDN", row.msisdn, "msisdn") +
+            simInfoItemMarkup("归属地", row.location, "location") +
+            simInfoItemMarkup("运营商", row.carrier, "carrier") +
+            simInfoItemMarkup("卡片形态", row.form, "form") +
+            simInfoItemMarkup("SIM卡用途", row.cardUsage, "cardUsage") +
+            simInfoItemMarkup("极速上网", row.fastNetwork, "fastNetwork") +
+            simInfoItemMarkup("供应商", row.vendor, "vendor") +
+            simInfoItemMarkup("商户名称", row.merchant, "merchant") +
+            simInfoItemMarkup("运营商套餐", row.carrierPackage, "carrierPackage") +
+            simInfoItemMarkup("导入批次号", row.importBatchNo, "importBatchNo") +
+            simInfoItemMarkup("分发批次号", row.distributionBatchNo, "distributionBatchNo") + '</dl></section>' +
+          '<section class="sim-info-section" aria-labelledby="simUsageTitle"><header class="sim-info-head"><h3 id="simUsageTitle">卡片使用情况</h3>' +
+            '<div class="sim-info-actions">' + [{ id: "stop", name: "停用" }, { id: "activate", name: "激活" },
+              { id: "package", name: "套餐订购" }, { id: "speed", name: "SIM卡限速" }, { id: "realname", name: "注销实名登记" }].map(function (operation) {
+              return '<button class="btn btn-gray" data-action="sim-detail-operate" data-operation="' + operation.id + '">' + operation.name + '</button>';
+            }).join("") + '<button class="btn btn-gray" data-action="reset-sim-data-service" data-iccid="' + esc(row.iccid) +
+              '" data-sim-reset-cell="' + esc(row.iccid) + '" aria-label="重置' + esc(row.iccid) + '的数据服务">重置数据服务</button>' +
+            '</div></header><dl class="sim-info-grid">' +
+            simInfoItemMarkup("卡状态", row.cardStatus, "cardStatus", true) +
+            simInfoItemMarkup("实名状态", row.realNameResult, "realNameResult", true) +
+            simInfoItemMarkup("开户日期", row.accountOpenedAt, "accountOpenedAt") +
+            simInfoItemMarkup("最近激活时间", row.activationTime, "activationTime") +
+            simInfoItemMarkup("首次激活时间", row.firstActivationTime, "firstActivationTime") +
+            simInfoItemMarkup("服务到期时间", row.serviceEnd, "serviceEnd") +
+            simInfoItemMarkup("当日流量（MB）", dailyFlow, "dayFlow", true) +
+            simInfoItemMarkup("当月流量（MB）", row.monthFlow, "monthFlow", true) +
+            simInfoItemMarkup("总使用流量（MB）", row.usedFlow, "usedFlow") + '</dl></section>';
+      }
+
+      function simDetailTabContent(row) {
+        if (state.simDetailTab === "logs") {
+          var logs = state.simDetailLogs.filter(function (item) { return item.iccid === row.iccid && item.source === state.selectedSimSource; });
+          return '<div class="table-shell"><table style="min-width:860px"><thead><tr><th>操作类型</th><th>操作前</th><th>操作后</th><th>操作人</th><th>操作时间</th></tr></thead><tbody>' +
+            (logs.length ? logs.map(function (item) {
+              return '<tr><td>' + esc(item.operation) + '</td><td>' + esc(item.before) + '</td><td>' + esc(item.after) +
+                '</td><td>admin</td><td>' + esc(item.time) + '</td></tr>';
+            }).join("") : '<tr class="empty-row"><td colspan="5">暂无操作日志</td></tr>') + '</tbody></table></div>';
+        }
+        if (state.simDetailTab === "usage") {
+          var records = simTrafficRowsSeed.filter(function (item) { return item.iccid === row.iccid; });
+          return '<p class="sim-detail-context">ICCID：' + esc(row.iccid) + '</p><div class="table-shell"><table style="min-width:650px"><thead><tr>' +
+            '<th>日期</th><th>流量值（MB）</th><th>创建时间</th></tr></thead><tbody>' + (records.length ? records.map(function (item) {
+              return '<tr><td>' + esc(item.date) + '</td><td>' + item.flow.toFixed(2) + '</td><td>' + esc(item.created) + '</td></tr>';
+            }).join("") : '<tr class="empty-row"><td colspan="3">暂无流量记录</td></tr>') + '</tbody></table></div>';
+        }
+        return '<div class="sim-detail-empty">暂无白名单记录</div>';
+      }
+
+      function openSimDetail(iccid, source) {
+        if (state.selectedSimIccid !== iccid || state.selectedSimSource !== source) { state.simDetailTab = "info"; }
+        state.selectedSimIccid = iccid;
+        state.selectedSimSource = source;
+        openPage("simDetail");
+        render();
+      }
+
+      function simDetailOperationName() {
+        return { stop: "停用", activate: "激活", package: "套餐订购", speed: "SIM卡限速", realname: "注销实名登记" }[state.simDetailOperation];
+      }
+
+      function openSimDetailOperation(operation, trigger) {
+        var row = currentSimDetailRow();
+        if (["stop", "activate"].indexOf(operation) !== -1 && row.cardStatus === "已销号") { toast("已销号的SIM卡不支持此操作"); return; }
+        if ((operation === "stop" && row.cardStatus === "已停用") || (operation === "activate" && row.cardStatus === "已激活")) { toast("当前SIM卡已处于该状态"); return; }
+        state.simDetailOperation = operation;
+        state.simDetailOperationValue = operation === "speed" ? (row.speedLimit || "否") : "";
+        state.simDetailReturnFocus = trigger;
+        state.openSelect = "";
+        document.body.classList.add("sim-detail-dialog-open");
+        renderOverlay();
+        setSimResetBackgroundInert(true);
+        document.querySelector('.sim-detail-dialog [data-action="sim-detail-cancel"]').focus();
+      }
+
+      function closeSimDetailOperation() {
+        var trigger = state.simDetailReturnFocus;
+        state.simDetailOperation = "";
+        state.openSelect = "";
+        document.body.classList.remove("sim-detail-dialog-open");
+        renderOverlay();
+        setSimResetBackgroundInert(false);
+        if (trigger && trigger.isConnected) { trigger.focus(); }
+      }
+
+      function simDetailOperationMarkup() {
+        var operation = state.simDetailOperation;
+        var name = simDetailOperationName();
+        var field = "";
+        if (operation === "package" || operation === "speed") {
+          var options = operation === "package" ? Array.from(new Set(state.simRows.map(function (row) { return row.carrierPackage; }).filter(Boolean))) : ["否", "是"];
+          field = '<div class="form-row compact"><div class="form-label required" id="simDetailOperationLabel">' + (operation === "package" ? "运营商套餐" : "是否限速") +
+            '</div><div class="form-control">' + selectMarkup("simDetailOperationValue", state.simDetailOperationValue, options, "请选择", false) + '</div></div>';
+        }
+        return '<div class="modal-mask"><section class="batch-dialog sim-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="simDetailOperationTitle">' +
+          '<header class="modal-head"><h2 id="simDetailOperationTitle">' + name + '</h2><button class="modal-close" data-action="sim-detail-cancel" aria-label="关闭' + name + '">×</button></header>' +
+          '<div class="dialog-body config-body"><p class="sim-detail-context">ICCID：' + esc(currentSimDetailRow().iccid) + '</p>' +
+          (field || '<p>确认对当前SIM卡执行“' + name + '”操作吗？</p>') +
+          '<div class="dialog-actions"><button class="btn btn-gray" data-action="sim-detail-cancel">取消</button>' +
+          '<button class="btn btn-primary" data-action="sim-detail-confirm">确认</button></div></div></section></div>';
+      }
+
+      function confirmSimDetailOperation() {
+        var row = currentSimDetailRow();
+        var operation = state.simDetailOperation;
+        if (!operation) { return; }
+        if ((operation === "package" || operation === "speed") && !state.simDetailOperationValue) {
+          toast(operation === "package" ? "请选择运营商套餐" : "请选择是否限速");
+          document.querySelector('.sim-detail-dialog [data-action="toggle-select"]').focus();
+          return;
+        }
+        var key = { stop: "cardStatus", activate: "cardStatus", package: "carrierPackage", speed: "speedLimit", realname: "realNameResult" }[operation];
+        var value = { stop: "已停用", activate: "已激活", realname: "未实名认证" }[operation] || state.simDetailOperationValue;
+        var name = simDetailOperationName();
+        state.simDetailLogs.unshift({ iccid: row.iccid, source: state.selectedSimSource, operation: name, before: row[key] || "--", after: value,
+          time: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" }) });
+        row[key] = value;
+        if (operation === "activate") {
+          row.activationTime = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Shanghai" });
+          if (!row.firstActivationTime) { row.firstActivationTime = row.activationTime; }
+        }
+        closeSimDetailOperation();
+        renderContent();
+        document.querySelector('.sim-info-actions [data-operation="' + operation + '"]').focus();
+        toast(name + "成功");
+      }
+
+      function redlistRemainingBalance(row) {
+        var values = [row.quota, row.balance];
+        if (values.some(function (value) { return value == null || String(value).trim() === "" || ["number", "string"].indexOf(typeof value) === -1 || !isFinite(Number(value)); })) { return "--"; }
+        var cents = values.map(function (value) { return Math.round(Number(value) * 100); });
+        var total = cents[0] + cents[1];
+        if (!cents.every(Number.isSafeInteger) || !Number.isSafeInteger(total)) { return "--"; }
+        return (total / 100).toFixed(2);
       }
 
       function redlistExpiryStatus(row) {
@@ -7241,7 +7898,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (!rows.length) { toast("暂无可导出的红名单账户，请调整筛选条件"); return; }
         var lines = [redlistColumns.map(function (column) { return column.name; })].concat(rows.map(function (row) {
           return redlistColumns.map(function (column) {
-            return column.key === "expiryStatus" ? redlistExpiryStatus(row) : row[column.key];
+            return column.key === "expiryStatus" ? redlistExpiryStatus(row) :
+              (column.key === "remainingBalance" ? redlistRemainingBalance(row) : row[column.key]);
           });
         }));
         downloadTrafficCsv(lines, "红名单账户.csv");
@@ -7270,6 +7928,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             (state.redlistError ? '<div class="traffic-filter-error" id="redlistFilterError" role="alert">' + esc(state.redlistError) + '</div>' : '') +
           '</div><div class="operate-bar"><div class="operate-actions">' +
             '<button class="btn btn-primary" data-action="redlist-update">更新红名单账户</button>' +
+            '<button class="btn btn-gray" data-action="open-redlist-notification">通知配置</button>' +
             '<button class="btn btn-gray" data-action="export-redlist">导出</button></div>' +
           '<div class="redlist-update-note" role="note">' +
             '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="8" cy="8" r="6"></circle><path d="M8 4v4l2.5 1.5" stroke-linecap="round"></path></svg>' +
@@ -7277,19 +7936,178 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<div class="table-shell"><table><colgroup>' + redlistColumns.map(function (column) {
             return '<col style="width:' + column.width + 'px">';
           }).join("") + '</colgroup><thead><tr>' + redlistColumns.map(function (column) {
-            return '<th scope="col">' + esc(column.name) + '</th>';
+            return '<th scope="col">' + (column.key === "remainingBalance" ?
+              '<span class="redlist-column-title">' + esc(column.name) + infoIconMarkup("redlist-balance-info", "剩余余额计算说明") + '</span>' : esc(column.name)) + '</th>';
           }).join("") + '</tr></thead><tbody>' + (pageRows.length ? pageRows.map(function (row) {
             return '<tr>' + redlistColumns.map(function (column) {
               if (column.key === "expiryStatus") {
                 var status = redlistExpiryStatus(row);
                 return '<td><span class="' + (status === "已到期" ? "redlist-status-expired" : "redlist-status-current") + '">' + status + '</span></td>';
               }
-              return '<td title="' + esc(row[column.key]) + '">' + esc(row[column.key]) + '</td>';
+              var value = column.key === "remainingBalance" ? redlistRemainingBalance(row) : row[column.key];
+              return '<td title="' + esc(value) + '">' + esc(value) + '</td>';
             }).join("") + '</tr>';
-          }).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据，请调整筛选条件或重置</td></tr>') +
+          }).join("") : '<tr class="empty-row"><td colspan="' + redlistColumns.length + '">暂无符合条件的数据，请调整筛选条件或重置</td></tr>') +
           '</tbody></table></div>' + listPaginationMarkup(rows.length, totalPages, {
             currentPage: state.redlistPage, pageAction: "redlist-page", jumpAction: "redlist-jump", label: "红名单账户分页"
           }) + '</div>';
+      }
+
+      function validRedlistNotifyTime(value) {
+        return typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+      }
+
+      function readRedlistNotificationConfig() {
+        try {
+          var config = JSON.parse(window.localStorage.getItem(redlistNotificationStorageKey) || "null");
+          if (!config || !Number.isSafeInteger(config.days) || config.days < 1 ||
+              ["once", "daily"].indexOf(config.frequency) === -1 || !validRedlistNotifyTime(config.time) || !Array.isArray(config.recipientIds)) { return null; }
+          var ids = Array.from(new Set(config.recipientIds)).filter(function (id) {
+            return redlistNotificationAccounts.some(function (account) { return account.id === id; });
+          });
+          if (!ids.length) { return null; }
+          return { days: config.days, frequency: config.frequency, time: config.time, timeZone: "Asia/Shanghai", recipientIds: ids };
+        } catch (error) { return null; }
+      }
+
+      function openRedlistNotification() {
+        var config = state.redlistNotifyConfig;
+        state.redlistNotifyDraft = config ? { days: String(config.days), frequency: config.frequency, time: config.time, recipientIds: config.recipientIds.slice() } :
+          { days: "", frequency: "once", time: "10:00", recipientIds: [] };
+        state.redlistNotifySearch = "";
+        state.redlistNotifyErrors = {};
+        var hadDropdown = state.openSelect || state.openCombo;
+        state.openSelect = "";
+        state.openCombo = "";
+        dismissDatePicker();
+        if (hadDropdown) { renderContent(); }
+        state.redlistNotifyOpen = true;
+        document.body.classList.add("redlist-notify-open");
+        document.querySelector(".layout").inert = true;
+        document.querySelector(".topbar").inert = true;
+        renderOverlay();
+        document.getElementById("redlistNotifyDays").focus();
+      }
+
+      function closeRedlistNotification() {
+        state.redlistNotifyOpen = false;
+        state.redlistNotifyDraft = null;
+        state.redlistNotifySearch = "";
+        state.redlistNotifyErrors = {};
+        document.body.classList.remove("redlist-notify-open");
+        document.querySelector(".layout").inert = false;
+        document.querySelector(".topbar").inert = false;
+        renderOverlay();
+        var opener = document.querySelector('[data-action="open-redlist-notification"]');
+        if (opener) { opener.focus({ preventScroll: true }); }
+      }
+
+      function redlistNotifyErrorMarkup(field) {
+        var message = state.redlistNotifyErrors[field] || "";
+        return '<div class="redlist-notify-error" id="redlistNotifyError-' + field + '" role="alert"' + (message ? '' : ' hidden') + '>' + esc(message) + '</div>';
+      }
+
+      function redlistNotifyRecipientsMarkup() {
+        var draft = state.redlistNotifyDraft;
+        var keyword = state.redlistNotifySearch.trim().toLowerCase();
+        var accounts = redlistNotificationAccounts.filter(function (account) {
+          return !keyword || account.name.toLowerCase().indexOf(keyword) !== -1 || account.phone.indexOf(keyword) !== -1;
+        });
+        var selected = redlistNotificationAccounts.filter(function (account) { return draft.recipientIds.indexOf(account.id) !== -1; });
+        return '<div class="redlist-notify-account-list" role="group" aria-label="通知账号列表"><table>' +
+          '<colgroup><col style="width:42px"><col style="width:32%"><col></colgroup><thead><tr><th>选择</th><th>姓名</th><th>电话号码</th></tr></thead><tbody>' +
+          (accounts.length ? accounts.map(function (account) {
+            return '<tr><td><input type="checkbox" data-action="redlist-notify-recipient" data-id="' + account.id + '" aria-label="选择账号 ' + esc(account.name + ' ' + account.phone) + '"' +
+              (draft.recipientIds.indexOf(account.id) !== -1 ? ' checked' : '') + '></td><td>' + esc(account.name) + '</td><td>' + esc(account.phone) + '</td></tr>';
+          }).join("") : '<tr><td colspan="3">暂无匹配账号，请调整搜索条件</td></tr>') + '</tbody></table></div>' +
+          '<div class="redlist-notify-help" id="redlistNotifyRecipientHelp" role="status">已选择 ' + selected.length + ' 个账号，可多选</div>' +
+          '<div class="redlist-notify-selected">' + selected.map(function (account) {
+            return '<span class="redlist-notify-chip">' + esc(account.name + ' ' + account.phone) +
+              '<button data-action="remove-redlist-notify-recipient" data-id="' + account.id + '" aria-label="移除通知账号 ' + esc(account.name + ' ' + account.phone) + '">×</button></span>';
+          }).join("") + '</div>' + redlistNotifyErrorMarkup("recipients");
+      }
+
+      function renderRedlistNotifyRecipients(focusId) {
+        var list = document.querySelector(".redlist-notify-account-list");
+        var scrollTop = focusId && list ? list.scrollTop : 0;
+        document.getElementById("redlistNotifyRecipients").innerHTML = redlistNotifyRecipientsMarkup();
+        if (focusId) {
+          document.querySelector(".redlist-notify-account-list").scrollTop = scrollTop;
+          var control = document.querySelector('[data-action="redlist-notify-recipient"][data-id="' + focusId + '"]');
+          if (control) { control.focus({ preventScroll: true }); }
+        }
+      }
+
+      function clearRedlistNotifyError(field) {
+        delete state.redlistNotifyErrors[field];
+        var error = document.getElementById("redlistNotifyError-" + field);
+        if (error) { error.textContent = ""; error.hidden = true; }
+        var control = document.getElementById({ days: "redlistNotifyDays", time: "redlistNotifyTime", recipients: "redlistNotifySearch" }[field]);
+        if (field !== "save" && control) { control.removeAttribute("aria-invalid"); }
+      }
+
+      function saveRedlistNotification() {
+        var draft = state.redlistNotifyDraft;
+        var days = Number(draft.days);
+        var time = draft.time.trim();
+        state.redlistNotifyErrors = {};
+        if (!/^\d+$/.test(draft.days) || !Number.isSafeInteger(days) || days < 1) {
+          state.redlistNotifyErrors.days = "请输入大于或等于1的整数天数";
+        }
+        if (!validRedlistNotifyTime(time)) { state.redlistNotifyErrors.time = "请输入有效的24小时制时间，例如09:30"; }
+        if (!draft.recipientIds.length) { state.redlistNotifyErrors.recipients = "请至少选择一个通知账号"; }
+        ["days", "time", "recipients", "save"].forEach(function (field) {
+          var error = document.getElementById("redlistNotifyError-" + field);
+          var message = state.redlistNotifyErrors[field] || "";
+          error.textContent = message;
+          error.hidden = !message;
+        });
+        var dayInput = document.getElementById("redlistNotifyDays");
+        var timeInput = document.getElementById("redlistNotifyTime");
+        var searchInput = document.getElementById("redlistNotifySearch");
+        dayInput.setAttribute("aria-invalid", String(!!state.redlistNotifyErrors.days));
+        timeInput.setAttribute("aria-invalid", String(!!state.redlistNotifyErrors.time));
+        searchInput.setAttribute("aria-invalid", String(!!state.redlistNotifyErrors.recipients));
+        if (state.redlistNotifyErrors.days || state.redlistNotifyErrors.time || state.redlistNotifyErrors.recipients) {
+          (state.redlistNotifyErrors.days ? dayInput : (state.redlistNotifyErrors.time ? timeInput : searchInput)).focus();
+          return;
+        }
+        var config = { days: days, frequency: draft.frequency, time: time, timeZone: "Asia/Shanghai", recipientIds: draft.recipientIds.slice() };
+        try { window.localStorage.setItem(redlistNotificationStorageKey, JSON.stringify(config)); }
+        catch (error) {
+          var storageError = document.getElementById("redlistNotifyError-save");
+          storageError.textContent = "配置保存失败，请检查浏览器存储权限后重试";
+          storageError.hidden = false;
+          return;
+        }
+        state.redlistNotifyConfig = config;
+        closeRedlistNotification();
+        toast("通知配置已保存");
+      }
+
+      function redlistNotificationMarkup() {
+        var draft = state.redlistNotifyDraft;
+        return '<div class="modal-mask redlist-notify-mask"><section class="batch-dialog redlist-notify-dialog" role="dialog" aria-modal="true" aria-labelledby="redlistNotifyTitle">' +
+          '<header class="modal-head"><h2 id="redlistNotifyTitle">通知配置</h2><button class="modal-close" data-action="close-redlist-notification" aria-label="关闭通知配置">×</button></header>' +
+          '<div class="dialog-body">' +
+            '<div class="form-row"><label class="form-label required" for="redlistNotifyDays">提前通知天数</label><div class="form-control">' +
+              '<div class="redlist-notify-inline"><input class="text-input" id="redlistNotifyDays" type="number" min="1" step="1" inputmode="numeric" data-action="redlist-notify-days" value="' + esc(draft.days) + '" placeholder="请输入天数" aria-required="true" aria-describedby="redlistNotifyDaysHelp redlistNotifyError-days"><span>天</span></div>' +
+              '<div class="redlist-notify-help" id="redlistNotifyDaysHelp">距离红名单到期指定天数时通知。</div>' + redlistNotifyErrorMarkup("days") + '</div></div>' +
+            '<div class="form-row"><div class="form-label required" id="redlistNotifyFrequencyLabel">通知频率</div><div class="form-control">' +
+              '<fieldset class="redlist-notify-frequency" aria-labelledby="redlistNotifyFrequencyLabel">' +
+              [{ value: "once", label: "仅通知一次" }, { value: "daily", label: "每日通知" }].map(function (item) {
+                return '<label><input type="radio" name="redlistNotifyFrequency" data-action="redlist-notify-frequency" value="' + item.value + '"' + (draft.frequency === item.value ? ' checked' : '') + '>' + item.label + '</label>';
+              }).join("") + '</fieldset></div></div>' +
+            '<div class="form-row"><label class="form-label required" for="redlistNotifyTime">通知时间</label><div class="form-control">' +
+              '<div class="redlist-notify-inline"><input class="text-input" id="redlistNotifyTime" data-action="redlist-notify-time" value="' + esc(draft.time) + '" placeholder="HH:mm" maxlength="5" autocomplete="off" aria-required="true" aria-describedby="redlistNotifyTimeHelp redlistNotifyError-time"></div>' +
+              '<div class="redlist-notify-help" id="redlistNotifyTimeHelp">使用24小时制（HH:mm），按北京时间发送通知。</div>' + redlistNotifyErrorMarkup("time") + '</div></div>' +
+            '<div class="form-row"><div class="form-label required" id="redlistNotifyRecipientsLabel">通知对象</div><div class="form-control">' +
+              '<div class="redlist-notify-search combo"><input class="text-input" id="redlistNotifySearch" data-action="redlist-notify-search" value="' + esc(state.redlistNotifySearch) + '" placeholder="搜索姓名或电话号码" aria-label="搜索通知账号姓名或电话号码" aria-describedby="redlistNotifyRecipientHelp redlistNotifyError-recipients">' +
+                '<button class="clear-value" data-action="clear-redlist-notify-search" aria-label="清空账号搜索"' + (state.redlistNotifySearch ? '' : ' hidden') + '>×</button></div>' +
+              '<div id="redlistNotifyRecipients">' + redlistNotifyRecipientsMarkup() + '</div></div></div>' +
+              redlistNotifyErrorMarkup("save") +
+          '</div><footer class="dialog-actions"><button class="btn btn-gray" data-action="close-redlist-notification">取消</button>' +
+            '<button class="btn btn-primary" data-action="save-redlist-notification">保存</button></footer></section></div>';
       }
 
       function accountMarkup() {
@@ -7317,14 +8135,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         "</div>";
       }
 
-      function groupPaginationMarkup(totalRows, totalPages) {
+      function groupPaginationMarkup(totalGroups, totalPages) {
         var pageButtons = [];
         var i;
         for (i = 1; i <= totalPages; i += 1) {
           pageButtons.push('<button class="page-btn ' + (state.groupPage === i ? "active" : "") + '" data-action="group-page" data-page="' + i + '">' + i + "</button>");
         }
         return '<div class="pagination">' +
-          '<span>共 ' + totalRows + ' 条</span>' +
+          '<span>共 ' + totalGroups + ' 条</span>' +
           '<span class="select-mini">20条/页&nbsp;⌄</span>' +
           '<button class="page-nav" data-action="group-page-prev" ' + (state.groupPage <= 1 ? "disabled" : "") + ">‹</button>" +
           pageButtons.join("") +
@@ -7334,11 +8152,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function groupMarkup() {
-        var rows = filteredGroupRows();
-        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
-        if (state.groupPage > totalPages) { state.groupPage = totalPages; }
+        var groups = groupedGroupRows();
+        var totalPages = Math.max(1, Math.ceil(groups.length / 20));
+        state.groupPage = Math.max(1, Math.min(totalPages, state.groupPage));
         var start = (state.groupPage - 1) * 20;
-        var pageRows = rows.slice(start, start + 20);
+        var pageGroups = groups.slice(start, start + 20);
         return '<div class="panel page-panel">' +
           '<div class="filters">' +
             '<div class="filter-grid">' +
@@ -7353,12 +8171,17 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           "</div>" +
           '<div class="operate-bar"><button class="btn btn-primary" data-action="group-sync">同步</button></div>' +
           '<div class="table-shell group-table">' +
-            '<table><colgroup><col style="width:14%"><col style="width:20%"><col style="width:14%"><col style="width:10%"><col style="width:13%"><col style="width:15%"><col style="width:14%"><col style="width:10%"></colgroup>' +
-              "<thead><tr><th>供应商</th><th>群组名称</th><th>群组简称</th><th>流量类型</th><th>操作人</th><th>更新时间</th><th>备注</th><th>操作</th></tr></thead>" +
-              "<tbody>" + (pageRows.length ? pageRows.map(groupRowMarkup).join("") : '<tr class="empty-row"><td colspan="8">暂无符合条件的数据</td></tr>') + "</tbody>" +
+            '<table><colgroup><col style="width:260px"><col style="width:170px"><col style="width:160px"><col style="width:100px"><col style="width:180px"><col style="width:130px"><col style="width:110px"><col style="width:180px"><col style="width:140px"><col style="width:90px"></colgroup>' +
+              '<thead><tr><th>群组名称</th><th>供应商</th><th>群组简称</th><th>流量类型</th>' +
+                '<th><span class="group-field-title">单卡流量补给量（GB）' + infoIconMarkup("group-field-info", "单卡流量补给量（GB）说明", "singleCardSupply") + '</span></th>' +
+                '<th><span class="group-field-title">补池单价' + infoIconMarkup("group-field-info", "补池单价说明", "replenishmentPrice") + '</span></th>' +
+                '<th>操作人</th><th>更新时间</th><th>备注</th><th>操作</th></tr></thead>' +
+              "<tbody>" + (pageGroups.length ? pageGroups.map(function (group) {
+                return group.map(function (row, index) { return groupRowMarkup(row, index === 0 ? group.length : 0); }).join("");
+              }).join("") : '<tr class="empty-row"><td colspan="10">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
           "</div>" +
-          groupPaginationMarkup(rows.length, totalPages) +
+          groupPaginationMarkup(groups.length, totalPages) +
         "</div>";
       }
 
@@ -7380,8 +8203,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             '<button class="btn btn-primary" data-action="open-batch-task-add">批量操作新增</button>' +
             '<button class="btn btn-primary" data-action="download-batch-task-template">下载模版</button>' +
           "</div></div>" +
-          '<div class="table-shell">' +
-            '<table><colgroup><col style="width:8%"><col style="width:18%"><col style="width:13%"><col style="width:10%"><col style="width:10%"><col style="width:17%"><col style="width:10%"><col style="width:15%"><col style="width:9%"></colgroup>' +
+          '<div class="table-shell batch-task-table">' +
+            '<table><colgroup><col style="width:80px"><col style="width:180px"><col style="width:210px"><col style="width:100px"><col style="width:100px"><col style="width:200px"><col style="width:100px"><col style="width:190px"><col style="width:120px"></colgroup>' +
               "<thead><tr><th>ID</th><th>批次号</th><th>操作类型</th><th>操作数量</th><th>状态</th><th>备注</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead>" +
               "<tbody>" + (rows.length ? rows.map(batchTaskRowMarkup).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
@@ -7407,7 +8230,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<div class="operate-bar"><div class="operate-actions"><span>批次号：' + esc(task ? task.batchNo : "-") + "</span>" +
             (task && task.targetGroupName ? '<span>所属群组：' + esc(task.targetGroupName) + '</span>' : "") + "</div></div>" +
           '<div class="table-shell">' +
-            '<table><colgroup><col style="width:70px"><col style="width:150px"><col style="width:190px"><col style="width:120px"><col style="width:110px"><col style="width:130px"><col style="width:110px"><col style="width:100px"><col style="width:80px"><col style="width:280px"><col style="width:180px"><col style="width:100px"><col style="width:150px"></colgroup>' +
+            '<table><colgroup><col style="width:70px"><col style="width:150px"><col style="width:190px"><col style="width:210px"><col style="width:110px"><col style="width:130px"><col style="width:110px"><col style="width:100px"><col style="width:80px"><col style="width:280px"><col style="width:180px"><col style="width:100px"><col style="width:150px"></colgroup>' +
               "<thead><tr><th>序号</th><th>批次号</th><th>ICCID</th><th>操作类型</th><th>操作前状态</th><th>操作结果</th><th>供应商</th><th>运营商</th><th>状态</th><th>失败原因</th><th>备注</th><th>操作人</th><th>变更时间</th></tr></thead>" +
               "<tbody>" + (rows.length ? rows.map(batchTaskDetailRowMarkup).join("") : '<tr class="empty-row"><td colspan="13">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
@@ -7712,8 +8535,34 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         "</div>";
       }
 
+      function groupEditSupplyMarkup(key, label, value) {
+        var error = state.groupEditErrors[key] || "";
+        var id = "groupEdit-" + key;
+        return '<div class="form-row compact"><div class="form-label required"><span class="group-field-title"><label for="' + id + '">' + label + '</label>' +
+          infoIconMarkup("group-field-info", label + "说明", key) + '</span></div>' +
+          '<div class="form-control"><input id="' + id + '" class="text-input" type="number" min="0" step="any" inputmode="decimal" required aria-required="true"' +
+            ' data-action="group-edit-input" data-key="' + key + '" value="' + esc(value == null ? "" : value) + '" placeholder="请输入' + label +
+            '" aria-invalid="' + !!error + '" aria-describedby="' + id + '-error">' +
+            '<p class="group-edit-error" id="' + id + '-error" role="alert"' + (error ? '' : ' hidden') + '>' + esc(error) + '</p></div></div>';
+      }
+
+      function closeGroupEdit() {
+        var id = state.groupEditId;
+        hideManageStopPopover();
+        state.groupEditId = null;
+        state.groupEditDraft = null;
+        state.groupEditErrors = {};
+        state.openSelect = "";
+        document.body.classList.remove("group-edit-open");
+        setSimResetBackgroundInert(false);
+        renderOverlay();
+        var opener = document.querySelector('[data-action="edit-group"][data-id="' + id + '"]') || document.querySelector('[data-action="group-search"]');
+        if (opener) { opener.focus({ preventScroll: true }); }
+      }
+
       function groupEditMarkup(row) {
-        var draft = state.groupEditDraft || { shortName: row.shortName, flowType: row.flowType, remark: row.remark };
+        var draft = state.groupEditDraft || { shortName: row.shortName, flowType: row.flowType, remark: row.remark,
+          singleCardSupply: row.singleCardSupply, replenishmentPrice: row.replenishmentPrice };
         return '<div class="modal-mask">' +
           '<section class="group-edit-dialog" role="dialog" aria-modal="true" aria-label="编辑群组">' +
             '<header class="modal-head"><h2>编辑</h2><button class="modal-close" data-action="close-group-edit">×</button></header>' +
@@ -7722,6 +8571,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<div class="form-row compact"><div class="form-label required">群组名称</div><div class="form-control"><input class="text-input" value="' + esc(row.groupName) + '" disabled></div></div>' +
               '<div class="form-row compact"><div class="form-label required">群组简称</div><div class="form-control"><input id="groupEditShortName" class="text-input" data-action="group-edit-input" value="' + esc(draft.shortName) + '" placeholder="请输入群组简称"></div></div>' +
               '<div class="form-row compact"><div class="form-label required">流量类型</div><div class="form-control">' + selectMarkup("groupEditFlowType", draft.flowType, flowTypeOptions, "请选择流量类型", false) + "</div></div>" +
+              groupEditSupplyMarkup("singleCardSupply", "单卡流量补给量（GB）", draft.singleCardSupply) +
+              groupEditSupplyMarkup("replenishmentPrice", "补池单价", draft.replenishmentPrice) +
               '<div class="form-row compact"><div class="form-label">备注</div><div class="form-control"><input id="groupEditRemark" class="text-input" data-action="group-edit-input" value="' + esc(draft.remark) + '" placeholder="请输入备注"></div></div>' +
               '<div class="dialog-actions"><button class="btn btn-gray" data-action="close-group-edit">取消</button><button class="btn btn-primary" data-action="save-group-edit">提交</button></div>' +
             "</div>" +
@@ -7734,13 +8585,43 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<div class="batch-task-error" id="batchTaskAddError" role="alert">' + esc(state.batchTaskAddError) + '</div>' : "";
       }
 
+      function batchTaskPoolEstimateMarkup() {
+        if (state.batchTaskAddType !== "激活卡" || state.batchTaskAddPoolUsage !== "资源池补池" ||
+            state.batchTaskFileDetecting || state.batchTaskFileDetectionError || !state.batchTaskIccids || !state.batchTaskIccids.length) { return ""; }
+        var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
+        if (!group) { return ""; }
+        var pools = resourceBaseRows().filter(function (pool) { return pool.supplier === group.supplier && pool.group === group.groupName; });
+        var reason = pools.length === 0 ? "所选群组暂无匹配的资源池用量数据，暂无法估算。" :
+          (pools.length > 1 ? "所选群组匹配到多个资源池，请先核对资源池配置，暂无法估算。" : "");
+        var cardsByIccid = new Map(state.simRows.map(function (card) { return [card.iccid, card]; }));
+        var eligible = Array.from(new Set(state.batchTaskIccids)).filter(function (iccid) {
+          return cardMatchesActivationGroup(cardsByIccid.get(iccid), group.id);
+        });
+        if (!reason && !eligible.length) { reason = "本次没有通过所选群组校验的可补池卡，暂无法估算。"; }
+        var forecast = reason ? { reason: reason } : resourcePoolCoverageForecast(pools[0], group.singleCardSupply, eligible.length);
+        if (forecast.reason) { return '<div class="batch-task-pool-estimate" id="batchTaskPoolEstimate">' + esc(forecast.reason) + '</div>'; }
+        return '<div class="batch-task-pool-estimate" id="batchTaskPoolEstimate">补池完成后，预计能用 <b>' + esc(forecast.daysText) +
+          '</b> 天，至 <b>' + esc(forecast.untilDate) + '</b>。</div>';
+      }
+
+      function batchTaskFileStateMarkup() {
+        if (!state.batchTaskFile) { return '<span class="selected-file">未选择文件</span>'; }
+        var activation = state.batchTaskAddType === "激活卡";
+        var phase = activation && state.batchTaskFileDetectionError ? "error" :
+          (state.batchTaskFileDetecting || (activation && !state.batchTaskIccids) ? "pending" : "ready");
+        var label = phase === "error" ? "检测失败" : (phase === "pending" ? (state.batchTaskFileDetecting ? "检测中" : "待检测") : "已上传");
+        if (state.batchTaskFileIsDemo) { label += "（示例）"; }
+        return (phase === "ready" ? '' : '<span class="batch-task-upload-status ' + phase + '">' + label + '</span>') +
+          '<span class="selected-file" title="' + esc(state.batchTaskFileName) + '">' + esc(state.batchTaskFileName) + '</span>';
+      }
+
       function batchTaskFileFeedbackMarkup() {
         var summary = "";
         if (state.batchTaskAddType === "激活卡") {
           var value = state.batchTaskFileDetecting ? "正在检测…" : (state.batchTaskFileDetectionError ? "检测失败" : "上传后自动检测");
           if (state.batchTaskIccids) { value = '<strong>' + state.batchTaskIccids.length + '</strong><span>张</span>'; }
           summary = '<div class="batch-task-file-summary" id="batchTaskActivationCount" role="status" aria-live="polite" aria-busy="' + state.batchTaskFileDetecting + '">' +
-            '<span>本次待激活卡数：</span>' + value + '</div>';
+            '<span>本次待激活卡数：</span>' + value + batchTaskPoolEstimateMarkup() + '</div>';
         }
         return summary + batchTaskAddErrorMarkup("batchTaskFile");
       }
@@ -7755,9 +8636,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<div class="form-row compact">' +
                 '<div class="form-label required" id="batchTaskFileLabel">SIM卡文件</div>' +
                 '<div class="form-control"><div class="upload-row">' +
-                  '<button class="btn btn-primary" id="batchTaskUpload" data-action="upload-batch-task-file" aria-labelledby="batchTaskFileLabel batchTaskUpload">文件上传</button>' +
+                  '<button class="btn btn-primary" id="batchTaskUpload" data-action="upload-batch-task-file" aria-labelledby="batchTaskFileLabel batchTaskUpload">' + (state.batchTaskFile ? '重新上传' : '文件上传') + '</button>' +
                   '<input id="batchTaskFile" class="file-input" type="file" accept=".xls,.xlsx" aria-labelledby="batchTaskFileLabel">' +
-                  '<span class="selected-file">' + esc(state.batchTaskFileName || "未选择文件") + "</span>" +
+                  '<span class="batch-task-file-state" id="batchTaskFileState" role="status" aria-live="polite">' + batchTaskFileStateMarkup() + '</span>' +
                 "</div>" + (activation ? '<div class="batch-hint" id="batchTaskFileHint">支持XLS、XLSX，单次不超过10MB、10000条。首个工作表需包含ICCID列，码号请按文本格式填写。</div>' : "") +
                   '<div id="batchTaskFileFeedback">' + batchTaskFileFeedbackMarkup() + '</div></div>' +
               "</div>" +
@@ -7765,6 +8646,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
                 '<div class="form-label required" id="batchTaskAddTypeLabel">操作类型</div>' +
                 '<div class="form-control">' + selectMarkup("batchTaskAddType", state.batchTaskAddType, taskOperationOptions, "请选择操作类型", false) + batchTaskAddErrorMarkup("batchTaskAddType") + "</div>" +
               "</div>" +
+              (activation ? '<div class="form-row compact">' +
+                '<div class="form-label required pool-usage-label" id="batchTaskAddPoolUsageLabel">是否用于资源池补池</div>' +
+                '<div class="form-control"><fieldset class="batch-task-pool-usage" id="batchTaskAddPoolUsage" role="radiogroup" aria-required="true" aria-labelledby="batchTaskAddPoolUsageLabel">' +
+                  [{ value: "资源池补池", label: "用于资源池补池" }, { value: "非资源池补池", label: "非资源池补池" }].map(function (option) {
+                    return '<label><input type="radio" name="batchTaskAddPoolUsage" data-action="batch-task-pool-usage" value="' + option.value + '" required' +
+                      (state.batchTaskAddPoolUsage === option.value ? ' checked' : '') + '><span>' + option.label + '</span></label>';
+                  }).join("") + '</fieldset>' + batchTaskAddErrorMarkup("batchTaskAddPoolUsage") + '</div></div>' : "") +
               (activation ? '<div class="form-row compact">' +
                 '<div class="form-label required" id="batchTaskAddGroupLabel">所属群组</div>' +
                 '<div class="form-control">' + selectMarkup("batchTaskAddGroup", group ? batchTaskGroupLabel(group) : "", state.groupRows.map(batchTaskGroupLabel), "请选择所属群组", false) +
@@ -7808,7 +8696,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           }
         });
         var errorControl = state.batchTaskAddErrorField === "batchTaskFile" ? dialog.querySelector("#batchTaskUpload") :
-          dialog.querySelector('[data-action="toggle-select"][data-key="' + state.batchTaskAddErrorField + '"]');
+          (state.batchTaskAddErrorField === "batchTaskAddPoolUsage" ? dialog.querySelector("#batchTaskAddPoolUsage") :
+            dialog.querySelector('[data-action="toggle-select"][data-key="' + state.batchTaskAddErrorField + '"]'));
         if (errorControl && state.batchTaskAddError) {
           errorControl.setAttribute("aria-invalid", "true");
           errorControl.setAttribute("aria-describedby", "batchTaskAddError");
@@ -7838,7 +8727,26 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function renderOverlay() {
         var overlay = $("#overlay");
-        if (state.simDataResetConfirmIccid) {
+        if (state.simDetailOperation) {
+          overlay.innerHTML = simDetailOperationMarkup();
+          var trigger = overlay.querySelector('[data-key="simDetailOperationValue"][data-action="toggle-select"]');
+          if (trigger) {
+            trigger.setAttribute("aria-labelledby", "simDetailOperationLabel");
+            trigger.setAttribute("aria-expanded", String(state.openSelect === "simDetailOperationValue"));
+            trigger.setAttribute("aria-haspopup", "listbox");
+            var options = overlay.querySelector(".select-options");
+            if (options) {
+              options.setAttribute("role", "listbox");
+              options.setAttribute("aria-labelledby", "simDetailOperationLabel");
+              Array.prototype.forEach.call(options.children, function (option) {
+                option.setAttribute("role", "option");
+                option.setAttribute("aria-selected", String(option.classList.contains("selected")));
+              });
+            }
+          }
+        } else if (state.redlistNotifyOpen) {
+          overlay.innerHTML = redlistNotificationMarkup();
+        } else if (state.simDataResetConfirmIccid) {
           overlay.innerHTML = simDataResetConfirmMarkup();
         } else if (state.manageStopRiskOpen) {
           overlay.innerHTML = manageStopRiskMarkup();
@@ -7887,17 +8795,25 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         showFloatingPopover(target, markup);
       }
 
-      function infoIconMarkup(action, label) {
-        return '<button class="info-trigger" data-action="' + esc(action) + '" aria-label="' + esc(label) + '" aria-describedby="floating-popover" aria-expanded="false">' +
+      function infoIconMarkup(action, label, field) {
+        return '<button class="info-trigger" data-action="' + esc(action) + '"' + (field ? ' data-field="' + esc(field) + '"' : '') +
+          ' aria-label="' + esc(label) + '" aria-describedby="floating-popover" aria-expanded="false">' +
           '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M8 7v5M8 4v.4" stroke-linecap="round"></path></svg></button>';
       }
 
       function showInlineInfo(target) {
-        var text = target.dataset.action === "sim-reset-info" ? simDataResetNote : pageDocumentation.simTrafficHistory.page.description;
+        var text = target.dataset.action === "redlist-balance-info" ? redlistRemainingBalanceNote :
+          (target.dataset.action === "resource-replenishment-info" ? resourceReplenishmentNote :
+          (target.dataset.action === "group-field-info" ? groupSupplyNotes[target.dataset.field] :
+            (target.dataset.action === "sim-reset-info" ? simDataResetNote : pageDocumentation.simTrafficHistory.page.description)));
+        if (target.dataset.action === "group-field-info" || target.dataset.action === "resource-replenishment-info" || target.dataset.action === "redlist-balance-info") { target.setAttribute("aria-expanded", "true"); }
         showFloatingPopover(target, esc(text));
       }
 
       function isInlineInfoPinned(target) {
+        if (target.dataset.action === "redlist-balance-info") { return state.redlistBalanceInfoOpen; }
+        if (target.dataset.action === "resource-replenishment-info") { return state.resourceReplenishmentInfoOpen; }
+        if (target.dataset.action === "group-field-info") { return state.groupFieldInfoOpen === target.dataset.field; }
         return target.dataset.action === "sim-reset-info" ? state.simResetInfoOpen : state.trafficHistoryInfoOpen;
       }
 
@@ -7925,14 +8841,29 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         popover.innerHTML = "";
         state.trafficHistoryInfoOpen = false;
         state.simResetInfoOpen = false;
-        Array.prototype.forEach.call(document.querySelectorAll('[data-action="traffic-history-info"], [data-action="sim-reset-info"]'), function (button) {
+        state.groupFieldInfoOpen = "";
+        state.resourceReplenishmentInfoOpen = false;
+        state.redlistBalanceInfoOpen = false;
+        Array.prototype.forEach.call(document.querySelectorAll(inlineInfoSelector), function (button) {
           button.setAttribute("aria-expanded", "false");
         });
       }
 
       document.addEventListener("input", function (event) {
         var target = event.target;
-        if (target.dataset.action === "sim-traffic-input") {
+        if (target.dataset.action === "redlist-notify-days") {
+          state.redlistNotifyDraft.days = target.value;
+          clearRedlistNotifyError("days");
+          clearRedlistNotifyError("save");
+        } else if (target.dataset.action === "redlist-notify-time") {
+          state.redlistNotifyDraft.time = target.value;
+          clearRedlistNotifyError("time");
+          clearRedlistNotifyError("save");
+        } else if (target.dataset.action === "redlist-notify-search") {
+          state.redlistNotifySearch = target.value;
+          target.parentNode.querySelector(".clear-value").hidden = !target.value;
+          renderRedlistNotifyRecipients();
+        } else if (target.dataset.action === "sim-traffic-input") {
           setQueryValue(target.dataset.key, target.value);
           var clearButton = target.parentNode.querySelector(".clear-value");
           if (clearButton) { clearButton.hidden = target.value === ""; }
@@ -7980,18 +8911,47 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             state.groupEditDraft.shortName = target.value;
           } else if (target.id === "groupEditRemark") {
             state.groupEditDraft.remark = target.value;
+          } else if (["singleCardSupply", "replenishmentPrice"].indexOf(target.dataset.key) !== -1) {
+            var field = target.dataset.key;
+            state.groupEditDraft[field] = target.value;
+            delete state.groupEditErrors[field];
+            target.setAttribute("aria-invalid", "false");
+            var error = document.getElementById(target.id + "-error");
+            if (error) { error.textContent = ""; error.hidden = true; }
           }
         }
       });
 
       document.addEventListener("change", function (event) {
-        if (event.target.id === "authFile") {
+        if (event.target.dataset.action === "batch-task-pool-usage" && state.batchTaskAddOpen && state.batchTaskAddType === "激活卡") {
+          var poolUsage = event.target.value;
+          if (["资源池补池", "非资源池补池"].indexOf(poolUsage) === -1) { return; }
+          state.batchTaskAddPoolUsage = poolUsage;
+          if (state.batchTaskAddErrorField === "batchTaskAddPoolUsage") {
+            state.batchTaskAddError = "";
+            state.batchTaskAddErrorField = "";
+          }
+          renderOverlay();
+          document.querySelector('[name="batchTaskAddPoolUsage"][value="' + poolUsage + '"]').focus();
+        } else if (event.target.dataset.action === "redlist-notify-frequency") {
+          state.redlistNotifyDraft.frequency = event.target.value;
+          clearRedlistNotifyError("save");
+        } else if (event.target.dataset.action === "redlist-notify-recipient") {
+          var id = event.target.dataset.id;
+          var ids = state.redlistNotifyDraft.recipientIds.filter(function (item) { return item !== id; });
+          if (event.target.checked) { ids.push(id); }
+          state.redlistNotifyDraft.recipientIds = ids;
+          clearRedlistNotifyError("recipients");
+          clearRedlistNotifyError("save");
+          renderRedlistNotifyRecipients(id);
+        } else if (event.target.id === "authFile") {
           state.authFileName = event.target.files && event.target.files[0] ? event.target.files[0].name : "";
           renderOverlay();
         } else if (event.target.id === "batchTaskFile") {
           if (!event.target.files || !event.target.files[0]) { return; }
           state.batchTaskFile = event.target.files[0];
           state.batchTaskFileName = state.batchTaskFile.name;
+          state.batchTaskFileIsDemo = false;
           state.batchTaskFileDetectionId += 1;
           state.batchTaskIccids = null;
           state.batchTaskFileDetecting = false;
@@ -8016,6 +8976,77 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       document.addEventListener("keydown", function (event) {
         var target = event.target;
         if (event.isComposing || event.keyCode === 229) { return; }
+        if (event.key === "Escape" && (state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen ||
+            document.querySelector('[data-action="group-field-info"][aria-expanded="true"], [data-action="resource-replenishment-info"][aria-expanded="true"], [data-action="redlist-balance-info"][aria-expanded="true"]'))) {
+          event.preventDefault();
+          hideManageStopPopover();
+          return;
+        }
+        if (state.groupEditId !== null) {
+          var dialog = document.querySelector(".group-edit-dialog");
+          if (event.key === "Escape") {
+            event.preventDefault();
+            if (state.openSelect) {
+              state.openSelect = "";
+              renderOverlay();
+              document.querySelector('.group-edit-dialog [data-action="toggle-select"]').focus();
+            } else { closeGroupEdit(); }
+          } else if (event.key === "Tab") {
+            var controls = Array.prototype.slice.call(dialog.querySelectorAll("button:not(:disabled), input:not(:disabled)"));
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
+            else if ((!event.shiftKey && target === last) || !dialog.contains(target)) { event.preventDefault(); first.focus(); }
+          }
+          return;
+        }
+        if (state.simDetailOperation) {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            if (state.openSelect) {
+              state.openSelect = "";
+              renderOverlay();
+              document.querySelector('.sim-detail-dialog [data-action="toggle-select"]').focus();
+            } else { closeSimDetailOperation(); }
+          } else if (event.key === "Tab") {
+            var controls = Array.prototype.slice.call(document.querySelectorAll('.sim-detail-dialog button:not(:disabled)'));
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
+            else if ((!event.shiftKey && target === last) || !document.querySelector('.sim-detail-dialog').contains(target)) { event.preventDefault(); first.focus(); }
+          } else if (["ArrowDown", "ArrowUp", "Home", "End"].indexOf(event.key) !== -1 && target.closest(".select")) {
+            event.preventDefault();
+            var oldIndex = target.classList.contains("select-option") ? Array.prototype.indexOf.call(target.parentNode.children, target) : -1;
+            state.openSelect = "simDetailOperationValue";
+            renderOverlay();
+            var choices = document.querySelectorAll('.sim-detail-dialog .select-option');
+            var nextIndex = event.key === "Home" ? 0 : (event.key === "End" ? choices.length - 1 :
+              (event.key === "ArrowDown" ? (oldIndex + 1) % choices.length : (oldIndex <= 0 ? choices.length - 1 : oldIndex - 1)));
+            if (choices[nextIndex]) { choices[nextIndex].focus(); }
+          }
+          return;
+        }
+        if (target.dataset.action === "sim-detail-tab" && ["ArrowLeft", "ArrowRight", "Home", "End"].indexOf(event.key) !== -1) {
+          event.preventDefault();
+          var detailTabs = ["info", "logs", "usage", "whitelist"];
+          var index = detailTabs.indexOf(state.simDetailTab);
+          state.simDetailTab = detailTabs[event.key === "Home" ? 0 : (event.key === "End" ? 3 : (index + (event.key === "ArrowRight" ? 1 : 3)) % 4)];
+          renderContent();
+          document.getElementById("simDetailTab-" + state.simDetailTab).focus();
+          return;
+        }
+        if (state.redlistNotifyOpen) {
+          if (event.key === "Escape") { event.preventDefault(); closeRedlistNotification(); }
+          else if (event.key === "Tab") {
+            var dialog = document.querySelector(".redlist-notify-dialog");
+            var controls = Array.prototype.slice.call(dialog.querySelectorAll("button:not(:disabled), input:not(:disabled)")).filter(function (control) { return control.offsetParent !== null; });
+            var first = controls[0];
+            var last = controls[controls.length - 1];
+            if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
+            else if ((!event.shiftKey && target === last) || !dialog.contains(target)) { event.preventDefault(); first.focus(); }
+          }
+          return;
+        }
         if (state.batchTaskAddOpen) {
           var dialog = document.querySelector(".batch-task-add-dialog");
           if (event.key === "Escape") {
@@ -8027,7 +9058,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               document.querySelector('#overlay [data-action="toggle-select"][data-key="' + closedKey + '"]').focus();
             } else { document.querySelector('#overlay [data-action="close-batch-task-add"]').click(); }
           } else if (event.key === "Tab") {
-            var controls = Array.prototype.slice.call(dialog.querySelectorAll("button:not(:disabled), textarea:not(:disabled)"));
+            var controls = Array.prototype.slice.call(dialog.querySelectorAll('button:not(:disabled), input[type="radio"]:not(:disabled), textarea:not(:disabled)'));
             var first = controls[0];
             var last = controls[controls.length - 1];
             if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
@@ -8185,7 +9216,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       });
 
       document.addEventListener("mouseover", function (event) {
-        var infoTarget = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        var infoTarget = event.target.closest(inlineInfoSelector);
         if (infoTarget) { showInlineInfo(infoTarget); return; }
         var target = event.target.closest(".manage-stop-cell.has-popover");
         if (target) {
@@ -8194,7 +9225,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       });
 
       document.addEventListener("mouseout", function (event) {
-        var infoTarget = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        var infoTarget = event.target.closest(inlineInfoSelector);
         if (infoTarget && !isInlineInfoPinned(infoTarget) &&
             (!event.relatedTarget || !infoTarget.contains(event.relatedTarget)) && document.activeElement !== infoTarget) {
           hideManageStopPopover();
@@ -8206,12 +9237,12 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       });
 
       document.addEventListener("focusin", function (event) {
-        var target = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        var target = event.target.closest(inlineInfoSelector);
         if (target) { showInlineInfo(target); }
       });
 
       document.addEventListener("focusout", function (event) {
-        var target = event.target.closest('[data-action="traffic-history-info"], [data-action="sim-reset-info"]');
+        var target = event.target.closest(inlineInfoSelector);
         if (target && !isInlineInfoPinned(target) && !target.matches(":hover")) { hideManageStopPopover(); }
       });
 
@@ -8222,12 +9253,20 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             (!target || target.dataset.action !== openDateDefinition.action)) {
           dismissDatePicker();
         }
-        var infoAction = target && (target.dataset.action === "traffic-history-info" || target.dataset.action === "sim-reset-info");
-        if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen) && !infoAction) {
+        var infoAction = target && target.matches(inlineInfoSelector);
+        if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen || state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen) && !infoAction) {
           hideManageStopPopover();
         }
         if (!target) {
           if (event.target.closest("#datePickerLayer")) { return; }
+          if (state.simDetailOperation) {
+            if (state.openSelect) {
+              state.openSelect = "";
+              renderOverlay();
+              document.querySelector('.sim-detail-dialog [data-action="toggle-select"]').focus();
+            }
+            return;
+          }
           if (state.openSelect || state.openCombo || state.simDateOpen) {
             state.openSelect = "";
             state.openCombo = "";
@@ -8241,11 +9280,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var row;
         var dateFilterTarget = Object.keys(dateFilterDefinitions).find(function (name) { return dateFilterDefinitions[name].action === action; });
 
-        if (action === "traffic-history-info" || action === "sim-reset-info") {
+        if (infoAction) {
           var pinned = isInlineInfoPinned(target);
           hideManageStopPopover();
           if (!pinned) {
-            if (action === "sim-reset-info") { state.simResetInfoOpen = true; }
+            if (action === "redlist-balance-info") { state.redlistBalanceInfoOpen = true; }
+            else if (action === "resource-replenishment-info") { state.resourceReplenishmentInfoOpen = true; }
+            else if (action === "group-field-info") { state.groupFieldInfoOpen = target.dataset.field; }
+            else if (action === "sim-reset-info") { state.simResetInfoOpen = true; }
             else { state.trafficHistoryInfoOpen = true; }
             target.setAttribute("aria-expanded", "true");
             showInlineInfo(target);
@@ -8462,6 +9504,25 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           render();
         } else if (action === "redlist-search") {
           searchRedlist();
+        } else if (action === "open-redlist-notification") {
+          openRedlistNotification();
+        } else if (action === "close-redlist-notification") {
+          closeRedlistNotification();
+        } else if (action === "save-redlist-notification") {
+          saveRedlistNotification();
+        } else if (action === "clear-redlist-notify-search") {
+          state.redlistNotifySearch = "";
+          var search = document.getElementById("redlistNotifySearch");
+          search.value = "";
+          target.hidden = true;
+          renderRedlistNotifyRecipients();
+          search.focus();
+        } else if (action === "remove-redlist-notify-recipient") {
+          state.redlistNotifyDraft.recipientIds = state.redlistNotifyDraft.recipientIds.filter(function (id) { return id !== target.dataset.id; });
+          clearRedlistNotifyError("recipients");
+          clearRedlistNotifyError("save");
+          renderRedlistNotifyRecipients();
+          document.getElementById("redlistNotifySearch").focus();
         } else if (action === "redlist-update") {
           state.openSelect = "";
           state.openCombo = "";
@@ -8517,8 +9578,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.openSelect = state.openSelect === key ? "" : key;
           state.openCombo = "";
           state.simDateOpen = false;
-          if (isGroupEditKey(key) || isBatchTaskAddKey(key) || isEsimAllocateKey(key) || isEsimChipStockKey(key) || isManageStopChangeKey(key) || isDetectionKey(key) || isChipDetectionKey(key)) {
+          if (key === "simDetailOperationValue" || isGroupEditKey(key) || isBatchTaskAddKey(key) || isEsimAllocateKey(key) || isEsimChipStockKey(key) || isManageStopChangeKey(key) || isDetectionKey(key) || isChipDetectionKey(key)) {
             renderOverlay();
+            if (key === "simDetailOperationValue") { document.querySelector('.sim-detail-dialog [data-action="toggle-select"]').focus(); }
             if (isBatchTaskAddKey(key)) { document.querySelector('#overlay [data-action="toggle-select"][data-key="' + key + '"]').focus(); }
           } else {
             renderContent();
@@ -8526,8 +9588,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (action === "choose-option") {
           setQueryValue(key, target.dataset.value);
           state.openSelect = "";
-          if (isGroupEditKey(key) || isBatchTaskAddKey(key) || isEsimAllocateKey(key) || isEsimChipStockKey(key) || isManageStopChangeKey(key) || isDetectionKey(key) || isChipDetectionKey(key)) {
+          if (key === "simDetailOperationValue" || isGroupEditKey(key) || isBatchTaskAddKey(key) || isEsimAllocateKey(key) || isEsimChipStockKey(key) || isManageStopChangeKey(key) || isDetectionKey(key) || isChipDetectionKey(key)) {
             renderOverlay();
+            if (key === "simDetailOperationValue") { document.querySelector('.sim-detail-dialog [data-action="toggle-select"]').focus(); }
             if (isBatchTaskAddKey(key)) { document.querySelector('#overlay [data-action="toggle-select"][data-key="' + key + '"]').focus(); }
           } else {
             renderContent();
@@ -8540,7 +9603,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           event.stopPropagation();
           setQueryValue(key, "");
           state.openSelect = "";
-          if (isGroupEditKey(key) || isBatchTaskAddKey(key) || isEsimAllocateKey(key) || isEsimChipStockKey(key) || isManageStopChangeKey(key) || isDetectionKey(key) || isChipDetectionKey(key)) {
+          if (key === "simDetailOperationValue" || isGroupEditKey(key) || isBatchTaskAddKey(key) || isEsimAllocateKey(key) || isEsimChipStockKey(key) || isManageStopChangeKey(key) || isDetectionKey(key) || isChipDetectionKey(key)) {
             renderOverlay();
           } else {
             renderContent();
@@ -8819,17 +9882,20 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             state.groupEditDraft = {
               shortName: row.shortName,
               flowType: row.flowType,
+              singleCardSupply: row.singleCardSupply == null ? "" : String(row.singleCardSupply),
+              replenishmentPrice: row.replenishmentPrice == null ? "" : String(row.replenishmentPrice),
               remark: row.remark
             };
+            state.groupEditErrors = {};
             state.openSelect = "";
             state.openCombo = "";
+            document.body.classList.add("group-edit-open");
+            setSimResetBackgroundInert(true);
             renderOverlay();
+            document.getElementById("groupEditShortName").focus();
           }
         } else if (action === "close-group-edit") {
-          state.groupEditId = null;
-          state.groupEditDraft = null;
-          state.openSelect = "";
-          renderOverlay();
+          closeGroupEdit();
         } else if (action === "save-group-edit") {
           row = state.groupRows.find(function (item) { return item.id === state.groupEditId; });
           var groupShortName = $("#groupEditShortName").value.trim();
@@ -8843,27 +9909,61 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             toast("请选择流量类型");
             return;
           }
+          state.groupEditErrors = {};
+          var supplyFields = [{ key: "singleCardSupply", label: "单卡流量补给量（GB）" }, { key: "replenishmentPrice", label: "补池单价" }];
+          supplyFields.forEach(function (field) {
+            var control = document.getElementById("groupEdit-" + field.key);
+            var value = state.groupEditDraft[field.key].trim();
+            if (control.validity.badInput || (value !== "" && (!isFinite(Number(value)) || Number(value) < 0))) {
+              state.groupEditErrors[field.key] = field.label + "需为大于或等于0的有效数字";
+            } else if (!value) { state.groupEditErrors[field.key] = "请输入" + field.label; }
+          });
+          if (Object.keys(state.groupEditErrors).length) {
+            renderOverlay();
+            document.getElementById("groupEdit-" + Object.keys(state.groupEditErrors)[0]).focus();
+            return;
+          }
           row.shortName = groupShortName;
           row.flowType = groupFlowType;
+          row.singleCardSupply = state.groupEditDraft.singleCardSupply.trim();
+          row.replenishmentPrice = state.groupEditDraft.replenishmentPrice.trim();
           row.remark = groupRemark;
           row.updatedAt = "2026-05-28 16:35:00";
-          state.groupEditId = null;
-          state.groupEditDraft = null;
-          state.openSelect = "";
+          var editedGroupId = row.id;
+          closeGroupEdit();
           render();
+          var groupEditOpener = document.querySelector('[data-action="edit-group"][data-id="' + editedGroupId + '"]') || document.querySelector('[data-action="group-search"]');
+          if (groupEditOpener) { groupEditOpener.focus({ preventScroll: true }); }
           toast("群组信息已提交");
+        } else if (action === "sim-detail-tab") {
+          state.simDetailTab = target.dataset.tab;
+          renderContent();
+          document.getElementById("simDetailTab-" + state.simDetailTab).focus();
+        } else if (action === "sim-detail-refresh") {
+          if (target.disabled) { return; }
+          target.disabled = true;
+          target.classList.add("spinning");
+          target.setAttribute("aria-busy", "true");
+          window.setTimeout(function () {
+            target.disabled = false;
+            target.classList.remove("spinning");
+            target.removeAttribute("aria-busy");
+            toast(target.getAttribute("aria-label").replace("刷新", "") + "已刷新");
+          }, 620);
+        } else if (action === "sim-detail-operate") {
+          openSimDetailOperation(target.dataset.operation, target);
+        } else if (action === "sim-detail-cancel") {
+          closeSimDetailOperation();
+        } else if (action === "sim-detail-confirm") {
+          confirmSimDetailOperation();
         } else if (action === "view-sim") {
-          state.selectedSimIccid = target.dataset.iccid;
-          openPage("simDetail");
-          render();
+          openSimDetail(target.dataset.iccid, state.activePage === "sim" ? "sim" : "esim");
         } else if (action === "view-esim-chip") {
           state.selectedEsimChipEid = target.dataset.eid;
           openPage("esimChipDetail");
           render();
         } else if (action === "view-chip-card-detail") {
-          state.selectedSimIccid = target.dataset.iccid;
-          openPage("simDetail");
-          render();
+          openSimDetail(target.dataset.iccid, "esim");
         } else if (action === "open-esim-change-detail") {
           state.selectedEsimChangeBatchNo = target.dataset.batch;
           openPage("esimChangeDetail");
