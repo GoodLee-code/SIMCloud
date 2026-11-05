@@ -534,6 +534,55 @@
       line-height: 1.75;
     }
 
+    .page-doc-interface-list {
+      border: 1px solid #e7ebf1;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .page-doc-interface-list table {
+      min-width: 0;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .page-doc-interface-list th,
+    .page-doc-interface-list td {
+      height: auto;
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .page-doc-interface-list tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .page-doc-interface-name {
+      display: block;
+      color: #4b5563;
+      font-weight: 500;
+    }
+
+    .page-doc-interface-meta {
+      display: block;
+      margin-top: 5px;
+      color: #7d8897;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .page-doc-interface-list code {
+      padding: 1px 3px;
+      border-radius: 2px;
+      background: #f5f7fb;
+      font-family: SFMono-Regular, Consolas, monospace;
+      font-size: 11px;
+      word-break: break-all;
+    }
+
     .page-doc-field {
       width: 100%;
       padding: 9px 10px;
@@ -1183,6 +1232,25 @@
       min-width: 1160px;
     }
 
+    .activation-summary {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px 32px;
+      margin: 16px 18px 0;
+      padding: 16px 20px;
+      border: 1px solid #e6ebf2;
+      border-radius: 3px;
+      background: #fbfcfe;
+    }
+
+    .activation-metric { min-width: 140px; color: #657182; }
+    .activation-metric strong { display: block; margin-top: 6px; color: var(--blue); font-size: 24px; font-weight: 600; line-height: 1.2; }
+    .activation-period { flex: 1 1 240px; margin: 0; color: #657182; line-height: 1.8; }
+    .activation-period span { display: block; color: #8b96a6; }
+    .activation-note { margin: 0 18px 12px; color: #7d8897; line-height: 1.8; }
+    .activation-page table { min-width: 1380px; }
+
     .sim-traffic-page :focus-visible {
       outline: 2px solid var(--blue);
       outline-offset: 2px;
@@ -1191,6 +1259,37 @@
     .monthly-traffic-page table {
       min-width: 1640px;
     }
+
+    .monthly-flow-note { flex-basis: 100%; margin: 8px 0 0; color: #7d8897; line-height: 1.7; }
+
+    .monthly-traffic-page:not(.resource-history-page) .operate-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .monthly-traffic-page:not(.resource-history-page) .operate-actions { flex-shrink: 0; }
+    .monthly-traffic-page:not(.resource-history-page) .operate-actions .btn { flex-shrink: 0; white-space: nowrap; }
+    .monthly-traffic-page:not(.resource-history-page) .monthly-flow-note { flex-basis: auto; margin: 0; }
+
+    .monthly-year-card { margin: 0 18px 18px; container-type: inline-size; }
+    .monthly-year-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+    .monthly-year-cell { padding: 12px; border: 1px solid #e7ebf1; border-radius: 3px; background: #fbfcfe; }
+    .monthly-year-cell > span { display: block; margin-bottom: 8px; color: #7d8897; }
+    .monthly-year-cell .link, .monthly-year-empty { font-size: 18px; line-height: 28px; font-variant-numeric: tabular-nums; }
+    .monthly-year-empty { color: #b8c0cc; }
+    .annual-month-value { display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; }
+    .annual-month-value .refresh-card { flex: 0 0 18px; }
+    .monthly-year-cell > .annual-month-value { display: flex; justify-content: flex-start; margin-bottom: 0; }
+    @media (max-width: 1080px) { .monthly-year-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @media (max-width: 720px) { .monthly-year-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @container (max-width: 1080px) { .monthly-year-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+    @container (max-width: 640px) { .monthly-year-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) th:nth-child(-n+2),
+    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) td:nth-child(-n+2) {
+      position: sticky; left: 0; z-index: 2; background: #fff;
+    }
+
+    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) th:nth-child(2),
+    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) td:nth-child(2) { left: 110px; }
+
+    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) th:nth-child(-n+2) { background: #fbfcfe; }
 
     .monthly-traffic-tabs {
       flex-shrink: 0;
@@ -3697,6 +3796,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       var resourceReplenishmentNote = "建议补卡数量（张）=资源池最近7天流量平均使用量/单卡流量补给量；";
       var redlistRemainingBalanceNote = "剩余余额=红名单额度+账户余额；";
       var inlineInfoSelector = '[data-action="traffic-history-info"], [data-action="sim-reset-info"], [data-action="group-field-info"], [data-action="resource-replenishment-info"], [data-action="redlist-balance-info"]';
+      inlineInfoSelector += ', [data-action="monthly-flow-info"]';
       var simDataResetCooldownMs = 3 * 60 * 1000;
       var simDataResetStorageKey = "simcloud.data-service-reset.cooldowns";
       var platforms = ["OneLink平台", "物联网连接管理平台", "天翼物联平台", "CMP连接管理平台"];
@@ -3795,19 +3895,18 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       var monthlyTrafficRowsSeed = [];
+      var monthlyToday = dateFilterToday();
       simRowsSeed.forEach(function (card, cardIndex) {
-        var cumulativeCents = 0;
-        for (var monthIndex = 0; monthIndex < 12; monthIndex += 1) {
-          var month = new Date(Date.UTC(2025, 10 + monthIndex, 1)).toISOString().slice(0, 7);
-          var flowCents = (monthIndex + cardIndex) % 5 === 0 ? 0 : (monthIndex + 3) * (cardIndex + 2) * 13783;
-          cumulativeCents += flowCents;
+        for (var monthIndex = -12; monthIndex <= 0; monthIndex += 1) {
+          var month = new Date(Date.UTC(Number(monthlyToday.slice(0, 4)), Number(monthlyToday.slice(5, 7)) - 1 + monthIndex, 1)).toISOString().slice(0, 7);
+          var flowCents = (Math.abs(monthIndex) + cardIndex) % 5 === 0 ? 0 : (Math.abs(monthIndex) + 3) * (cardIndex + 2) * 13783;
           monthlyTrafficRowsSeed.push({
-            id: card.id + "-" + month,
+            id: card.iccid + "|" + month,
             month: month, iccid: card.iccid, vendor: card.vendor, merchant: card.merchant, carrier: card.carrier,
-            cumulativeFlow: cumulativeCents / 100, monthFlow: flowCents / 100,
+            cumulativeFlow: Math.round(flowCents * 0.97) / 100, monthFlow: monthIndex === 0 ? null : flowCents / 100,
             currentUsage: null,
-            created: month + "-23 10:" + String(10 + cardIndex).padStart(2, "0") + ":17",
-            updated: month + "-26 15:" + String(18 + cardIndex).padStart(2, "0") + ":36"
+            created: month + "-01 00:00:00",
+            updated: monthIndex === 0 ? monthlyToday + " 00:00:00.000" : month + "-28 23:00:00.000"
           });
         }
       });
@@ -4047,8 +4146,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return { trafficMin: "", trafficMax: "", trafficVendor: "", trafficMerchant: "", trafficCarrier: "", trafficIccid: "", trafficDate: "", trafficDateEnd: "" };
       };
 
+      var blankActivationQuery = function () {
+        var today = dateFilterToday();
+        return { activationStart: today.slice(0, 7) + "-01", activationEnd: today, activationKeyword: "", activationVendor: "", activationMerchant: "" };
+      };
+
       var blankMonthlyTrafficQuery = function () {
-        return { monthlyTrafficMin: "", monthlyTrafficMax: "", monthlyTrafficVendor: "", monthlyTrafficMerchant: "", monthlyTrafficCarrier: "", monthlyTrafficIccid: "", monthlyTrafficMonth: "" };
+        return { monthlyTrafficMin: "", monthlyTrafficMax: "", monthlyTrafficVendor: "", monthlyTrafficMerchant: "", monthlyTrafficCarrier: "", monthlyTrafficIccid: "", monthlyTrafficMonth: dateFilterToday().slice(0, 7) };
       };
 
       function trafficHistoryCurrentYear() {
@@ -4242,12 +4346,26 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         simTrafficPage: 1,
         simTrafficPageSize: 20,
         simTrafficError: "",
-        monthlyTrafficRows: monthlyTrafficRowsSeed.slice(),
+        activationRows: activationRecordsSeed(),
+        activationQuery: blankActivationQuery(),
+        activationApplied: blankActivationQuery(),
+        activationPage: 1,
+        monthlyTrafficRows: [],
+        monthlyProjectionCache: new Map(),
+        monthlyStoreReady: false,
+        monthlyViewLoading: true,
+        monthlyViewRequest: 0,
+        monthlyStoreError: "",
+        monthlySyncing: false,
+        monthlyExporting: false,
+        monthlySnapshotRows: [],
+        monthlySnapshotTotal: 0,
+        monthlyProjectionEpoch: 0,
         monthlyTrafficQuery: blankMonthlyTrafficQuery(),
         monthlyTrafficApplied: blankMonthlyTrafficQuery(),
         monthlyTrafficPage: 1,
         monthlyTrafficDraftMonth: "",
-        monthlyTrafficCalendarYear: 2026,
+        monthlyTrafficCalendarYear: Number(dateFilterToday().slice(0, 4)),
         monthlyTrafficError: "",
         monthlyTrafficRefreshing: new Set(),
         monthlyTrafficTab: "records",
@@ -4259,6 +4377,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         groupFieldInfoOpen: "",
         resourceReplenishmentInfoOpen: false,
         redlistBalanceInfoOpen: false,
+        monthlyFlowInfoOpen: "",
         simDataResetConfirmIccid: "",
         simDataResetCooldowns: readSimDataResetCooldowns() || {},
         simDataResetBusy: {},
@@ -4597,6 +4716,31 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         resourceHistory: emptyPageDocumentation("资源池历史用量记录"),
         sim: emptyPageDocumentation("SIM卡管理"),
         simTraffic: emptyPageDocumentation("SIM卡日流量"),
+        simActivation: {
+          page: { title: "", description: "" },
+          fields: [
+            { id: "activationDate", name: "激活日期", version: "待补充", description: "按状态变更为已激活的日期筛选，含开始日及结束日，默认本月1日至今天。不是按卡当前状态或首次激活日期筛选。" },
+            { id: "iccid", name: "ICCID", version: "待补充", description: "通过接口返回的MSISDN关联本平台卡档案取得，接口本身不返回ICCID。" },
+            { id: "activationTime", name: "激活时间", version: "待补充", description: "接口statusChgTime，卡变更为已激活的时间；一张卡可有多条激活记录。" },
+            { id: "firstActivationTime", name: "首次激活时间", version: "待补充", description: "展示本平台已确认并留存的首次激活日期，格式为年-月-日。再次激活不覆盖该日期。仅凭近6个月最早一条激活记录不能证明历史首次激活，未知时显示--。" },
+            { id: "activationCardCount", name: "激活卡数", version: "待补充", description: "在当前日期、供应商、商户、码号筛选结果中，按ICCID去重的卡数；同卡重复激活仅计1张。" },
+            { id: "activationRecordCount", name: "激活记录数", version: "待补充", description: "筛选结果中有效激活事件条数。相同账户、MSISDN、变更后状态及变更时间视为同一事件，不因重复获取而累加。" }
+          ],
+          functions: [
+            { name: "日期范围统计", version: "待补充", text: "按激活日期查看指定区间激活了多少张卡及对应明细。统计数量、分页和导出均使用已提交的同一组筛选条件；导出全部筛选结果，不仅导出当前页。" },
+            { name: "运营商范围", version: "待补充", text: "本页依据OneLink接口设计，仅统计中国移动OneLink已激活状态变更记录，不将此接口能力套用于其他运营商。当前页面使用静态演示数据，不发起真实运营商请求。" }
+          ],
+          interfaces: [
+            { name: "指定日期状态变更卡号信息查询", version: "待补充", code: "CMIOT_API23E00", purpose: "GET /v5/ec/query/changeable-sim-date；changeDate为yyyyMMdd，cardStatus固定为2（已激活），pageSize不超过50，startNum从1开始；读取cardList中的msisdn、cardStatus、statusChgTime，并按flag=Y判断最后一页。" }
+          ],
+          businessRules: [
+            { name: "按日分页归档", version: "待补充", text: "接口每次仅查询一天，支持今天至6个月前（包含今天）。正式接入时需按供应商对应账户、日期逐日分页采集，完整成功后入库，使用事件唯一键去重。页面读取归档数据，翻页、切换页面和导出不重复调用接口。超过接口回溯范围的日期仅能查询平台已归档记录，不能通过该接口补查。" },
+            { name: "首次激活来源待确认", version: "待补充", todo: true, text: "该接口不返回首次激活时间。首次激活日期的权威来源、上线前存量回填方式及历史数据覆盖起点待业务确认；确认前不得用最近激活时间或创建时间填充未知的首次激活日期。" }
+          ],
+          interactions: [
+            { name: "筛选与统计", version: "待补充", text: "选择日期范围、输入ICCID/MSISDN或模糊选择供应商、商户后点击搜索。重置恢复本月1日至今天，并清空其他条件。无匹配结果时数量显示0、表格显示空态且不允许导出。" }
+          ]
+        },
         simMonthlyTraffic: emptyPageDocumentation("SIM卡月流量"),
         simTrafficHistory: {
           page: { title: "", description: "统计流量同步运营商月流量统计。" },
@@ -4611,16 +4755,19 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         redlist: {
           page: { title: "", description: "" },
           fields: [],
-          functions: [
+          functions: [],
+          interfaces: [
             {
               name: "集团账户信息查询",
               version: "待补充",
-              text: "接口编号：CMIOT_API23E10；用途：查询集团下所有账户，获取 accountId。"
+              code: "CMIOT_API23E10",
+              purpose: "查询集团下所有账户，获取 accountId。"
             },
             {
               name: "客户红名单账户信息查询",
               version: "待补充",
-              text: "接口编号：CMIOT_API23B07；用途：根据 accountId 查询是否为红名单，以及红名单详情。"
+              code: "CMIOT_API23B07",
+              purpose: "根据 accountId 查询是否为红名单，以及红名单详情。"
             }
           ],
           businessRules: [],
@@ -4763,6 +4910,18 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }).join("") + "</div>";
       }
 
+      function docInterfacesMarkup(interfaces) {
+        return '<div class="page-doc-interface-list"><table aria-label="接口说明列表">' +
+          '<colgroup><col style="width:28%"><col style="width:31%"><col style="width:41%"></colgroup>' +
+          '<thead><tr><th scope="col">接口名称</th><th scope="col">接口编号</th><th scope="col">用途</th></tr></thead><tbody>' +
+          interfaces.map(function (item) {
+            return '<tr><td><strong class="page-doc-interface-name">' + esc(item.name || "--") + '</strong>' +
+              '<small class="page-doc-interface-meta">修改版本：' + esc(item.version || "待补充") + '</small>' +
+              (item.ticket ? '<small class="page-doc-interface-meta">工单号：' + esc(item.ticket) + '</small>' : '') +
+              '</td><td><code>' + esc(item.code || "--") + '</code></td><td>' + esc(item.purpose || "--") + '</td></tr>';
+          }).join("") + '</tbody></table></div>';
+      }
+
       function docSectionMarkup(title, inner) {
         return '<section class="page-doc-section"><div class="page-doc-title">' + esc(title) + "</div>" + inner + "</section>";
       }
@@ -4786,11 +4945,12 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return items.concat(doc.functions || [], doc.businessRules || [], doc.interactions || []);
       }
 
-      function pageDocTabsMarkup() {
+      function pageDocTabsMarkup(doc) {
         var active = state.pageDocTab || "functions";
         return '<div class="page-doc-tabs">' +
           '<button class="page-doc-tab ' + (active === "functions" ? "active" : "") + '" data-action="set-page-doc-tab" data-tab="functions">功能说明</button>' +
           '<button class="page-doc-tab ' + (active === "fields" ? "active" : "") + '" data-action="set-page-doc-tab" data-tab="fields">字段说明</button>' +
+          (Array.isArray(doc.interfaces) ? '<button class="page-doc-tab ' + (active === "interfaces" ? "active" : "") + '" data-action="set-page-doc-tab" data-tab="interfaces">接口说明</button>' : '') +
         "</div>";
       }
 
@@ -4804,6 +4964,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           if (sidebar) { sidebar.innerHTML = ""; }
           return;
         }
+        if (state.pageDocTab === "interfaces" && !Array.isArray(doc.interfaces)) { state.pageDocTab = "functions"; }
         trigger.style.display = "inline-flex";
         document.body.classList.toggle("page-doc-open", state.pageDocOpen);
         trigger.setAttribute("aria-expanded", state.pageDocOpen ? "true" : "false");
@@ -4814,13 +4975,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var bodyMarkup = "";
         if (state.pageDocTab === "fields") {
           bodyMarkup = doc.fields && doc.fields.length ? docFieldsMarkup(doc.fields) : "";
+        } else if (state.pageDocTab === "interfaces") {
+          bodyMarkup = doc.interfaces.length ? docInterfacesMarkup(doc.interfaces) : "";
         } else {
           var functionItems = docFunctionItems(doc);
           bodyMarkup = functionItems.length ? docListMarkup(functionItems) : "";
         }
         sidebar.innerHTML = '<div class="page-doc-panel">' +
           '<div class="page-doc-head"><h2>页面说明</h2><button class="page-doc-close" data-action="close-page-doc" aria-label="关闭页面说明">×</button></div>' +
-          pageDocTabsMarkup() +
+          pageDocTabsMarkup(doc) +
           '<div class="page-doc-body">' + bodyMarkup + "</div>" +
         "</div>";
       }
@@ -4896,6 +5059,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           resourceHistory: "资源池历史用量记录",
           sim: "SIM卡管理",
           simTraffic: "SIM卡日流量",
+          simActivation: "SIM卡激活统计",
           simMonthlyTraffic: "SIM卡月流量",
           esim: "ESIM可写码号管理",
           esimChangeDetail: "可写码号变更详情",
@@ -4981,6 +5145,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<button class="submenu-btn ' + (state.activePage === "sim" ? "active" : "") + '" data-action="open-sim">SIM卡管理</button>' +
               '<button class="submenu-btn ' + (state.activePage === "simTraffic" ? "active" : "") + '" data-action="open-sim-traffic">SIM卡日流量</button>' +
               '<button class="submenu-btn ' + (state.activePage === "simMonthlyTraffic" ? "active" : "") + '" data-action="open-monthly-traffic">SIM卡月流量</button>' +
+              '<button class="submenu-btn ' + (state.activePage === "simActivation" ? "active" : "") + '" data-action="open-sim-activation">SIM卡激活统计</button>' +
             "</div>" +
           "</div>" +
           '<div class="' + (state.esimMenuCollapsed ? "collapsed" : "") + '">' +
@@ -5072,6 +5237,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         sim: { query: "simQuery", start: "simActivationStart", end: "simActivationEnd", action: "toggle-sim-date", placeholder: "请选择最近激活时间" },
         simFirstActivation: { query: "simQuery", start: "simFirstActivationStart", end: "simFirstActivationEnd", action: "toggle-sim-first-activation-date", placeholder: "请选择首次激活时间" },
         simTraffic: { query: "simTrafficQuery", start: "trafficDate", end: "trafficDateEnd", action: "toggle-sim-traffic-date", placeholder: "请选择日期" },
+        simActivation: { query: "activationQuery", start: "activationStart", end: "activationEnd", action: "toggle-activation-date", placeholder: "请选择激活日期范围" },
         esim: { query: "esimQuery", start: "esimActivationStart", end: "esimActivationEnd", action: "toggle-esim-date", placeholder: "请选择激活时间" },
         esimDisabled: { query: "esimQuery", start: "esimDisabledStart", end: "esimDisabledEnd", action: "toggle-esim-disabled-date", placeholder: "请选择停用时间" },
         esimChipImport: { query: "esimChipQuery", start: "chipImportStart", end: "chipImportEnd", action: "toggle-esim-chip-import-date", placeholder: "请选择导入时间" },
@@ -5389,6 +5555,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.monthlyTrafficQuery[key] = value;
         } else if (key.indexOf("traffic") === 0) {
           state.simTrafficQuery[key] = value;
+        } else if (key.indexOf("activation") === 0) {
+          state.activationQuery[key] = value;
         } else if (isSimKey(key)) {
           state.simQuery[key] = value;
         } else if (isGroupEditKey(key)) {
@@ -6839,10 +7007,12 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           return;
         }
         if (monthly) {
+          if (!q.monthlyTrafficMonth) { q.monthlyTrafficMonth = dateFilterToday().slice(0, 7); }
           state.monthlyTrafficApplied = Object.assign({}, q, {
             monthlyTrafficVendor: q.monthlyTrafficVendor.trim(), monthlyTrafficMerchant: q.monthlyTrafficMerchant.trim(), monthlyTrafficIccid: q.monthlyTrafficIccid.trim()
           });
           state.monthlyTrafficPage = 1;
+          loadMonthlyView();
         } else {
           state.simTrafficApplied = Object.assign({}, q, {
             trafficVendor: q.trafficVendor.trim(), trafficMerchant: q.trafficMerchant.trim(), trafficIccid: q.trafficIccid.trim()
@@ -6859,6 +7029,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function simTrafficPaginationMarkup(total, totalPages, monthly, history) {
         return listPaginationMarkup(total, totalPages, {
           currentPage: history ? state.trafficHistoryPage : (monthly ? state.monthlyTrafficPage : state.simTrafficPage),
+          windowed: !!monthly,
           pageAction: history ? "traffic-history-page" : (monthly ? "monthly-traffic-page" : "sim-traffic-page"),
           jumpAction: history ? "traffic-history-jump" : (monthly ? "monthly-traffic-jump" : "sim-traffic-jump"),
           label: history ? "SIM卡历史流量记录分页" : (monthly ? "SIM卡月流量分页" : "SIM卡日流量分页")
@@ -6871,6 +7042,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var jumpAction = options.jumpAction;
         var buttons = "";
         for (var page = 1; page <= totalPages; page += 1) {
+          if (options.windowed && page > 1 && page < currentPage - 2) { buttons += '<span aria-hidden="true">…</span>'; page = currentPage - 3; continue; }
+          if (options.windowed && page > currentPage + 2 && page < totalPages) { buttons += '<span aria-hidden="true">…</span>'; page = totalPages - 1; continue; }
           buttons += '<button class="page-btn ' + (currentPage === page ? "active" : "") +
             '" data-action="' + pageAction + '" data-page="' + page + '" aria-label="第' + page + '页"' +
             (currentPage === page ? ' aria-current="page"' : "") + '>' + page + "</button>";
@@ -6883,6 +7056,106 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '" aria-label="下一页"' + (currentPage >= totalPages ? " disabled" : "") + '>›</button>' +
           '<span>前往</span><input class="jump-input" type="number" min="1" max="' + totalPages +
           '" value="' + currentPage + '" data-action="' + jumpAction + '" aria-label="前往页码"><span>页</span></div>';
+      }
+
+      function activationRecordsSeed() {
+        var today = dateFilterToday(), current = today.slice(0, 7);
+        var monthAt = function (offset) {
+          return new Date(Date.UTC(Number(current.slice(0, 4)), Number(current.slice(5, 7)) - 1 - offset, 1)).toISOString().slice(0, 7);
+        };
+        var mobileCards = simRowsSeed.filter(function (card) { return card.carrier === "中国移动"; });
+        var cards = Array.from({ length: 18 }, function (_, index) {
+          var source = mobileCards[index % mobileCards.length];
+          // Confirmed first-activation dates are fixture data, never inferred from the event window.
+          return {
+            iccid: index < mobileCards.length ? source.iccid : "898604882026" + String(10000000 + index),
+            msisdn: index < mobileCards.length ? source.msisdn : "144" + String(31610000 + index),
+            vendor: source.vendor, merchant: simRowsSeed[index % simRowsSeed.length].merchant,
+            firstActivationTime: index < mobileCards.length ? source.firstActivationTime :
+              (index % 7 === 0 ? "" : monthAt(index % 4 === 0 ? 0 : 5 + index % 3) + "-01")
+          };
+        });
+        var rows = [];
+        for (var offset = 0; offset < 9; offset += 1) {
+          var month = monthAt(offset);
+          cards.forEach(function (card, index) {
+            var day = month + "-" + String(1 + index % 5).padStart(2, "0");
+            if (day > today || (card.firstActivationTime && day < card.firstActivationTime)) { return; }
+            var record = Object.assign({}, card, { accountId: "DEMO-" + card.vendor, carrier: "中国移动", cardStatus: "2", activatedAt: day + " 09:20:" + String(index).padStart(2, "0") });
+            rows.push(record);
+            if (index % 3 === 0) { rows.push(Object.assign({}, record, { activatedAt: day + " 16:35:00" })); }
+            if (offset === 0 && index === 0) { rows.push(Object.assign({}, record)); }
+          });
+        }
+        return rows;
+      }
+
+      function filteredActivationRows() {
+        var q = state.activationApplied, keyword = q.activationKeyword.toLowerCase();
+        var events = new Map();
+        state.activationRows.forEach(function (row) {
+          if (String(row.cardStatus) !== "2") { return; }
+          var day = row.activatedAt.slice(0, 10);
+          if ((q.activationStart && day < q.activationStart) || (q.activationEnd && day > q.activationEnd) ||
+              (keyword && row.iccid.toLowerCase().indexOf(keyword) === -1 && row.msisdn.indexOf(keyword) === -1) ||
+              (q.activationVendor && row.vendor.indexOf(q.activationVendor) === -1) ||
+              (q.activationMerchant && row.merchant.indexOf(q.activationMerchant) === -1)) { return; }
+          events.set([row.accountId, row.msisdn, row.cardStatus, row.activatedAt].join("|"), row);
+        });
+        return Array.from(events.values()).sort(function (a, b) { return b.activatedAt.localeCompare(a.activatedAt) || a.iccid.localeCompare(b.iccid); });
+      }
+
+      function searchActivation() {
+        var q = state.activationQuery;
+        state.activationApplied = Object.assign({}, q, {
+          activationKeyword: q.activationKeyword.trim(), activationVendor: q.activationVendor.trim(), activationMerchant: q.activationMerchant.trim()
+        });
+        state.activationPage = 1;
+        state.openSelect = state.openCombo = "";
+        state.simDateOpen = false;
+        renderContent();
+      }
+
+      function activationMarkup() {
+        var q = state.activationQuery, applied = state.activationApplied, rows = filteredActivationRows();
+        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
+        state.activationPage = Math.max(1, Math.min(state.activationPage, totalPages));
+        var cardCount = new Set(rows.map(function (row) { return row.iccid; })).size;
+        var period = applied.activationStart ? applied.activationStart + " 至 " + (applied.activationEnd || applied.activationStart) : "全部已留存日期";
+        return '<div class="panel page-panel sim-traffic-page activation-page">' +
+          '<div class="filters"><div class="filter-grid">' +
+          '<label data-doc-field="activationDate">' + dateRangeMarkup("simActivation") + '</label>' +
+          '<div data-doc-field="iccid">' + simTrafficInputMarkup("activationKeyword", q.activationKeyword, "请输入ICCID/MSISDN", false) + '</div>' +
+          '<label data-doc-field="vendor">' + comboMarkup("activationVendor", q.activationVendor, uniqueList(state.activationRows, "vendor"), "请输入或选择供应商") + '</label>' +
+          '<label data-doc-field="merchant">' + comboMarkup("activationMerchant", q.activationMerchant, uniqueList(state.activationRows, "merchant"), "请输入或选择商户") + '</label>' +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="activation-search">搜索</button><button class="btn btn-gray" data-action="activation-reset">重置</button></div></div>' +
+          '<section class="activation-summary" aria-label="激活统计" aria-live="polite">' +
+          '<div class="activation-metric" data-doc-field="activationCardCount">激活卡数（张，去重）<strong>' + cardCount + '</strong></div>' +
+          '<div class="activation-metric" data-doc-field="activationRecordCount">激活记录数（条）<strong>' + rows.length + '</strong></div>' +
+          '<p class="activation-period">统计日期：' + esc(period) + '<span>同一张卡在所选范围内重复激活，仅计为1张。</span></p></section>' +
+          '<div class="operate-bar"><button class="btn btn-primary" data-action="export-activation"' + (!rows.length ? ' disabled' : '') + '>导出</button></div>' +
+          '<p class="activation-note">统计中国移动 OneLink 已激活状态变更记录；首次激活时间以平台已确认数据为准，未知时显示“--”。</p>' +
+          '<div class="table-shell"><table><colgroup><col style="width:70px"><col style="width:250px"><col style="width:150px"><col style="width:210px"><col style="width:180px"><col style="width:110px"><col style="width:200px"><col style="width:170px"></colgroup>' +
+          '<thead><tr><th scope="col">序号</th><th scope="col">ICCID</th><th scope="col">MSISDN</th><th scope="col">供应商</th><th scope="col">商户名称</th><th scope="col">运营商</th><th scope="col">激活时间</th><th scope="col">首次激活时间</th></tr></thead><tbody>' +
+          (rows.length ? rows.slice((state.activationPage - 1) * 20, state.activationPage * 20).map(function (row, index) {
+            return '<tr><td>' + ((state.activationPage - 1) * 20 + index + 1) + '</td>' +
+              '<td><div class="iccid-cell"><span>' + esc(row.iccid) + '</span><button class="copy-iccid" data-action="copy-iccid" data-value="' + esc(row.iccid) + '" aria-label="复制ICCID" title="复制ICCID"></button></div></td>' +
+              '<td>' + esc(row.msisdn) + '</td><td>' + esc(row.vendor) + '</td><td>' + esc(row.merchant) + '</td><td>' + row.carrier + '</td>' +
+              '<td>' + esc(row.activatedAt) + '</td><td title="' + (row.firstActivationTime ? '已留存的首次激活日期' : '首次激活时间尚未确认，不能由本次激活推定') + '">' + esc(row.firstActivationTime || '--') + '</td></tr>';
+          }).join('') : '<tr class="empty-row"><td colspan="8">暂无符合条件的激活记录，请调整日期范围或其他筛选条件</td></tr>') +
+          '</tbody></table></div>' + listPaginationMarkup(rows.length, totalPages, {
+            currentPage: state.activationPage, windowed: true, pageAction: "activation-page", jumpAction: "activation-jump", label: "SIM卡激活记录分页"
+          }) + '</div>';
+      }
+
+      function exportActivation() {
+        var rows = filteredActivationRows();
+        if (!rows.length) { toast("暂无可导出的激活记录"); return; }
+        var lines = [["序号", "ICCID", "MSISDN", "供应商", "商户名称", "运营商", "激活时间", "首次激活时间"]].concat(rows.map(function (row, index) {
+          return [index + 1, row.iccid + "\t", row.msisdn + "\t", row.vendor, row.merchant, row.carrier, row.activatedAt, row.firstActivationTime || "--"];
+        }));
+        downloadTrafficCsv(lines, "SIM卡激活统计-" + (state.activationApplied.activationStart || "全部日期") + "至" + (state.activationApplied.activationEnd || "全部日期") + ".csv");
+        toast("已导出 " + rows.length + " 条激活记录");
       }
 
       function simTrafficMarkup() {
@@ -6918,15 +7191,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function filteredMonthlyTrafficRows() {
         var q = state.monthlyTrafficApplied;
-        return state.monthlyTrafficRows.filter(function (row) {
-          return (q.monthlyTrafficMin === "" || row.monthFlow >= Number(q.monthlyTrafficMin)) &&
-            (q.monthlyTrafficMax === "" || row.monthFlow <= Number(q.monthlyTrafficMax)) &&
-            (!q.monthlyTrafficVendor || row.vendor.indexOf(q.monthlyTrafficVendor) !== -1) &&
-            (!q.monthlyTrafficMerchant || row.merchant.indexOf(q.monthlyTrafficMerchant) !== -1) &&
-            (!q.monthlyTrafficCarrier || row.carrier === q.monthlyTrafficCarrier) &&
-            (!q.monthlyTrafficIccid || row.iccid.toLowerCase().indexOf(q.monthlyTrafficIccid.toLowerCase()) !== -1) &&
-            (!q.monthlyTrafficMonth || row.month === q.monthlyTrafficMonth);
-        });
+        return monthlyProjection(q.monthlyTrafficMonth.slice(0, 4)).filter(function (row) { return monthlyRowMatches(row, q); });
       }
 
       function monthlyTrafficMonthMarkup() {
@@ -6971,114 +7236,342 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           (value ? esc(value) : '<span class="placeholder">请选择月份</span>') + '</button><span class="calendar-icon"></span>' + popup + '</div>';
       }
 
+      // Latest values and append-only query snapshots have separate indexed stores.
+      var monthlyDatabasePromise = null;
+      var monthlyChannel = null;
+      try {
+        if (window.BroadcastChannel) {
+          monthlyChannel = new BroadcastChannel("simcloud.monthly-traffic.v1");
+          monthlyChannel.onmessage = function () {
+            state.monthlyProjectionEpoch += 1;
+            state.monthlyProjectionCache.clear();
+            if (state.activePage === "simMonthlyTraffic") { loadMonthlyView(); }
+          };
+        }
+      } catch (error) { monthlyChannel = null; }
+      var monthlyLastQueryTime = 0;
+      var monthlyFlowNotes = {
+        annualSummary: pageDocumentation.simTrafficHistory.page.description + "\n\n次月1-3号，每天晚上12：00更新数据；\n\n按各月最新保存的月流量值展示；年度使用流量总计单位为MB。--表示未同步或尚未出账，不作零用量；点击月份数值查看该卡该月全部查询记录。仅支持手动刷新最近6个已结束月份的月流量。",
+        cumulativeFlow: "累计流量值MB：运营商日流量同步数据累加。",
+        monthFlow: "月流量值MB：次月初同步上月运营商月流量；年度视图取各月最后一次保存的查询结果，不累加查询版本。",
+        currentUsage: "本月数据用量：点击刷新按钮实时同步本月运营商流量。历史月份不查询当前月用量。"
+      };
+
+      function monthlyTimestamp(value) {
+        return new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).format(new Date(value)) + "." + String(value % 1000).padStart(3, "0");
+      }
+
+      function monthlyQueryTimestamp() {
+        monthlyLastQueryTime = Math.max(Date.now(), monthlyLastQueryTime + 1);
+        return monthlyTimestamp(monthlyLastQueryTime);
+      }
+
+      function monthlyDatabase() {
+        if (monthlyDatabasePromise) { return monthlyDatabasePromise; }
+        monthlyDatabasePromise = new Promise(function (resolve, reject) {
+          if (!window.indexedDB) { reject(new Error("当前浏览器无法保存查询记录，请启用本地数据库后重试。")); return; }
+          var request = indexedDB.open("simcloud.monthly-traffic.v1", 1);
+          request.onupgradeneeded = function () {
+            var db = request.result;
+            var latest = db.createObjectStore("latest", { keyPath: "id" });
+            latest.createIndex("year", "year");
+            var queries = db.createObjectStore("queries", { keyPath: "seq", autoIncrement: true });
+            queries.createIndex("month", "month");
+            queries.createIndex("cardMonth", ["iccid", "month"]);
+          };
+          request.onerror = function () { reject(new Error("本地数据库打开失败，查询结果未保存，请重试。")); };
+          request.onblocked = function () { reject(new Error("数据库被其他页面占用，请关闭旧页面后重试。")); };
+          request.onsuccess = function () {
+            var db = request.result;
+            db.onversionchange = function () { db.close(); monthlyDatabasePromise = null; };
+            var tx = db.transaction(["latest", "queries"], "readwrite");
+            var store = tx.objectStore("latest");
+            store.count().onsuccess = function (event) {
+              if (event.target.result) { return; }
+              monthlyTrafficRowsSeed.forEach(function (seed) {
+                var row = Object.assign({}, seed, { year: seed.month.slice(0, 4), _revision: 2 });
+                if (row.monthFlow !== null) {
+                  var next = new Date(Date.UTC(Number(row.year), Number(row.month.slice(5, 7)), 2, 1));
+                  [0, 1].forEach(function (version) {
+                    var time = Math.min(next.getTime() + version * 3600000, Date.now() - 2000 + version);
+                    var snapshot = Object.assign({}, row, { monthFlow: version ? row.monthFlow : Math.round(row.monthFlow * 97) / 100, updated: monthlyTimestamp(time) });
+                    tx.objectStore("queries").add(snapshot);
+                    if (version) { row.updated = snapshot.updated; }
+                  });
+                }
+                store.put(row);
+              });
+            };
+            tx.oncomplete = function () { resolve(db); };
+            tx.onabort = tx.onerror = function () { db.close(); reject(new Error("查询记录初始化失败，请重试。")); };
+          };
+        }).catch(function (error) {
+          monthlyDatabasePromise = null;
+          throw new Error(/[\u4e00-\u9fff]/.test(error.message || "") ? error.message : "无法使用本地查询记录存储，请检查浏览器权限后重试。");
+        });
+        return monthlyDatabasePromise;
+      }
+
+      function monthlyProjection(year) { return state.monthlyProjectionCache.get(year) || []; }
+
+      async function loadMonthlyProjection(year) {
+        if (state.monthlyProjectionCache.has(year)) { return monthlyProjection(year); }
+        var epoch = state.monthlyProjectionEpoch;
+        var db = await monthlyDatabase();
+        var rows = await new Promise(function (resolve, reject) {
+          var tx = db.transaction("latest", "readwrite");
+          var store = tx.objectStore("latest");
+          // A new calendar month gets an unqueried row without inventing a monthly result.
+          if (year === dateFilterToday().slice(0, 4)) {
+            monthlyTrafficRowsSeed.filter(function (row) { return row.month === dateFilterToday().slice(0, 7); }).forEach(function (seed) {
+              store.get(seed.id).onsuccess = function (event) {
+                if (!event.target.result) { store.put(Object.assign({}, seed, { year: year, _revision: 0 })); }
+              };
+            });
+          }
+          var values = [];
+          tx.oncomplete = function () {
+            var read = db.transaction("latest");
+            read.objectStore("latest").index("year").getAll(IDBKeyRange.only(year)).onsuccess = function (event) { values = event.target.result; };
+            read.oncomplete = function () { resolve(values); };
+            read.onabort = read.onerror = function () { reject(new Error("读取月流量失败，请重试。")); };
+          };
+          tx.onabort = tx.onerror = function () { reject(new Error("读取月流量失败，请重试。")); };
+        });
+        if (epoch !== state.monthlyProjectionEpoch) { return loadMonthlyProjection(year); }
+        state.monthlyProjectionCache.set(year, rows);
+        while (state.monthlyProjectionCache.size > 2) { state.monthlyProjectionCache.delete(state.monthlyProjectionCache.keys().next().value); }
+        return rows;
+      }
+
+      function monthlyRowMatches(row, q, ignoreAmount) {
+        return (!q.monthlyTrafficMonth || row.month === q.monthlyTrafficMonth) &&
+          (!q.monthlyTrafficVendor || row.vendor.indexOf(q.monthlyTrafficVendor) !== -1) &&
+          (!q.monthlyTrafficMerchant || row.merchant.indexOf(q.monthlyTrafficMerchant) !== -1) &&
+          (!q.monthlyTrafficCarrier || row.carrier === q.monthlyTrafficCarrier) &&
+          (!q.monthlyTrafficIccid || row.iccid.toLowerCase().indexOf(q.monthlyTrafficIccid.toLowerCase()) !== -1) &&
+          (ignoreAmount || ((q.monthlyTrafficMin === "" || (row.monthFlow !== null && row.monthFlow >= Number(q.monthlyTrafficMin))) &&
+            (q.monthlyTrafficMax === "" || (row.monthFlow !== null && row.monthFlow <= Number(q.monthlyTrafficMax)))));
+      }
+
+      function monthlySnapshotSource(tx, query) {
+        var exact = state.simRows.some(function (card) { return card.iccid === query.monthlyTrafficIccid; });
+        return { index: tx.objectStore("queries").index(exact ? "cardMonth" : "month"),
+          range: IDBKeyRange.only(exact ? [query.monthlyTrafficIccid, query.monthlyTrafficMonth] : query.monthlyTrafficMonth), exact: exact };
+      }
+
+      async function readMonthlySnapshotPage(query, page) {
+        var db = await monthlyDatabase();
+        var simple = !query.monthlyTrafficVendor && !query.monthlyTrafficMerchant && !query.monthlyTrafficCarrier && query.monthlyTrafficMin === "" && query.monthlyTrafficMax === "" &&
+          (!query.monthlyTrafficIccid || state.simRows.some(function (card) { return card.iccid === query.monthlyTrafficIccid; }));
+        var rows = [];
+        if (!simple) {
+          var count = await scanMonthlySnapshots(query, function (row, index) { if (index >= (page - 1) * 20 && index < page * 20) { rows.push(row); } });
+          return { rows: rows, total: count };
+        }
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction("queries"), source = monthlySnapshotSource(tx, query), total = 0, skipped = false;
+          source.index.count(source.range).onsuccess = function (event) { total = event.target.result; };
+          source.index.openCursor(source.range, "prev").onsuccess = function (event) {
+            var cursor = event.target.result;
+            if (!cursor) { return; }
+            if (!skipped && page > 1) { skipped = true; cursor.advance((page - 1) * 20); return; }
+            rows.push(cursor.value);
+            if (rows.length < 20) { cursor.continue(); }
+          };
+          tx.oncomplete = function () { resolve({ rows: rows, total: total }); };
+          tx.onabort = tx.onerror = function () { reject(new Error("读取查询记录失败，请重试。")); };
+        });
+      }
+
+      async function scanMonthlySnapshots(query, visit) {
+        var db = await monthlyDatabase();
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction("queries");
+          var source = monthlySnapshotSource(tx, query);
+          var count = 0;
+          source.index.openCursor(source.range, "prev").onsuccess = function (event) {
+            var cursor = event.target.result;
+            if (!cursor) { return; }
+            if (monthlyRowMatches(cursor.value, query)) { visit(cursor.value, count); count += 1; }
+            cursor.continue();
+          };
+          tx.oncomplete = function () { resolve(count); };
+          tx.onabort = tx.onerror = function () { reject(new Error("读取查询记录失败，请重试。")); };
+        });
+      }
+
+      function captureAnnualScroll() {
+        if (state.activePage !== "simMonthlyTraffic" || state.monthlyTrafficTab !== "history") { return null; }
+        var table = document.querySelector("#content .table-shell"), content = document.getElementById("content");
+        return { context: JSON.stringify(state.trafficHistoryApplied), left: table ? table.scrollLeft : 0, top: table ? table.scrollTop : 0, contentTop: content.scrollTop };
+      }
+
+      function restoreAnnualScroll(position) {
+        if (!position || state.activePage !== "simMonthlyTraffic" || state.monthlyTrafficTab !== "history" || JSON.stringify(state.trafficHistoryApplied) !== position.context) { return; }
+        var table = document.querySelector("#content .table-shell");
+        if (table) { table.scrollLeft = position.left; table.scrollTop = position.top; }
+        document.getElementById("content").scrollTop = position.contentTop;
+      }
+
+      async function loadMonthlyView(scrollPosition) {
+        var generation = ++state.monthlyViewRequest;
+        var tab = state.monthlyTrafficTab;
+        var query = Object.assign({}, state.monthlyTrafficApplied);
+        var year = tab === "history" ? state.trafficHistoryApplied.trafficHistoryYear : query.monthlyTrafficMonth.slice(0, 4);
+        state.monthlyViewLoading = true;
+        state.monthlyStoreError = "";
+        if (state.activePage === "simMonthlyTraffic") { renderContent(); restoreAnnualScroll(scrollPosition); }
+        try {
+          state.monthlyProjectionCache.delete(year);
+          await loadMonthlyProjection(year);
+          var pageRows = [], count = 0;
+          if (tab === "queries") {
+            var snapshotPage = await readMonthlySnapshotPage(query, state.monthlyTrafficPage);
+            pageRows = snapshotPage.rows;
+            count = snapshotPage.total;
+          }
+          if (generation !== state.monthlyViewRequest) { return; }
+          state.monthlyStoreReady = true;
+          state.monthlySnapshotRows = pageRows;
+          state.monthlySnapshotTotal = count;
+        } catch (error) {
+          if (generation !== state.monthlyViewRequest) { return; }
+          state.monthlyStoreError = error.message;
+        }
+        if (generation === state.monthlyViewRequest) {
+          state.monthlyViewLoading = false;
+          if (state.activePage === "simMonthlyTraffic") { renderContent(); restoreAnnualScroll(scrollPosition); }
+        }
+      }
+
+      async function saveMonthlySnapshots(rows) {
+        var db = await monthlyDatabase();
+        await new Promise(function (resolve, reject) {
+          var tx = db.transaction(["queries", "latest"], "readwrite");
+          try {
+            rows.forEach(function (row) {
+              var clean = Object.assign({}, row);
+              delete clean.seq;
+              tx.objectStore("queries").add(clean);
+              tx.objectStore("latest").put(clean);
+            });
+          } catch (error) { tx.abort(); }
+          tx.oncomplete = resolve;
+          tx.onabort = tx.onerror = function () { reject(new Error("保存失败，本次结果未生效，原查询记录保持不变。请检查浏览器存储空间后重试。")); };
+        });
+        state.monthlyProjectionEpoch += 1;
+        rows.forEach(function (row) { state.monthlyProjectionCache.delete(row.year); });
+        if (monthlyChannel) { monthlyChannel.postMessage("updated"); }
+      }
+
       function monthlyTrafficUsageMarkup(row) {
+        if (row.month !== dateFilterToday().slice(0, 7)) { return "--"; }
         var busy = state.monthlyTrafficRefreshing.has(row.id);
-        return '<span class="monthly-traffic-usage" aria-busy="' + busy + '"><span>' +
-          (row.currentUsage === null ? "--" : row.currentUsage.toFixed(2) + "MB") + '</span>' +
-          '<button class="refresh-card ' + (busy ? "spinning" : "") + '" data-action="refresh-monthly-traffic" data-id="' + row.id +
-          '" title="刷新本月数据用量" aria-label="刷新' + row.iccid + '本月数据用量"' + (busy ? " disabled" : "") + '>↻</button></span>';
+        return '<span class="monthly-traffic-usage" aria-busy="' + busy + '"><span>' + monthlyTrafficValue(row, "currentUsage") + '</span>' +
+          '<button class="refresh-card ' + (busy ? "spinning" : "") + '" data-action="refresh-monthly-traffic" data-id="' + esc(row.id) +
+          '" title="刷新本月数据用量并保存查询记录" aria-label="刷新' + esc(row.iccid) + '本月数据用量"' + (busy || !state.monthlyStoreReady ? " disabled" : "") + '>↻</button></span>';
       }
 
       function monthlyTrafficValue(row, key) {
-        if (key === "cumulativeFlow" || key === "monthFlow") { return row[key].toFixed(2); }
-        if (key === "currentUsage") { return row.currentUsage === null ? "--" : row.currentUsage.toFixed(2); }
+        if (["cumulativeFlow", "monthFlow", "currentUsage"].indexOf(key) !== -1) { return row[key] == null ? "--" : Number(row[key]).toFixed(2); }
         return row[key];
+      }
+
+      function monthlyStatusMarkup() {
+        if (state.monthlyStoreError) { return '<div class="traffic-filter-error" role="alert">' + esc(state.monthlyStoreError) + ' <button class="link" data-action="retry-monthly-storage">重试</button></div>'; }
+        return '';
       }
 
       function monthlyTrafficMarkup() {
         if (state.monthlyTrafficTab === "history") { return trafficHistoryMarkup(); }
         var q = state.monthlyTrafficQuery;
-        var rows = filteredMonthlyTrafficRows();
-        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
+        var snapshots = state.monthlyTrafficTab === "queries";
+        var rows = snapshots ? state.monthlySnapshotRows : filteredMonthlyTrafficRows();
+        var total = snapshots ? state.monthlySnapshotTotal : rows.length;
+        var totalPages = Math.max(1, Math.ceil(total / 20));
         state.monthlyTrafficPage = Math.max(1, Math.min(state.monthlyTrafficPage, totalPages));
-        var pageRows = rows.slice((state.monthlyTrafficPage - 1) * 20, state.monthlyTrafficPage * 20);
-        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page">' +
-          monthlyTrafficTabsMarkup() +
-          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-records">' +
+        var pageRows = snapshots ? rows : rows.slice((state.monthlyTrafficPage - 1) * 20, state.monthlyTrafficPage * 20);
+        var disabled = state.monthlyViewLoading || !!state.monthlyStoreError || !state.monthlyStoreReady;
+        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page">' + monthlyTrafficTabsMarkup() +
+          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-' + state.monthlyTrafficTab + '">' +
           '<div class="filters"><div class="filter-grid">' +
-            simTrafficInputMarkup("monthlyTrafficMin", q.monthlyTrafficMin, "流量最小值（MB）", true) +
-            simTrafficInputMarkup("monthlyTrafficMax", q.monthlyTrafficMax, "流量最大值（MB）", true) +
+            simTrafficInputMarkup("monthlyTrafficIccid", q.monthlyTrafficIccid, "请输入ICCID", false) + '<label>' + monthlyTrafficMonthMarkup() + '</label>' +
             '<label>' + comboMarkup("monthlyTrafficVendor", q.monthlyTrafficVendor, vendors, "请输入或选择供应商") + '</label>' +
             '<label>' + comboMarkup("monthlyTrafficMerchant", q.monthlyTrafficMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label>' +
             '<label>' + selectMarkup("monthlyTrafficCarrier", q.monthlyTrafficCarrier, carriers, "请选择运营商", true) + '</label>' +
-            simTrafficInputMarkup("monthlyTrafficIccid", q.monthlyTrafficIccid, "请输入ICCID", false) +
-            '<label>' + monthlyTrafficMonthMarkup() + '</label>' +
-          '</div><div class="actions"><button class="btn btn-outline" data-action="monthly-traffic-search">搜索</button>' +
-            '<button class="btn btn-gray" data-action="monthly-traffic-reset">重置</button></div>' +
-            (state.monthlyTrafficError ? '<div class="traffic-filter-error" id="trafficFilterError" role="alert">' + esc(state.monthlyTrafficError) + '</div>' : '') +
-          '</div><div class="operate-bar"><button class="btn btn-primary" data-action="export-monthly-traffic">导出</button></div>' +
-          '<div class="table-shell"><table><colgroup>' + monthlyTrafficColumns.map(function (column) {
-            return '<col style="width:' + column.width + 'px">';
-          }).join("") + '</colgroup><thead><tr>' + monthlyTrafficColumns.map(function (column) {
-            return '<th scope="col">' + esc(column.name) + '</th>';
-          }).join("") + '</tr></thead><tbody>' + (pageRows.length ? pageRows.map(function (row) {
+            simTrafficInputMarkup("monthlyTrafficMin", q.monthlyTrafficMin, "月流量最小值（MB）", true) + simTrafficInputMarkup("monthlyTrafficMax", q.monthlyTrafficMax, "月流量最大值（MB）", true) +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="monthly-traffic-search">搜索</button><button class="btn btn-gray" data-action="monthly-traffic-reset">重置</button></div>' +
+            (state.monthlyTrafficError ? '<div class="traffic-filter-error" id="trafficFilterError" role="alert">' + esc(state.monthlyTrafficError) + '</div>' : '') + '</div>' +
+          '<div class="operate-bar"><div class="operate-actions">' + (!snapshots ? '<button class="btn btn-primary" data-action="sync-monthly-traffic"' + (disabled || state.monthlySyncing || state.monthlyTrafficRefreshing.size ? ' disabled' : '') + '>' + (state.monthlySyncing ? '同步中…' : '同步月流量') + '</button>' : '') +
+            '<button class="btn btn-gray" data-action="export-monthly-traffic"' + (disabled || state.monthlyExporting ? ' disabled' : '') + '>' + (state.monthlyExporting ? '导出中…' : '导出') + '</button></div>' +
+          '<p class="monthly-flow-note">' + (snapshots ? '每次接口返回单独保存，包括相同结果；更新时间为本次查询时间。搜索、切换和导出不会产生新查询。' : '默认展示本月。月流量值于次月初同步；本月数据用量点击刷新获取。点击ICCID查看全年，搜索只读取已保存数据。') + '</p>' + monthlyStatusMarkup() + '</div>' +
+          '<div class="table-shell"><table><colgroup>' + monthlyTrafficColumns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join('') + '</colgroup><thead><tr>' +
+          monthlyTrafficColumns.map(function (column) { return '<th scope="col">' + (monthlyFlowNotes[column.key] ? '<span class="group-field-title">' + esc(column.name) + infoIconMarkup("monthly-flow-info", column.name + "说明", column.key) + '</span>' : esc(column.name)) + '</th>'; }).join('') +
+          '</tr></thead><tbody>' + (state.monthlyViewLoading ? '<tr class="empty-row"><td colspan="10" role="status">正在读取已保存的流量数据…</td></tr>' : disabled ? '<tr class="empty-row"><td colspan="10">流量记录暂不可用，请重试</td></tr>' : pageRows.length ? pageRows.map(function (row) {
             return '<tr>' + monthlyTrafficColumns.map(function (column) {
-              if (column.key === "currentUsage") { return '<td data-monthly-usage="' + row.id + '">' + monthlyTrafficUsageMarkup(row) + '</td>'; }
+              if (!snapshots && column.key === "currentUsage") { return '<td>' + monthlyTrafficUsageMarkup(row) + '</td>'; }
               var value = monthlyTrafficValue(row, column.key);
-              if (column.key === "monthFlow" || column.key === "cumulativeFlow") { value += "MB"; }
-              return '<td' + (column.key === "updated" ? ' data-monthly-updated="' + row.id + '"' : '') + ' title="' + esc(value) + '">' + esc(value) + '</td>';
-            }).join("") + '</tr>';
-          }).join("") : '<tr class="empty-row"><td colspan="10">暂无符合条件的数据，请调整筛选条件或重置</td></tr>') +
-          '</tbody></table></div>' + simTrafficPaginationMarkup(rows.length, totalPages, true) + '</div></div>';
+              if (!snapshots && column.key === "iccid") { return '<td><button class="iccid-link" data-action="monthly-card-year" data-iccid="' + esc(row.iccid) + '">' + esc(value) + '</button></td>'; }
+              return '<td title="' + esc(value) + '">' + esc(value) + '</td>';
+            }).join('') + '</tr>';
+          }).join('') : '<tr class="empty-row"><td colspan="10">暂无符合条件的数据，请调整月份或筛选条件</td></tr>') + '</tbody></table></div>' +
+          simTrafficPaginationMarkup(total, totalPages, true) + '</div></div>';
       }
 
       function monthlyTrafficTabsMarkup() {
         return '<div class="inner-tabs monthly-traffic-tabs" role="tablist" aria-label="SIM卡月流量记录类型">' +
-          [{ id: "records", label: "SIM卡月流量记录" }, { id: "history", label: "SIM卡历史流量记录" }].map(function (tab) {
+          [{ id: "records", label: "月流量记录" }, { id: "history", label: "年度月流量" }, { id: "queries", label: "查询记录" }].map(function (tab) {
             var active = state.monthlyTrafficTab === tab.id;
-            return '<button class="inner-tab ' + (active ? "active" : "") + '" id="monthlyTrafficTab-' + tab.id +
-              '" role="tab" aria-selected="' + active + '" aria-controls="monthlyTrafficTabPanel" tabindex="' + (active ? "0" : "-1") +
-              '" data-action="monthly-traffic-tab" data-tab="' + tab.id + '">' + tab.label + '</button>';
-          }).join("") + '</div>';
+            return '<button class="inner-tab ' + (active ? 'active' : '') + '" id="monthlyTrafficTab-' + tab.id + '" role="tab" aria-selected="' + active + '" aria-controls="monthlyTrafficTabPanel" tabindex="' + (active ? '0' : '-1') + '" data-action="monthly-traffic-tab" data-tab="' + tab.id + '">' + tab.label + '</button>';
+          }).join('') + '</div>';
       }
 
       function setMonthlyTrafficTab(tab) {
-        if ((tab !== "records" && tab !== "history") || tab === state.monthlyTrafficTab) { return; }
+        if (["records", "history", "queries"].indexOf(tab) === -1 || tab === state.monthlyTrafficTab) { return; }
+        if (tab === "history") {
+          var q = state.monthlyTrafficApplied;
+          state.trafficHistoryQuery = Object.assign({}, state.trafficHistoryQuery, { trafficHistoryYear: q.monthlyTrafficMonth.slice(0, 4), trafficHistoryKeyword: q.monthlyTrafficIccid, trafficHistoryVendor: q.monthlyTrafficVendor, trafficHistoryMerchant: q.monthlyTrafficMerchant, trafficHistoryCarrier: q.monthlyTrafficCarrier });
+          state.trafficHistoryApplied = Object.assign({}, state.trafficHistoryQuery);
+        } else if (state.monthlyTrafficTab === "history") {
+          var h = state.trafficHistoryApplied;
+          var selectedCard = state.simRows.find(function (card) { return card.iccid === h.trafficHistoryKeyword || card.msisdn === h.trafficHistoryKeyword; });
+          state.monthlyTrafficQuery = Object.assign({}, state.monthlyTrafficQuery, { monthlyTrafficIccid: selectedCard ? selectedCard.iccid : h.trafficHistoryKeyword, monthlyTrafficVendor: h.trafficHistoryVendor, monthlyTrafficMerchant: h.trafficHistoryMerchant, monthlyTrafficCarrier: h.trafficHistoryCarrier });
+          state.monthlyTrafficApplied = Object.assign({}, state.monthlyTrafficQuery);
+        }
         state.monthlyTrafficTab = tab;
-        state.openSelect = "";
-        state.openCombo = "";
+        state.monthlyTrafficPage = 1;
+        state.trafficHistoryPage = 1;
+        state.openSelect = state.openCombo = "";
         state.simDateOpen = false;
-        renderContent();
+        loadMonthlyView();
       }
 
       function trafficHistoryYearOptions() {
-        var years = new Set(state.monthlyTrafficRows.map(function (row) { return row.month.slice(0, 4); }));
         var currentYear = Number(trafficHistoryCurrentYear());
-        for (var offset = 0; offset < 5; offset += 1) { years.add(String(currentYear - offset)); }
-        return Array.from(years).sort(function (a, b) { return Number(b) - Number(a); });
+        return Array.from({ length: 5 }, function (_, index) { return String(currentYear - index); });
       }
 
       function filteredTrafficHistoryRows() {
         var q = state.trafficHistoryApplied;
         var cards = new Map();
-        state.monthlyTrafficRows.forEach(function (record) {
-          if (record.month.slice(0, 4) !== q.trafficHistoryYear) { return; }
+        var sourceCards = new Map(state.simRows.map(function (card) { return [card.iccid, card]; }));
+        monthlyProjection(q.trafficHistoryYear).forEach(function (record) {
           if (!cards.has(record.iccid)) {
-            var card = state.simRows.find(function (item) { return item.iccid === record.iccid; });
-            cards.set(record.iccid, {
-              msisdn: card ? card.msisdn : "--", iccid: record.iccid,
-              vendor: record.vendor, merchant: record.merchant, carrier: record.carrier, months: {}
-            });
+            var card = sourceCards.get(record.iccid);
+            cards.set(record.iccid, { msisdn: card ? card.msisdn : "--", iccid: record.iccid, vendor: record.vendor, merchant: record.merchant, carrier: record.carrier, months: {} });
           }
-          var row = cards.get(record.iccid);
-          row.months[record.month] = (row.months[record.month] || 0) + Math.round(record.monthFlow * 100);
+          if (record.monthFlow !== null) { cards.get(record.iccid).months[record.month] = Math.round(record.monthFlow * 100); }
         });
         var keyword = q.trafficHistoryKeyword.toLowerCase();
         return Array.from(cards.values()).filter(function (row) {
           return (!keyword || row.iccid.toLowerCase().indexOf(keyword) !== -1 || row.msisdn.toLowerCase().indexOf(keyword) !== -1) &&
-            (!q.trafficHistoryVendor || row.vendor.indexOf(q.trafficHistoryVendor) !== -1) &&
-            (!q.trafficHistoryMerchant || row.merchant.indexOf(q.trafficHistoryMerchant) !== -1) &&
-            (!q.trafficHistoryCarrier || row.carrier === q.trafficHistoryCarrier);
+            (!q.trafficHistoryVendor || row.vendor.indexOf(q.trafficHistoryVendor) !== -1) && (!q.trafficHistoryMerchant || row.merchant.indexOf(q.trafficHistoryMerchant) !== -1) && (!q.trafficHistoryCarrier || row.carrier === q.trafficHistoryCarrier);
         }).sort(function (a, b) { return a.iccid.localeCompare(b.iccid); });
       }
 
       function trafficHistoryColumns() {
-        var columns = [
-          { key: "msisdn", name: "MSISDN", width: 140 }, { key: "iccid", name: "ICCID", width: 240 },
-          { key: "vendor", name: "供应商", width: 190 }, { key: "merchant", name: "商户名称", width: 150 },
-          { key: "carrier", name: "运营商", width: 100 },
-          { key: "annualFlow", name: "年度使用流量总计", width: 180 }
-        ];
+        var columns = [{ key: "msisdn", name: "MSISDN", width: 140 }, { key: "iccid", name: "ICCID", width: 240 }, { key: "vendor", name: "供应商", width: 190 }, { key: "merchant", name: "商户名称", width: 150 }, { key: "carrier", name: "运营商", width: 100 }, { key: "annualFlow", name: "年度使用流量总计", width: 180 }];
         for (var month = 1; month <= 12; month += 1) {
           var key = state.trafficHistoryApplied.trafficHistoryYear + "-" + String(month).padStart(2, "0");
           columns.push({ key: key, name: key + "（MB）", width: 130, isMonth: true });
@@ -7088,12 +7581,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function trafficHistoryValue(row, column) {
         if (column.key === "annualFlow") {
-          var totalCents = 0;
-          for (var month = 1; month <= 12; month += 1) {
-            var key = state.trafficHistoryApplied.trafficHistoryYear + "-" + String(month).padStart(2, "0");
-            totalCents += row.months[key] || 0;
-          }
-          return (totalCents / 100).toFixed(3);
+          var values = Object.keys(row.months).map(function (key) { return row.months[key]; });
+          return values.length ? (values.reduce(function (sum, value) { return sum + value; }, 0) / 100).toFixed(3) : "--";
         }
         if (!column.isMonth) { return row[column.key]; }
         return Object.prototype.hasOwnProperty.call(row.months, column.key) ? (row.months[column.key] / 100).toFixed(3) : "--";
@@ -7101,101 +7590,190 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function searchTrafficHistory() {
         var q = state.trafficHistoryQuery;
-        state.trafficHistoryApplied = Object.assign({}, q, {
-          trafficHistoryKeyword: q.trafficHistoryKeyword.trim(), trafficHistoryVendor: q.trafficHistoryVendor.trim(), trafficHistoryMerchant: q.trafficHistoryMerchant.trim()
-        });
+        state.trafficHistoryApplied = Object.assign({}, q, { trafficHistoryKeyword: q.trafficHistoryKeyword.trim(), trafficHistoryVendor: q.trafficHistoryVendor.trim(), trafficHistoryMerchant: q.trafficHistoryMerchant.trim() });
         state.trafficHistoryPage = 1;
-        state.openSelect = "";
-        state.openCombo = "";
+        state.openSelect = state.openCombo = "";
         state.simDateOpen = false;
-        renderContent();
-        toast("已更新SIM卡历史流量记录查询结果");
+        loadMonthlyView();
+      }
+
+      function annualMonthRefreshUnavailableReason(month) {
+        if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)) { return "月份无效，无法刷新"; }
+        var current = dateFilterToday().slice(0, 7);
+        var monthsAgo = (Number(current.slice(0, 4)) - Number(month.slice(0, 4))) * 12 + Number(current.slice(5, 7)) - Number(month.slice(5, 7));
+        if (monthsAgo <= 0) { return "该月尚未结束，次月初可同步月流量"; }
+        return monthsAgo > 6 ? "仅支持手动刷新最近6个已结束月份的月流量" : "";
+      }
+
+      function monthlyYearValueMarkup(row, column) {
+        var value = trafficHistoryValue(row, column);
+        var busy = state.monthlyTrafficRefreshing.has(row.iccid + "|" + column.key);
+        var unavailableReason = annualMonthRefreshUnavailableReason(column.key);
+        var expired = column.key < dateFilterToday().slice(0, 7) && !!unavailableReason;
+        var disabled = !!unavailableReason || busy || state.monthlySyncing || !state.monthlyStoreReady || !!state.monthlyStoreError || state.monthlyTrafficRefreshing.size >= 3;
+        var title = unavailableReason || "刷新该月月流量值并保存查询记录";
+        return '<span class="annual-month-value" aria-busy="' + busy + '">' + (value === "--" ? '<span class="monthly-year-empty" title="未同步或尚未出账">--</span>' :
+          '<button class="link" data-action="monthly-show-queries" data-iccid="' + esc(row.iccid) + '" data-month="' + column.key + '" aria-label="查看' + esc(row.iccid) + '在' + column.key + '的月流量查询记录">' + esc(value) + '</button>') +
+          (expired ? '' : '<button class="refresh-card ' + (busy ? 'spinning' : '') + '" data-action="refresh-annual-month" data-iccid="' + esc(row.iccid) + '" data-month="' + column.key +
+          '" title="' + title + '" aria-label="刷新' + esc(row.iccid) + '在' + column.key + '的月流量"' + (disabled ? ' disabled' : '') + '>↻</button>') + '</span>';
+      }
+
+      function monthlyYearCardMarkup(row, columns) {
+        return '<div class="monthly-year-card"><dl class="sim-info-grid">' + columns.filter(function (column) { return !column.isMonth; }).map(function (column) {
+          return simInfoItemMarkup(column.name, trafficHistoryValue(row, column), column.key);
+        }).join('') + '</dl><div class="monthly-year-grid">' + columns.filter(function (column) { return column.isMonth; }).map(function (column) {
+          return '<div class="monthly-year-cell"><span>' + esc(column.name) + '</span>' + monthlyYearValueMarkup(row, column) + '</div>';
+        }).join('') + '</div></div>';
       }
 
       function trafficHistoryMarkup() {
-        var q = state.trafficHistoryQuery;
-        var rows = filteredTrafficHistoryRows();
-        var columns = trafficHistoryColumns();
+        var q = state.trafficHistoryQuery, rows = filteredTrafficHistoryRows(), columns = trafficHistoryColumns();
         var totalPages = Math.max(1, Math.ceil(rows.length / 20));
         state.trafficHistoryPage = Math.max(1, Math.min(state.trafficHistoryPage, totalPages));
-        var pageRows = rows.slice((state.trafficHistoryPage - 1) * 20, state.trafficHistoryPage * 20);
+        var disabled = state.monthlyViewLoading || !!state.monthlyStoreError || !state.monthlyStoreReady;
         return '<div class="panel page-panel sim-traffic-page monthly-traffic-page traffic-history-page">' + monthlyTrafficTabsMarkup() +
-          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-history">' +
-          '<div class="filters"><div class="filter-grid">' +
-            '<label>' + selectMarkup("trafficHistoryYear", q.trafficHistoryYear, trafficHistoryYearOptions(), "请选择年份", false) + '</label>' +
-            simTrafficInputMarkup("trafficHistoryKeyword", q.trafficHistoryKeyword, "请输入ICCID/MSISDN", false) +
-            '<label>' + comboMarkup("trafficHistoryVendor", q.trafficHistoryVendor, vendors, "请输入或选择供应商") + '</label>' +
-            '<label>' + comboMarkup("trafficHistoryMerchant", q.trafficHistoryMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label>' +
-            '<label>' + selectMarkup("trafficHistoryCarrier", q.trafficHistoryCarrier, carriers, "请选择运营商", true) + '</label>' +
-          '</div><div class="actions"><button class="btn btn-outline" data-action="traffic-history-search">搜索</button>' +
-            '<button class="btn btn-gray" data-action="traffic-history-reset">重置</button></div></div>' +
-          '<div class="operate-bar"><div class="operate-actions"><button class="btn btn-primary" data-action="export-traffic-history">导出</button>' +
-            infoIconMarkup("traffic-history-info", "流量统计说明") + '</div></div>' +
-          '<div class="table-shell"><table><colgroup>' + columns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join("") +
-            '</colgroup><thead><tr>' + columns.map(function (column) { return '<th scope="col">' + esc(column.name) + '</th>'; }).join("") + '</tr></thead><tbody>' +
-            (pageRows.length ? pageRows.map(function (row) {
-              return '<tr>' + columns.map(function (column) {
-                var value = trafficHistoryValue(row, column);
-                return '<td title="' + esc(value === "--" && column.isMonth ? "暂无该月流量记录" : value) + '">' + esc(value) + '</td>';
-              }).join("") + '</tr>';
-            }).join("") : '<tr class="empty-row"><td colspan="' + columns.length + '">暂无符合条件的数据，请调整筛选条件或年份</td></tr>') +
-          '</tbody></table></div>' + simTrafficPaginationMarkup(rows.length, totalPages, true, true) + '</div></div>';
+          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-history"><div class="filters"><div class="filter-grid">' +
+          '<label>' + selectMarkup("trafficHistoryYear", q.trafficHistoryYear, trafficHistoryYearOptions(), "请选择年份", false) + '</label>' + simTrafficInputMarkup("trafficHistoryKeyword", q.trafficHistoryKeyword, "请输入ICCID/MSISDN", false) +
+          '<label>' + comboMarkup("trafficHistoryVendor", q.trafficHistoryVendor, vendors, "请输入或选择供应商") + '</label><label>' + comboMarkup("trafficHistoryMerchant", q.trafficHistoryMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label><label>' + selectMarkup("trafficHistoryCarrier", q.trafficHistoryCarrier, carriers, "请选择运营商", true) + '</label>' +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="traffic-history-search">搜索</button><button class="btn btn-gray" data-action="traffic-history-reset">重置</button></div></div>' +
+          '<div class="operate-bar"><div class="operate-actions"><button class="btn btn-primary" data-action="export-traffic-history"' + (disabled || state.monthlyExporting ? ' disabled' : '') + '>' + (state.monthlyExporting ? '导出中…' : '导出') + '</button></div>' +
+          '<div>' + infoIconMarkup("monthly-flow-info", "年度月流量说明", "annualSummary") + '</div>' + monthlyStatusMarkup() + '</div>' +
+          (!disabled && rows.length === 1 ? monthlyYearCardMarkup(rows[0], columns) : '<div class="table-shell"><table><colgroup>' + columns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join('') + '</colgroup><thead><tr>' + columns.map(function (column) { return '<th scope="col">' + esc(column.name) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          (disabled ? '<tr class="empty-row"><td colspan="18" role="status">' + (state.monthlyViewLoading ? '正在读取年度流量…' : '流量记录暂不可用，请重试') + '</td></tr>' : rows.length ? rows.slice((state.trafficHistoryPage - 1) * 20, state.trafficHistoryPage * 20).map(function (row) {
+            return '<tr>' + columns.map(function (column) {
+              var value = trafficHistoryValue(row, column);
+              return '<td title="' + esc(value === "--" ? '未同步或尚未出账' : value) + '">' + (column.isMonth ? monthlyYearValueMarkup(row, column) : esc(value)) + '</td>';
+            }).join('') + '</tr>';
+          }).join('') : '<tr class="empty-row"><td colspan="18">暂无符合条件的数据，请调整年份或筛选条件</td></tr>') + '</tbody></table></div>') + simTrafficPaginationMarkup(rows.length, totalPages, true, true) + '</div></div>';
       }
 
-      function exportTrafficHistory() {
-        var rows = filteredTrafficHistoryRows();
-        if (!rows.length) { toast("暂无可导出的历史流量记录，请调整筛选条件"); return; }
-        var columns = trafficHistoryColumns();
-        var lines = [columns.map(function (column) { return column.name; })].concat(rows.map(function (row) {
-          return columns.map(function (column) {
-            return trafficHistoryValue(row, column) + (column.key === "iccid" || column.key === "msisdn" ? "\t" : "");
-          });
-        }));
-        downloadTrafficCsv(lines, "SIM卡历史流量记录-" + state.trafficHistoryApplied.trafficHistoryYear + ".csv");
-        toast("已导出 " + rows.length + " 条SIM卡历史流量记录");
+      function monthlyQueryResult(row) {
+        var revision = (row._revision || 0) + 1;
+        var delta = revision % 3 === 0 ? 0 : (revision % 2 ? 61 : -37);
+        var cardIndex = state.simRows.findIndex(function (card) { return card.iccid === row.iccid; });
+        var base = row.monthFlow == null ? (Number(row.month.slice(5, 7)) + 1) * (cardIndex + 2) * 13783 : Math.round(row.monthFlow * 100);
+        var time = monthlyQueryTimestamp();
+        return Object.assign({}, row, { _revision: revision, monthFlow: Math.max(0, base + delta) / 100, created: row.created || time, updated: time });
       }
 
-      function refreshMonthlyTraffic(id, button) {
-        var row = state.monthlyTrafficRows.find(function (item) { return item.id === id; });
-        if (!row || state.monthlyTrafficRefreshing.has(id)) { return; }
+      async function refreshAnnualMonth(iccid, month) {
+        var unavailableReason = annualMonthRefreshUnavailableReason(month);
+        if (unavailableReason) { toast(unavailableReason); return; }
+        var id = iccid + "|" + month;
+        if (state.monthlySyncing || state.monthlyTrafficRefreshing.has(id) || !state.monthlyStoreReady || state.monthlyStoreError) { return; }
+        if (state.monthlyTrafficRefreshing.size >= 3) { toast("最多同时刷新3个月份，请稍后再试"); return; }
+        var card = state.simRows.find(function (item) { return item.iccid === iccid; });
+        if (!card) { return; }
         state.monthlyTrafficRefreshing.add(id);
-        button.disabled = true;
-        button.classList.add("spinning");
-        button.parentNode.setAttribute("aria-busy", "true");
-        window.setTimeout(function () {
-          var latest = state.monthlyTrafficRows.find(function (item) {
-            return item.iccid === row.iccid && item.month === monthlyTrafficRowsSeed[0].month;
-          });
-          row.currentUsage = latest ? latest.monthFlow : 0;
-          row.updated = new Intl.DateTimeFormat("sv-SE", {
-            timeZone: "Asia/Shanghai", year: "numeric", month: "2-digit", day: "2-digit",
-            hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
-          }).format(new Date());
-          state.monthlyTrafficRefreshing.delete(id);
-          if (state.activePage === "simMonthlyTraffic") {
-            var usageCell = document.querySelector('[data-monthly-usage="' + id + '"]');
-            var timeCell = document.querySelector('[data-monthly-updated="' + id + '"]');
-            if (usageCell) { usageCell.innerHTML = monthlyTrafficUsageMarkup(row); }
-            if (timeCell) { timeCell.textContent = row.updated; timeCell.title = row.updated; }
-            toast("已刷新本月数据用量：" + row.iccid);
-          }
-        }, 600);
+        var position = captureAnnualScroll();
+        renderContent(); restoreAnnualScroll(position);
+        try {
+          var rows = await loadMonthlyProjection(month.slice(0, 4));
+          var row = rows.find(function (item) { return item.id === id; }) || { id: id, year: month.slice(0, 4), month: month, iccid: iccid, vendor: card.vendor, merchant: card.merchant, carrier: card.carrier,
+            cumulativeFlow: null, monthFlow: null, currentUsage: null, created: "", _revision: 0 };
+          await new Promise(function (resolve) { window.setTimeout(resolve, 400); });
+          await saveMonthlySnapshots([monthlyQueryResult(row)]);
+          toast("已刷新 " + month + " 月流量并保存查询记录");
+        } catch (error) { state.monthlyStoreError = error.message; toast(error.message); }
+        state.monthlyTrafficRefreshing.delete(id);
+        position = captureAnnualScroll();
+        var returnFocus = document.activeElement === document.body;
+        if (!state.monthlyStoreError) { await loadMonthlyView(position); }
+        else if (state.activePage === "simMonthlyTraffic") { renderContent(); restoreAnnualScroll(position); }
+        if (returnFocus && position && state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab === "history" && JSON.stringify(state.trafficHistoryApplied) === position.context) {
+          var button = document.querySelector('[data-action="refresh-annual-month"][data-iccid="' + iccid + '"][data-month="' + month + '"]');
+          if (button) { button.focus({ preventScroll: true }); }
+        }
       }
 
-      function exportMonthlyTraffic() {
-        var rows = filteredMonthlyTrafficRows();
-        if (!rows.length) { toast("暂无可导出的月流量记录，请调整筛选条件"); return; }
-        var headers = monthlyTrafficColumns.map(function (column) {
-          return column.key === "currentUsage" ? column.name + "（MB）" : column.name;
-        });
-        var lines = [headers].concat(rows.map(function (row) {
-          return monthlyTrafficColumns.map(function (column) {
-            return monthlyTrafficValue(row, column.key) + (column.key === "iccid" ? "\t" : "");
-          });
-        }));
-        downloadTrafficCsv(lines, "SIM卡月流量.csv");
-        toast("已导出 " + rows.length + " 条SIM卡月流量记录");
+      async function syncMonthlyTraffic() {
+        if (state.monthlySyncing || state.monthlyTrafficRefreshing.size || !state.monthlyStoreReady || state.monthlyStoreError) { return; }
+        var q = Object.assign({}, state.monthlyTrafficApplied);
+        if (q.monthlyTrafficMonth >= dateFilterToday().slice(0, 7)) { toast("月流量值于次月初同步，本月请刷新本月数据用量"); return; }
+        var rows = monthlyProjection(q.monthlyTrafficMonth.slice(0, 4)).filter(function (row) { return monthlyRowMatches(row, q, true); });
+        if (!rows.length) { toast("没有可同步的卡，请调整筛选条件"); return; }
+        state.monthlySyncing = true;
+        renderContent();
+        try {
+          await new Promise(function (resolve) { window.setTimeout(resolve, 400); });
+          var results = rows.map(monthlyQueryResult);
+          await saveMonthlySnapshots(results);
+          toast("已保存 " + results.length + " 条月流量查询结果，原记录未覆盖");
+        } catch (error) { state.monthlyStoreError = error.message; toast(error.message); }
+        state.monthlySyncing = false;
+        if (!state.monthlyStoreError) { await loadMonthlyView(); }
+        else if (state.activePage === "simMonthlyTraffic") { renderContent(); }
       }
+
+      async function refreshMonthlyTraffic(id) {
+        var month = id.slice(-7);
+        if (month !== dateFilterToday().slice(0, 7) || state.monthlyTrafficRefreshing.has(id) || !state.monthlyStoreReady) { return; }
+        var row = monthlyProjection(month.slice(0, 4)).find(function (item) { return item.id === id; });
+        if (!row) { return; }
+        state.monthlyTrafficRefreshing.add(id);
+        renderContent();
+        try {
+          await new Promise(function (resolve) { window.setTimeout(resolve, 400); });
+          var revision = (row._liveRevision || 0) + 1;
+          var result = Object.assign({}, row, { _liveRevision: revision, currentUsage: Math.round((row.cumulativeFlow + 123.45 + revision * 1.23) * 100) / 100, updated: monthlyQueryTimestamp() });
+          await saveMonthlySnapshots([result]);
+          toast("已刷新本月数据用量并保存本次查询记录");
+        } catch (error) { state.monthlyStoreError = error.message; toast(error.message); }
+        state.monthlyTrafficRefreshing.delete(id);
+        if (!state.monthlyStoreError) { await loadMonthlyView(); }
+        else if (state.activePage === "simMonthlyTraffic") { renderContent(); }
+      }
+
+      function monthlyCsvLine(values) {
+        return values.map(function (value) { return '"' + String(value == null ? "" : value).replace(/"/g, '""') + '"'; }).join(',') + '\r\n';
+      }
+
+      async function exportMonthlyView(history) {
+        if (state.monthlyExporting || state.monthlyViewLoading || state.monthlyStoreError) { return; }
+        var snapshots = !history && state.monthlyTrafficTab === "queries";
+        var q = Object.assign({}, state.monthlyTrafficApplied);
+        var exportYear = state.trafficHistoryApplied.trafficHistoryYear;
+        var columns = history ? trafficHistoryColumns() : monthlyTrafficColumns;
+        var rows = history ? filteredTrafficHistoryRows() : (snapshots ? null : filteredMonthlyTrafficRows());
+        var parts = ["\ufeff", monthlyCsvLine(columns.map(function (column) { return column.key === "currentUsage" ? column.name + "（MB）" : column.name; }))];
+        var lines = [], count = 0;
+        function collect(row) {
+          lines.push(monthlyCsvLine(columns.map(function (column) {
+            var value = history ? trafficHistoryValue(row, column) : monthlyTrafficValue(row, column.key);
+            return value + (column.key === "iccid" || column.key === "msisdn" ? "\t" : "");
+          })));
+          count += 1;
+          if (lines.length === 200) { parts.push(lines.join('')); lines = []; }
+        }
+        state.monthlyExporting = true;
+        renderContent();
+        try {
+          if (snapshots) { await scanMonthlySnapshots(q, collect); }
+          else {
+            // Capture the selected view; yield between batches rather than building a huge DOM/table.
+            for (var index = 0; index < rows.length; index += 200) {
+              rows.slice(index, index + 200).forEach(collect);
+              await new Promise(function (resolve) { window.setTimeout(resolve, 0); });
+            }
+          }
+          if (!count) { toast("暂无可导出的流量记录，请调整筛选条件"); }
+          else {
+            if (lines.length) { parts.push(lines.join('')); }
+            var blob = new Blob(parts, { type: "text/csv;charset=utf-8" });
+            var url = URL.createObjectURL(blob), link = document.createElement("a");
+            link.href = url;
+            link.download = history ? "SIM卡历史流量记录-" + exportYear + ".csv" : "SIM卡" + (snapshots ? "月流量查询记录-" : "月流量-") + q.monthlyTrafficMonth + ".csv";
+            document.body.appendChild(link); link.click(); link.remove();
+            window.setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
+            toast("已导出 " + count + " 条记录");
+          }
+        } catch (error) { toast("导出失败，请重试：" + error.message); }
+        state.monthlyExporting = false;
+        if (state.activePage === "simMonthlyTraffic") { renderContent(); }
+      }
+
+      function exportTrafficHistory() { exportMonthlyView(true); }
+      function exportMonthlyTraffic() { exportMonthlyView(false); }
 
       function prepareSimTrafficFields() {
         var content = $("#content");
@@ -7207,6 +7785,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             monthlyTrafficVendor: "供应商", monthlyTrafficMerchant: "商户", monthlyTrafficCarrier: "运营商",
             trafficHistoryYear: "年份", trafficHistoryVendor: "供应商", trafficHistoryMerchant: "商户", trafficHistoryCarrier: "运营商",
             poolHistorySupplier: "供应商", poolHistoryGroup: "群组名称", poolHistoryYear: "年份",
+            activationVendor: "供应商", activationMerchant: "商户",
             redlistVendor: "供应商", redlistExpiryStatus: "到期状态" }[key];
           control.setAttribute("aria-label", fieldName);
           control.setAttribute("aria-expanded", String(isOpen));
@@ -8250,6 +8829,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           markup = simCardMarkup();
         } else if (state.activePage === "simTraffic") {
           markup = simTrafficMarkup();
+        } else if (state.activePage === "simActivation") {
+          markup = activationMarkup();
         } else if (state.activePage === "simMonthlyTraffic") {
           markup = monthlyTrafficMarkup();
         } else if (state.activePage === "esim") {
@@ -8280,7 +8861,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           markup = accountMarkup();
         }
         $("#content").innerHTML = markup;
-        if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") { prepareSimTrafficFields(); }
+        if (state.activePage === "simTraffic" || state.activePage === "simActivation" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") { prepareSimTrafficFields(); }
         applyDocumentationAnchors();
         renderPageDocumentation();
         renderDatePicker();
@@ -8802,6 +9383,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function showInlineInfo(target) {
+        if (target.dataset.action === "monthly-flow-info") {
+          target.setAttribute("aria-expanded", "true");
+          showFloatingPopover(target, esc(monthlyFlowNotes[target.dataset.field]).replace(/\n/g, "<br>"));
+          return;
+        }
         var text = target.dataset.action === "redlist-balance-info" ? redlistRemainingBalanceNote :
           (target.dataset.action === "resource-replenishment-info" ? resourceReplenishmentNote :
           (target.dataset.action === "group-field-info" ? groupSupplyNotes[target.dataset.field] :
@@ -8811,6 +9397,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function isInlineInfoPinned(target) {
+        if (target.dataset.action === "monthly-flow-info") { return state.monthlyFlowInfoOpen === target.dataset.field; }
         if (target.dataset.action === "redlist-balance-info") { return state.redlistBalanceInfoOpen; }
         if (target.dataset.action === "resource-replenishment-info") { return state.resourceReplenishmentInfoOpen; }
         if (target.dataset.action === "group-field-info") { return state.groupFieldInfoOpen === target.dataset.field; }
@@ -8844,6 +9431,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.groupFieldInfoOpen = "";
         state.resourceReplenishmentInfoOpen = false;
         state.redlistBalanceInfoOpen = false;
+        state.monthlyFlowInfoOpen = "";
         Array.prototype.forEach.call(document.querySelectorAll(inlineInfoSelector), function (button) {
           button.setAttribute("aria-expanded", "false");
         });
@@ -8976,6 +9564,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       document.addEventListener("keydown", function (event) {
         var target = event.target;
         if (event.isComposing || event.keyCode === 229) { return; }
+        if (event.key === "Escape" && (state.monthlyFlowInfoOpen || document.querySelector('[data-action="monthly-flow-info"][aria-expanded="true"]'))) {
+          hideManageStopPopover(); event.preventDefault(); return;
+        }
         if (event.key === "Escape" && (state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen ||
             document.querySelector('[data-action="group-field-info"][aria-expanded="true"], [data-action="resource-replenishment-info"][aria-expanded="true"], [data-action="redlist-balance-info"][aria-expanded="true"]'))) {
           event.preventDefault();
@@ -9118,8 +9709,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             return;
           }
         }
-        if (state.activePage !== "simTraffic" && state.activePage !== "simMonthlyTraffic" && state.activePage !== "redlist" && state.activePage !== "resourceHistory") { return; }
+        if (state.activePage !== "simTraffic" && state.activePage !== "simActivation" && state.activePage !== "simMonthlyTraffic" && state.activePage !== "redlist" && state.activePage !== "resourceHistory") { return; }
         var poolHistory = state.activePage === "resourceHistory";
+        var activation = state.activePage === "simActivation";
         var redlist = state.activePage === "redlist";
         var monthly = state.activePage === "simMonthlyTraffic";
         var history = monthly && state.monthlyTrafficTab === "history";
@@ -9132,7 +9724,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           setResourceHistoryMode(poolMode);
           document.getElementById("poolHistoryTab-" + poolMode).focus();
         } else if (target.dataset.action === "monthly-traffic-tab" && ["ArrowLeft", "ArrowRight", "Home", "End"].indexOf(event.key) !== -1) {
-          var tab = event.key === "Home" ? "records" : (event.key === "End" ? "history" : (history ? "records" : "history"));
+          var tabs = ["records", "history", "queries"];
+          var position = tabs.indexOf(state.monthlyTrafficTab);
+          var tab = tabs[event.key === "Home" ? 0 : (event.key === "End" ? 2 : (position + (event.key === "ArrowLeft" ? 2 : 1)) % 3)];
           event.preventDefault();
           setMonthlyTrafficTab(tab);
           document.getElementById("monthlyTrafficTab-" + tab).focus();
@@ -9159,7 +9753,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.openSelect = "";
           state.simDateOpen = false;
           renderContent();
-          var dateAction = poolHistory ? "toggle-pool-history-month" : redlist ? (state.dateTarget === "redlistStart" ? "toggle-redlist-start-date" : "toggle-redlist-end-date") :
+          var dateAction = activation ? "toggle-activation-date" : poolHistory ? "toggle-pool-history-month" : redlist ? (state.dateTarget === "redlistStart" ? "toggle-redlist-start-date" : "toggle-redlist-end-date") :
             (monthly ? "toggle-monthly-traffic-month" : "toggle-sim-traffic-date");
           var returnTarget = focusKey ? document.getElementById(focusKey) :
             document.querySelector(hadDate ? '[data-action="' + dateAction + '"]' : '[data-action="toggle-select"][data-key="' + selectKey + '"]');
@@ -9186,6 +9780,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var poolPages = Math.max(1, Math.ceil(filteredResourceHistoryRows().length / 20));
           state.resourceHistoryPage[state.resourceHistoryMode] = Math.max(1, Math.min(poolPages, Math.floor(Number(target.value) || 1)));
           renderContent();
+        } else if (event.key === "Enter" && target.dataset.action === "activation-jump") {
+          event.preventDefault();
+          var activationPages = Math.max(1, Math.ceil(filteredActivationRows().length / 20));
+          state.activationPage = Math.max(1, Math.min(activationPages, Math.floor(Number(target.value) || 1)));
+          renderContent();
         } else if (event.key === "Enter" && target.dataset.action === "redlist-jump") {
           event.preventDefault();
           var redlistPages = Math.max(1, Math.ceil(filteredRedlistRows().length / 20));
@@ -9198,8 +9797,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           renderContent();
         } else if (event.key === "Enter" && target.dataset.action === "monthly-traffic-jump") {
           event.preventDefault();
-          var monthlyPages = Math.max(1, Math.ceil(filteredMonthlyTrafficRows().length / 20));
+          var monthlyPages = Math.max(1, Math.ceil((state.monthlyTrafficTab === "queries" ? state.monthlySnapshotTotal : filteredMonthlyTrafficRows().length) / 20));
           state.monthlyTrafficPage = Math.max(1, Math.min(monthlyPages, Math.floor(Number(target.value) || 1)));
+          if (state.monthlyTrafficTab === "queries") { loadMonthlyView(); }
           renderContent();
         } else if (event.key === "Enter" && target.dataset.action === "sim-traffic-jump") {
           event.preventDefault();
@@ -9209,6 +9809,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (event.key === "Enter" && (target.dataset.action === "sim-traffic-input" || target.dataset.action === "combo-input")) {
           event.preventDefault();
           if (poolHistory) { searchResourceHistory(); }
+          else if (activation) { searchActivation(); }
           else if (redlist) { searchRedlist(); }
           else if (history) { searchTrafficHistory(); }
           else { searchSimTraffic(monthly); }
@@ -9254,6 +9855,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           dismissDatePicker();
         }
         var infoAction = target && target.matches(inlineInfoSelector);
+        if (state.monthlyFlowInfoOpen && !infoAction) { hideManageStopPopover(); }
         if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen || state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen) && !infoAction) {
           hideManageStopPopover();
         }
@@ -9284,7 +9886,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var pinned = isInlineInfoPinned(target);
           hideManageStopPopover();
           if (!pinned) {
-            if (action === "redlist-balance-info") { state.redlistBalanceInfoOpen = true; }
+            if (action === "monthly-flow-info") { state.monthlyFlowInfoOpen = target.dataset.field; }
+            else if (action === "redlist-balance-info") { state.redlistBalanceInfoOpen = true; }
             else if (action === "resource-replenishment-info") { state.resourceReplenishmentInfoOpen = true; }
             else if (action === "group-field-info") { state.groupFieldInfoOpen = target.dataset.field; }
             else if (action === "sim-reset-info") { state.simResetInfoOpen = true; }
@@ -9391,6 +9994,42 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (action === "open-monthly-traffic") {
           openPage("simMonthlyTraffic");
           render();
+          loadMonthlyView();
+        } else if (action === "open-sim-activation") {
+          openPage("simActivation");
+          render();
+        } else if (action === "activation-search") {
+          searchActivation();
+        } else if (action === "activation-reset") {
+          state.activationQuery = blankActivationQuery();
+          state.activationApplied = blankActivationQuery();
+          state.activationPage = 1;
+          state.openSelect = state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+        } else if (action === "activation-page") {
+          var activationTotalPages = Math.max(1, Math.ceil(filteredActivationRows().length / 20));
+          state.activationPage = Math.max(1, Math.min(activationTotalPages, Math.floor(Number(target.dataset.page) || 1)));
+          renderContent();
+        } else if (action === "export-activation") {
+          exportActivation();
+        } else if (action === "retry-monthly-storage") {
+          state.monthlyProjectionCache.clear();
+          loadMonthlyView();
+        } else if (action === "sync-monthly-traffic") {
+          syncMonthlyTraffic();
+        } else if (action === "refresh-annual-month") {
+          refreshAnnualMonth(target.dataset.iccid, target.dataset.month);
+        } else if (action === "monthly-card-year") {
+          state.monthlyTrafficApplied.monthlyTrafficIccid = target.dataset.iccid;
+          state.monthlyTrafficQuery.monthlyTrafficIccid = target.dataset.iccid;
+          setMonthlyTrafficTab("history");
+        } else if (action === "monthly-show-queries") {
+          state.monthlyTrafficQuery = Object.assign(blankMonthlyTrafficQuery(), { monthlyTrafficMonth: target.dataset.month, monthlyTrafficIccid: target.dataset.iccid });
+          state.monthlyTrafficApplied = Object.assign({}, state.monthlyTrafficQuery);
+          state.monthlyTrafficTab = "queries";
+          state.monthlyTrafficPage = 1;
+          loadMonthlyView();
         } else if (action === "monthly-traffic-tab") {
           setMonthlyTrafficTab(target.dataset.tab);
         } else if (action === "traffic-history-search") {
@@ -9404,6 +10043,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.simDateOpen = false;
           renderContent();
           toast("SIM卡历史流量记录筛选条件已重置");
+          loadMonthlyView();
         } else if (action === "traffic-history-page") {
           var historyTotalPages = Math.max(1, Math.ceil(filteredTrafficHistoryRows().length / 20));
           state.trafficHistoryPage = Math.max(1, Math.min(historyTotalPages, Number(target.dataset.page) || 1));
@@ -9422,9 +10062,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.simDateOpen = false;
           renderContent();
           toast("SIM卡月流量筛选条件已重置");
+          loadMonthlyView();
         } else if (action === "monthly-traffic-page") {
-          var monthlyTotalPages = Math.max(1, Math.ceil(filteredMonthlyTrafficRows().length / 20));
+          var monthlyTotalPages = Math.max(1, Math.ceil((state.monthlyTrafficTab === "queries" ? state.monthlySnapshotTotal : filteredMonthlyTrafficRows().length) / 20));
           state.monthlyTrafficPage = Math.max(1, Math.min(monthlyTotalPages, Number(target.dataset.page) || 1));
+          if (state.monthlyTrafficTab === "queries") { loadMonthlyView(); }
           renderContent();
         } else if (action === "toggle-monthly-traffic-month") {
           var monthOpen = !(state.simDateOpen && state.dateTarget === "monthlyTraffic");
@@ -9594,7 +10236,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             if (isBatchTaskAddKey(key)) { document.querySelector('#overlay [data-action="toggle-select"][data-key="' + key + '"]').focus(); }
           } else {
             renderContent();
-            if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") {
+            if (state.activePage === "simTraffic" || state.activePage === "simActivation" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") {
               var trafficSelect = document.querySelector('[data-action="toggle-select"][data-key="' + key + '"]');
               if (trafficSelect) { trafficSelect.focus(); }
             }
@@ -9622,7 +10264,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           setQueryValue(key, target.dataset.value);
           state.openCombo = "";
           renderContent();
-          if (state.activePage === "simTraffic" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") { focusField(key); }
+          if (state.activePage === "simTraffic" || state.activePage === "simActivation" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") { focusField(key); }
         } else if (action === "clear-combo") {
           event.stopPropagation();
           setQueryValue(key, "");
