@@ -270,7 +270,12 @@
       overflow-y: hidden;
     }
 
+    .breadcrumb-bar { scrollbar-width: thin; }
+    .breadcrumb-bar::-webkit-scrollbar { height: 8px; }
+    .breadcrumb-bar.has-overflow { height: 54px; flex-basis: 54px; }
+
     .breadcrumb-item {
+      flex-shrink: 0;
       position: relative;
       min-width: 112px;
       height: 42px;
@@ -1281,16 +1286,6 @@
     @container (max-width: 1080px) { .monthly-year-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     @container (max-width: 640px) { .monthly-year-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) th:nth-child(-n+2),
-    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) td:nth-child(-n+2) {
-      position: sticky; left: 0; z-index: 2; background: #fff;
-    }
-
-    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) th:nth-child(2),
-    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) td:nth-child(2) { left: 110px; }
-
-    .monthly-traffic-page:not(.traffic-history-page):not(.resource-history-page) th:nth-child(-n+2) { background: #fbfcfe; }
-
     .monthly-traffic-tabs {
       flex-shrink: 0;
       overflow-x: auto;
@@ -1302,6 +1297,36 @@
       min-height: 0;
       display: flex;
       flex-direction: column;
+    }
+
+    .monthly-period-bar, .monthly-detail-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 18px; }
+    .monthly-period-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .monthly-detail-header h2 { margin: 0; font-size: 18px; font-weight: 600; }
+    .monthly-period-actions .date-field { width: 150px; }
+    .monthly-summary-note { margin: 10px 18px; color: #657182; line-height: 1.7; }
+    .monthly-detail-header { justify-content: flex-start; border-bottom: 1px solid var(--border); }
+    .monthly-detail-page { container-type: inline-size; }
+    .monthly-detail-page .monthly-detail-fields { margin: 18px; border-top: 1px solid var(--border); }
+    .monthly-overview table { min-width: 1415px; }
+    .monthly-detail-page table { min-width: 760px; }
+    .monthly-overview th:first-child, .monthly-overview td:first-child { position: sticky; left: 0; z-index: 2; background: #fff; }
+    .monthly-overview th:last-child, .monthly-overview td:last-child { position: sticky; right: 0; z-index: 2; background: #fff; border-left: 1px solid var(--border); }
+    .monthly-overview th:first-child, .monthly-overview th:last-child { background: #fbfcfe; z-index: 3; }
+    .monthly-period-actions .date-popover { left: 0; right: auto; max-width: calc(100vw - 48px); }
+    .monthly-detail-page .pagination { margin-top: 12px; flex-wrap: wrap; height: auto; min-height: 56px; }
+    .monthly-overview .pagination { flex-shrink: 0; flex-wrap: wrap; height: auto; min-height: 56px; }
+    .monthly-detail-page .operate-actions { flex-wrap: wrap; }
+    .monthly-detail-page .monthly-query-section { padding-bottom: 10px; }
+    .monthly-detail-page .monthly-query-section[hidden] { display: none; }
+    .monthly-detail-page .monthly-query-section .table-shell { min-height: 160px; }
+    @media (max-width: 900px) {
+      .monthly-overview td:first-child, .monthly-overview th:first-child { position: static; }
+    }
+    .monthly-overview .btn:disabled, .monthly-detail-page .btn:disabled, .monthly-period-actions .month-btn:disabled, .traffic-month-option:disabled { cursor: not-allowed; opacity: .45; }
+    .monthly-overview .link:hover, .monthly-detail-page .link:hover { text-decoration: underline; }
+    @media (max-width: 720px) {
+      .monthly-period-actions { width: 100%; gap: 6px; }
+      .monthly-period-actions .date-field { width: 128px; }
     }
 
     .traffic-history-page table {
@@ -2959,12 +2984,8 @@
       }
     }
 
-    .batch-task-file-summary {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 4px;
-      min-height: 36px;
+    .batch-task-file-summary,
+    .batch-task-pool-preview {
       margin-top: 8px;
       padding: 6px 10px;
       color: #596273;
@@ -2973,24 +2994,37 @@
       line-height: 1.6;
     }
 
-    .batch-task-file-summary strong {
+    .batch-task-file-summary {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-height: 36px;
+    }
+
+    .batch-task-pool-preview {
+      margin-bottom: 0;
+      padding: 8px 12px 8px 26px;
+      list-style: disc;
+      overflow-wrap: anywhere;
+    }
+
+    .batch-task-pool-preview li + li { margin-top: 4px; }
+
+    .batch-task-file-summary strong,
+    .batch-task-pool-preview .batch-task-count-value {
       color: var(--blue);
       font-size: 16px;
       font-variant-numeric: tabular-nums;
     }
 
-    .batch-task-pool-estimate {
-      flex: 0 0 100%;
-      min-width: 0;
-      line-height: 1.7;
-      overflow-wrap: anywhere;
-    }
-
-    .batch-task-pool-estimate b {
+    .batch-task-pool-preview b {
       color: var(--blue);
       font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
+
+    .batch-task-pool-preview .balance-warning { color: #b42318; }
 
     .batch-task-add-dialog .select-option {
       overflow: hidden;
@@ -3519,6 +3553,93 @@
         width: calc(100vw - 24px);
       }
     }
+
+    /* Month lists own their scroll surface; the page can grow on short screens. */
+    [data-monthly-view].page-panel {
+      width: 100%;
+      height: auto;
+      min-height: 100%;
+      flex: 1 0 auto;
+      align-self: flex-start;
+      container-type: inline-size;
+    }
+    [data-monthly-view] > .monthly-traffic-panel { flex: 1 0 auto; min-height: auto; }
+    [data-monthly-view] > .monthly-traffic-panel > * { flex-shrink: 0; min-width: 0; }
+    [data-monthly-view] .table-shell,
+    [data-monthly-view] .monthly-query-section .table-shell {
+      height: var(--monthly-list-height, 300px);
+      min-height: 0;
+      max-width: calc(100% - 36px);
+      flex: 0 0 auto;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-gutter: stable;
+      scroll-padding: 42px 110px 12px 240px;
+    }
+    [data-monthly-view] .table-shell table { border-collapse: separate; border-spacing: 0; }
+    [data-monthly-view] .table-shell .empty-row td { position: static; height: 140px; padding: 0; }
+    [data-monthly-view] .monthly-empty-message { position: sticky; left: 0; width: var(--monthly-list-width); min-height: 140px; padding: 20px; display: flex; align-items: center; justify-content: center; white-space: normal; overflow-wrap: anywhere; }
+    [data-monthly-view] .table-shell thead th { position: sticky; top: 0; z-index: 4; background: #fbfcfe; }
+    [data-monthly-view] .table-shell thead th:nth-child(-n+2),
+    .monthly-overview .table-shell thead th:last-child { z-index: 5; }
+    .monthly-overview .table-shell td:last-child,
+    .monthly-overview .table-shell th:last-child { box-shadow: -1px 0 0 var(--border); }
+    [data-monthly-view].monthly-has-list .pagination {
+      height: auto;
+      min-height: 56px;
+      margin-top: 0;
+      padding: 12px 18px;
+      flex: 0 0 auto;
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+    [data-monthly-view] .pagination > * { flex-shrink: 0; }
+    [data-monthly-view] .monthly-pagination-pages,
+    [data-monthly-view] .monthly-pagination-jump { display: inline-flex; align-items: center; gap: 9px; white-space: nowrap; }
+    [data-monthly-view] .monthly-query-section { display: flex; flex-direction: column; }
+    [data-monthly-view] .monthly-query-section[hidden] { display: none; }
+    [data-monthly-view] .monthly-period-bar { padding-top: 14px; padding-bottom: 14px; }
+    [data-monthly-view] .monthly-summary-note { margin-top: 8px; margin-bottom: 8px; }
+    [data-monthly-view] .operate-bar { padding-top: 10px; padding-bottom: 10px; }
+    @container (max-width: 880px) {
+      [data-monthly-view] .filter-grid,
+      body.page-doc-open [data-monthly-view] .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .monthly-overview th:first-child, .monthly-overview td:first-child { position: static; }
+      .monthly-overview .table-shell thead th:first-child { position: sticky; top: 0; left: auto; }
+      .traffic-history-page .table-shell th:nth-child(-n+2),
+      .traffic-history-page .table-shell td:nth-child(-n+2) { left: auto; position: static; box-shadow: none; }
+      .traffic-history-page .table-shell thead th:nth-child(-n+2) { position: sticky; top: 0; }
+      [data-monthly-view] .table-shell { scroll-padding-left: 12px; }
+    }
+    @container (max-width: 560px) {
+      [data-monthly-view] .monthly-period-bar { align-items: flex-start; }
+      [data-monthly-view] .monthly-period-actions { width: 100%; gap: 6px; }
+      [data-monthly-view] .monthly-period-actions .date-field { width: 128px; }
+      [data-monthly-view] .monthly-period-actions .btn { padding-left: 10px; padding-right: 10px; }
+      [data-monthly-view] .filter-grid,
+      body.page-doc-open [data-monthly-view] .filter-grid { grid-template-columns: minmax(0, 1fr); }
+      [data-monthly-view].monthly-has-list .pagination { justify-content: flex-start; padding-left: 18px; padding-right: 18px; }
+      [data-monthly-view] .table-shell { scroll-padding-right: 100px; }
+    }
+    @media (max-width: 900px) {
+      body.page-doc-open:has(#content [data-monthly-view]) .page-doc-sidebar { position: fixed; top: 59px; bottom: 0; right: 0; height: auto; width: min(360px, calc(100vw - 32px)); flex-basis: 0; z-index: 35; }
+      body.page-doc-open:has(#content [data-monthly-view]) .page-doc-panel { width: 100%; min-width: 0; }
+      body.page-doc-open:has(#content [data-monthly-view]) .page-doc-trigger { right: min(360px, calc(100vw - 32px)); z-index: 36; }
+    }
+    /* Close controls use geometry, not a font glyph and native button padding. */
+    .clear-value, .breadcrumb-close, .modal-close, .page-doc-close, .redlist-notify-chip button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .clear-value { top: 50%; transform: translateY(-50%); }
+    .clear-value[hidden] { display: none; }
+    .close-icon { display: block; width: 12px; height: 12px; flex: none; pointer-events: none; }
+    .modal-close .close-icon { width: 20px; height: 20px; }
+    .page-doc-close .close-icon { width: 18px; height: 18px; }
   </style>
 </head>
 <body>
@@ -3914,19 +4035,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return b.month.localeCompare(a.month) || a.iccid.localeCompare(b.iccid);
       });
 
-      var monthlyTrafficColumns = [
-        { key: "month", name: "月份", width: 110 },
-        { key: "iccid", name: "ICCID", width: 240 },
-        { key: "vendor", name: "供应商", width: 190 },
-        { key: "merchant", name: "商户名称", width: 150 },
-        { key: "carrier", name: "运营商", width: 100 },
-        { key: "cumulativeFlow", name: "累计流量值（MB）", width: 150 },
-        { key: "monthFlow", name: "月流量值（MB）", width: 140 },
-        { key: "currentUsage", name: "本月数据用量", width: 160 },
-        { key: "created", name: "创建时间", width: 200 },
-        { key: "updated", name: "更新时间", width: 200 }
-      ];
-
       var esimRowsSeed = simRowsSeed.map(function (row, index) {
         var allocated = allocatedOptions[index % allocatedOptions.length];
         var allocationTargetPlatform = allocatedBusinessPlatformOptions[index % allocatedBusinessPlatformOptions.length];
@@ -4085,6 +4193,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         row.flowType = index % 5 === 1 ? "小流量" : "大流量";
       });
 
+      // Demo groups link to exact accounts, not the first account for a supplier.
+      var replenishmentAccountByGroup = { 1: "OL20260014", 2: "OL20260015", 3: "OL20260004" };
+
       // Static card ownership used by the local activation-file validation demo.
       var activationGroupByCardId = { 1: 1, 2: 2, 3: 1, 4: 2, 5: 3, 6: 3 };
       simRowsSeed.forEach(function (card) { card.groupId = activationGroupByCardId[card.id]; });
@@ -4152,7 +4263,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       };
 
       var blankMonthlyTrafficQuery = function () {
-        return { monthlyTrafficMin: "", monthlyTrafficMax: "", monthlyTrafficVendor: "", monthlyTrafficMerchant: "", monthlyTrafficCarrier: "", monthlyTrafficIccid: "", monthlyTrafficMonth: dateFilterToday().slice(0, 7) };
+        return { monthlyTrafficMin: "", monthlyTrafficMax: "", monthlyTrafficVendor: "", monthlyTrafficMerchant: "", monthlyTrafficCarrier: "", monthlyTrafficIccid: "", monthlyTrafficMonth: "" };
       };
 
       function trafficHistoryCurrentYear() {
@@ -4369,6 +4480,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         monthlyTrafficError: "",
         monthlyTrafficRefreshing: new Set(),
         monthlyTrafficTab: "records",
+        monthlyDetail: null,
+        monthlyPages: {},
+        monthlyPageNeedsLoad: false,
         trafficHistoryQuery: blankTrafficHistoryQuery(),
         trafficHistoryApplied: blankTrafficHistoryQuery(),
         trafficHistoryPage: 1,
@@ -4793,7 +4907,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               name: "上传文件与激活数量检测（功能说明）",
               version: "V3.1.5",
               ticket: "1002321",
-              text: "激活卡文件上传后自动检测ICCID数量，在弹窗上传区域下方展示本次待激活卡数：N张。支持XLS、XLSX，单次文件不超过10MB、10000条，首个工作表需包含ICCID列，码号按文本格式填写。按非空ICCID记录数量统计，空白记录不计入；该数量为本次待处理数量，不代表最终激活成功数量，实际结果以群组校验及任务详情为准"
+              text: "激活卡文件上传后自动检测ICCID数量。资源池补池时在备注下方展示待激活卡数、用量估算和余额预估；非资源池补池时仍在上传区展示待激活卡数。支持XLS、XLSX，单次文件不超过10MB、10000条，首个工作表需包含ICCID列，码号按文本格式填写。待激活卡数按非空ICCID记录统计，不代表最终激活成功数量。预计扣减按通过群组校验的去重卡数乘以补池单价计算；点击确定时重新校验群组绑定账户的余额，余额不足或无法校验时不创建任务"
             },
             {
               name: "批量任务详情失败原因（功能说明）",
@@ -4841,7 +4955,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function currentDocPageKey() {
-        if (state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab === "history") { return "simTrafficHistory"; }
+        if (isMonthlyTrafficPage(state.activePage)) { return state.monthlyTrafficTab === "history" ? "simTrafficHistory" : "simMonthlyTraffic"; }
         if (state.activePage === "esim" && state.esimActiveTab === "records") { return "esimRecords"; }
         if (state.activePage === "esimChip" && state.esimChipActiveTab === "records") { return "esimChipRecords"; }
         return state.activePage;
@@ -4982,7 +5096,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           bodyMarkup = functionItems.length ? docListMarkup(functionItems) : "";
         }
         sidebar.innerHTML = '<div class="page-doc-panel">' +
-          '<div class="page-doc-head"><h2>页面说明</h2><button class="page-doc-close" data-action="close-page-doc" aria-label="关闭页面说明">×</button></div>' +
+          '<div class="page-doc-head"><h2>页面说明</h2><button class="page-doc-close" data-action="close-page-doc" aria-label="关闭页面说明">' + closeIconMarkup() + '</button></div>' +
           pageDocTabsMarkup(doc) +
           '<div class="page-doc-body">' + bodyMarkup + "</div>" +
         "</div>";
@@ -5054,6 +5168,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function pageName(page) {
+        if (isMonthlyTrafficPage(page) && state.monthlyPages[page]) { return state.monthlyPages[page].label; }
         return {
           home: "首页",
           resourceHistory: "资源池历史用量记录",
@@ -5077,28 +5192,94 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }[page] || page;
       }
 
-      function openPage(page) {
-        if (state.openPages.indexOf(page) === -1) {
-          state.openPages.push(page);
+      function isMonthlyTrafficPage(page) {
+        return page === 'simMonthlyTraffic' || (typeof page === 'string' && page.indexOf('simMonthlyTraffic/') === 0);
+      }
+
+      function monthlyPageValues() {
+        var values = {};
+        ['monthlyTrafficQuery', 'monthlyTrafficApplied', 'monthlyTrafficPage', 'monthlyTrafficDraftMonth',
+          'monthlyTrafficCalendarYear', 'monthlyTrafficError', 'monthlyTrafficTab', 'monthlyDetail',
+          'trafficHistoryQuery', 'trafficHistoryApplied', 'trafficHistoryPage', 'monthlySnapshotRows', 'monthlySnapshotTotal'].forEach(function (key) {
+          values[key] = JSON.parse(JSON.stringify(state[key]));
+        });
+        return values;
+      }
+
+      function blankMonthlyPageValues() {
+        return {
+          monthlyTrafficQuery: blankMonthlyTrafficQuery(), monthlyTrafficApplied: blankMonthlyTrafficQuery(),
+          monthlyTrafficPage: 1, monthlyTrafficDraftMonth: '', monthlyTrafficCalendarYear: Number(dateFilterToday().slice(0, 4)),
+          monthlyTrafficError: '', monthlyTrafficTab: 'records', monthlyDetail: null,
+          trafficHistoryQuery: blankTrafficHistoryQuery(), trafficHistoryApplied: blankTrafficHistoryQuery(), trafficHistoryPage: 1,
+          monthlySnapshotRows: [], monthlySnapshotTotal: 0
+        };
+      }
+
+      function saveMonthlyPage(page) {
+        if (!isMonthlyTrafficPage(page)) { return; }
+        var context = state.monthlyPages[page];
+        if (!context) { return; }
+        context.values = monthlyPageValues();
+        context.position = captureMonthlyPosition();
+      }
+
+      function openMonthlyPage(page, label, values, parentPage) {
+        saveMonthlyPage(state.activePage);
+        var previous = state.monthlyPages[page];
+        var parent = parentPage || 'simMonthlyTraffic';
+        if (parent === page) { parent = previous && previous.parentPage || 'simMonthlyTraffic'; }
+        // A destination belongs to the page type; a new card replaces its query context.
+        state.monthlyPages[page] = { label: label, values: values, parentPage: parent, position: null };
+        openPage(page, true);
+        render();
+      }
+
+      function returnMonthlyParent() {
+        var context = state.monthlyPages[state.activePage];
+        var parent = context && context.parentPage;
+        if (!parent || state.openPages.indexOf(parent) === -1) {
+          parent = 'simMonthlyTraffic';
         }
+        openPage(parent);
+        render();
+      }
+
+      function openPage(page, replaceMonthlyValues) {
+        if (!replaceMonthlyValues) { saveMonthlyPage(state.activePage); }
+        if (page !== state.activePage || replaceMonthlyValues) {
+          state.monthlyViewRequest += 1;
+          if (isMonthlyTrafficPage(page)) {
+            if (!state.monthlyPages[page]) {
+              state.monthlyPages[page] = { label: 'SIM卡月流量', values: blankMonthlyPageValues(), parentPage: null, position: null };
+            }
+            var values = state.monthlyPages[page].values;
+            Object.keys(values).forEach(function (key) { state[key] = JSON.parse(JSON.stringify(values[key])); });
+          }
+        }
+        if (state.openPages.indexOf(page) === -1) { state.openPages.push(page); }
         state.activePage = page;
-        state.openSelect = "";
-        state.openCombo = "";
+        state.openSelect = '';
+        state.openCombo = '';
         state.simDateOpen = false;
+        if (isMonthlyTrafficPage(page)) {
+          state.monthlyPageNeedsLoad = true;
+          state.monthlyViewLoading = true;
+        }
       }
 
       function closePage(page) {
         var index = state.openPages.indexOf(page);
         if (index === -1) { return; }
+        var context = state.monthlyPages[page];
+        var parent = context && context.parentPage;
         state.openPages.splice(index, 1);
-        if (!state.openPages.length) {
-          state.openPages.push("home");
-          state.activePage = "home";
-          return;
-        }
         if (state.activePage === page) {
-          state.activePage = state.openPages[Math.min(index, state.openPages.length - 1)];
+          var destination = parent && state.openPages.indexOf(parent) !== -1 ? parent : state.openPages[Math.min(index, state.openPages.length - 1)];
+          openPage(destination || 'home');
         }
+        if (isMonthlyTrafficPage(page)) { delete state.monthlyPages[page]; }
+        if (!state.openPages.length) { openPage('home'); }
       }
 
       function copyText(text) {
@@ -5144,7 +5325,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             '<div class="submenu">' +
               '<button class="submenu-btn ' + (state.activePage === "sim" ? "active" : "") + '" data-action="open-sim">SIM卡管理</button>' +
               '<button class="submenu-btn ' + (state.activePage === "simTraffic" ? "active" : "") + '" data-action="open-sim-traffic">SIM卡日流量</button>' +
-              '<button class="submenu-btn ' + (state.activePage === "simMonthlyTraffic" ? "active" : "") + '" data-action="open-monthly-traffic">SIM卡月流量</button>' +
+              '<button class="submenu-btn ' + (isMonthlyTrafficPage(state.activePage) ? "active" : "") + '" data-action="open-monthly-traffic">SIM卡月流量</button>' +
               '<button class="submenu-btn ' + (state.activePage === "simActivation" ? "active" : "") + '" data-action="open-sim-activation">SIM卡激活统计</button>' +
             "</div>" +
           "</div>" +
@@ -5183,9 +5364,26 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         $("#breadcrumb").innerHTML = state.openPages.map(function (page) {
           return '<button class="breadcrumb-item ' + (state.activePage === page ? "active" : "") + '" data-action="breadcrumb-switch" data-page="' + page + '">' +
             '<span>' + esc(pageName(page)) + '</span>' +
-            '<span class="breadcrumb-close" data-action="breadcrumb-close" data-page="' + page + '">×</span>' +
+            '<span class="breadcrumb-close" data-action="breadcrumb-close" aria-label="关闭' + esc(pageName(page)) + '" title="关闭' + esc(pageName(page)) + '" data-page="' + page + '">' + closeIconMarkup() + '</span>' +
           "</button>";
         }).join("");
+        fitBreadcrumbTabs();
+      }
+
+      function fitBreadcrumbTabs() {
+        var bar = document.getElementById('breadcrumb');
+        if (!bar) { return; }
+        bar.classList.toggle('has-overflow', bar.scrollWidth > bar.clientWidth + 1);
+        bar.scrollTop = 0;
+        var active = bar.querySelector('.breadcrumb-item.active');
+        if (!active) { return; }
+        var tabRect = active.getBoundingClientRect(), barRect = bar.getBoundingClientRect();
+        if (tabRect.left < barRect.left) { bar.scrollLeft -= barRect.left - tabRect.left; }
+        else if (tabRect.right > barRect.right) { bar.scrollLeft += tabRect.right - barRect.right; }
+      }
+
+      function closeIconMarkup() {
+        return '<svg class="close-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false" fill="none"><path d="M4 4L12 12M12 4L4 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
       }
 
       function selectMarkup(key, value, options, placeholder, clearable) {
@@ -5195,7 +5393,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           (value ? esc(value) : '<span class="placeholder">' + esc(placeholder) + "</span>") +
           "</button><span class=\"caret\"></span>";
         if (value && clearable) {
-          html += '<button class="clear-value" aria-label="清除" data-action="clear-select" data-key="' + key + '">×</button>';
+          html += '<button class="clear-value" aria-label="清除" data-action="clear-select" data-key="' + key + '">' + closeIconMarkup() + '</button>';
         }
         if (isOpen) {
           html += '<div class="select-options">' + options.map(function (item) {
@@ -5221,7 +5419,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<input class="text-input" data-action="combo-input" data-key="' + key + '" id="' + key + '" value="' +
           esc(value) + '" placeholder="' + esc(placeholder) + '">' +
           '<span class="caret"></span>' +
-          (value ? '<button class="clear-value" aria-label="清除" data-action="clear-combo" data-key="' + key + '">×</button>' : "") +
+          (value ? '<button class="clear-value" aria-label="清除" data-action="clear-combo" data-key="' + key + '">' + closeIconMarkup() + '</button>' : "") +
           (isOpen ? '<div class="select-options">' + filtered.map(function (item) {
             return '<button class="select-option ' + (item === value ? "selected" : "") +
               '" data-action="choose-combo" data-key="' + key + '" data-value="' + esc(item) + '">' + esc(item) + "</button>";
@@ -5580,7 +5778,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             var group = state.groupRows.find(function (item) { return batchTaskGroupLabel(item) === value; });
             state.batchTaskAddGroup = group ? group.id : null;
           }
-          if (state.batchTaskAddErrorField === key || (key === "batchTaskAddType" && value !== "激活卡")) {
+          if (state.batchTaskAddErrorField === key || state.batchTaskAddErrorField === "batchTaskPoolBalance" ||
+              (key === "batchTaskAddType" && value !== "激活卡")) {
             state.batchTaskAddError = "";
             state.batchTaskAddErrorField = "";
           }
@@ -6011,6 +6210,35 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return !!card && card.groupId === groupId;
       }
 
+      function batchTaskIsPoolActivation() {
+        return state.batchTaskAddType === "激活卡" && state.batchTaskAddPoolUsage === "资源池补池";
+      }
+
+      function batchTaskPoolEligibleCount(group) {
+        var codes = new Set(state.batchTaskIccids);
+        return new Set(state.simRows.filter(function (card) {
+          return codes.has(card.iccid) && cardMatchesActivationGroup(card, group.id);
+        }).map(function (card) { return card.iccid; })).size;
+      }
+
+      function batchTaskPoolBalance(group, eligibleCount) {
+        var unitPrice = String(group.replenishmentPrice == null ? "" : group.replenishmentPrice).trim();
+        var chargeCents = Math.round(Number(unitPrice) * 100) * eligibleCount;
+        if (!unitPrice || Number(unitPrice) < 0 || !Number.isSafeInteger(chargeCents)) {
+          return { error: "所选群组的补池单价无效，无法估算扣减金额。" };
+        }
+        var account = state.redlistRows.find(function (row) {
+          return row.accountId === replenishmentAccountByGroup[group.id] && row.vendor === group.supplier;
+        });
+        var balance = account && account.balance != null ? String(account.balance).trim() : "";
+        var balanceCents = Math.round(Number(balance) * 100);
+        var remainingCents = balanceCents - chargeCents;
+        if (!balance || !Number.isSafeInteger(balanceCents) || !Number.isSafeInteger(remainingCents)) {
+          return { chargeCents: chargeCents, error: "无法获取所选群组对应账号的有效余额。" };
+        }
+        return { chargeCents: chargeCents, balanceCents: balanceCents, remainingCents: remainingCents };
+      }
+
       function activationTaskDetails(task, codes, cards) {
         var cardsByIccid = new Map(cards.map(function (card) { return [card.iccid, card]; }));
         return codes.map(function (iccid, index) {
@@ -6133,9 +6361,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }
         if (!isCurrent()) { return; }
         state.batchTaskFileDetecting = false;
-        // Update only file feedback so typing and open dropdowns keep their focus.
+        // Refresh feedback without disturbing input focus or an open dropdown.
         var feedback = document.getElementById("batchTaskFileFeedback");
         if (feedback) { feedback.innerHTML = batchTaskFileFeedbackMarkup(); }
+        var poolFeedback = document.getElementById("batchTaskPoolFeedback");
+        if (poolFeedback) {
+          poolFeedback.innerHTML = batchTaskPoolPreviewMarkup();
+          poolFeedback.setAttribute("aria-busy", String(state.batchTaskFileDetecting));
+        }
         var fileState = document.getElementById("batchTaskFileState");
         if (fileState) { fileState.innerHTML = batchTaskFileStateMarkup(); }
         prepareBatchTaskAddFields();
@@ -6145,7 +6378,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.batchTaskAddErrorField = field;
         state.batchTaskAddError = message;
         renderOverlay();
-        var target = field === "batchTaskFile" ? document.getElementById("batchTaskUpload") :
+        var target = field === "batchTaskPoolBalance" ? document.getElementById("batchTaskAddError") :
+          field === "batchTaskFile" ? document.getElementById("batchTaskUpload") :
           (field === "batchTaskAddPoolUsage" ? document.querySelector('[name="batchTaskAddPoolUsage"]') :
             document.querySelector('#overlay [data-action="toggle-select"][data-key="' + field + '"]'));
         if (target) { target.focus(); }
@@ -6167,6 +6401,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           return;
         }
         if (activation && !group) { batchTaskAddError("batchTaskAddGroup", "请选择所属群组"); return; }
+        if (batchTaskIsPoolActivation()) {
+          var balance = batchTaskPoolBalance(group, batchTaskPoolEligibleCount(group));
+          if (balance.error || balance.remainingCents < 0) {
+            batchTaskAddError("batchTaskPoolBalance", (balance.error || "账户余额不足。") + "请核对账户余额后再提交。");
+            return;
+          }
+        }
         var task = {
           id: state.batchTaskRows.reduce(function (max, item) { return Math.max(max, item.id); }, 10000) + 1,
           batchNo: "BT" + dateFilterToday().replace(/-/g, "") + String(state.batchTaskRows.length + 1).padStart(4, "0"),
@@ -6980,7 +7221,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           ' data-action="sim-traffic-input" data-key="' + key + '" id="' + key +
           '" value="' + esc(value) + '" placeholder="' + esc(placeholder) + '" aria-label="' + esc(placeholder) + '">' +
           '<button class="clear-value" data-action="clear-sim-traffic-input" data-key="' + key +
-          '" aria-label="清除' + esc(placeholder.replace("请输入", "")) + '"' + (value === "" ? " hidden" : "") + '>×</button></label>';
+          '" aria-label="清除' + esc(placeholder.replace("请输入", "")) + '"' + (value === "" ? " hidden" : "") + '>' + closeIconMarkup() + '</button></label>';
       }
 
       function searchSimTraffic(monthly) {
@@ -7007,7 +7248,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           return;
         }
         if (monthly) {
-          if (!q.monthlyTrafficMonth) { q.monthlyTrafficMonth = dateFilterToday().slice(0, 7); }
           state.monthlyTrafficApplied = Object.assign({}, q, {
             monthlyTrafficVendor: q.monthlyTrafficVendor.trim(), monthlyTrafficMerchant: q.monthlyTrafficMerchant.trim(), monthlyTrafficIccid: q.monthlyTrafficIccid.trim()
           });
@@ -7198,7 +7438,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return monthPickerMarkup({
           target: "monthlyTraffic", prefix: "monthly-traffic", id: "monthlyTrafficMonthPicker",
           value: state.monthlyTrafficQuery.monthlyTrafficMonth, draft: state.monthlyTrafficDraftMonth,
-          year: state.monthlyTrafficCalendarYear, clearable: true
+          year: state.monthlyTrafficCalendarYear, clearable: true, emptyLabel: "全部月份", max: dateFilterToday().slice(0, 7)
         });
       }
 
@@ -7219,21 +7459,23 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           for (var month = 1; month <= 12; month += 1) {
             var key = options.year + "-" + String(month).padStart(2, "0");
             var selected = options.draft === key;
+            var unavailable = options.max && key > options.max;
             buttons += '<button class="traffic-month-option ' + (selected ? "selected" : "") +
-              '" data-action="' + options.prefix + '-month-select" data-value="' + key + '" aria-label="' +
+              '"' + (unavailable ? ' disabled' : '') + ' data-action="' + options.prefix + '-month-select" data-value="' + key + '" aria-label="' +
               options.year + '年' + month + '月" aria-pressed="' + selected + '">' + month + '月</button>';
           }
           popup = '<div class="date-popover" id="' + options.id + '" role="group" aria-label="月份选择器">' +
             '<div class="calendar-header"><button class="month-btn" data-action="' + options.prefix + '-year-prev" aria-label="上一年">‹</button>' +
-              '<span>' + options.year + '年</span><button class="month-btn" data-action="' + options.prefix + '-year-next" aria-label="下一年">›</button></div>' +
+              '<span>' + options.year + '年</span><button class="month-btn" data-action="' + options.prefix + '-year-next" aria-label="下一年"' + (options.max && options.year >= Number(options.max.slice(0, 4)) ? ' disabled' : '') + '>›</button></div>' +
             '<div class="traffic-month-grid">' + buttons + '</div><div class="calendar-footer">' +
-              (options.clearable ? '<button class="btn btn-gray" data-action="' + options.prefix + '-month-clear">清空</button>' : '') +
+              (options.target === 'monthlyTraffic' ? '<button class="btn btn-gray" data-action="monthly-period-cancel">取消</button>' : '') +
+              (options.clearable ? '<button class="btn btn-gray" data-action="' + options.prefix + '-month-clear">' + esc(options.emptyLabel || "清空") + '</button>' : '') +
               '<button class="btn btn-primary" data-action="' + options.prefix + '-month-confirm">确定</button></div></div>';
         }
         return '<div class="date-field ' + (open ? "open" : "") + '">' +
           '<button class="date-trigger" data-action="toggle-' + options.prefix + '-month" aria-label="选择月份" aria-expanded="' + open + '"' +
           (open ? ' aria-controls="' + options.id + '"' : '') + '>' +
-          (value ? esc(value) : '<span class="placeholder">请选择月份</span>') + '</button><span class="calendar-icon"></span>' + popup + '</div>';
+          (value || options.emptyLabel ? esc(value || options.emptyLabel) : '<span class="placeholder">请选择月份</span>') + '</button><span class="calendar-icon"></span>' + popup + '</div>';
       }
 
       // Latest values and append-only query snapshots have separate indexed stores.
@@ -7245,13 +7487,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           monthlyChannel.onmessage = function () {
             state.monthlyProjectionEpoch += 1;
             state.monthlyProjectionCache.clear();
-            if (state.activePage === "simMonthlyTraffic") { loadMonthlyView(); }
+            if (isMonthlyTrafficPage(state.activePage)) { loadMonthlyView(); }
           };
         }
       } catch (error) { monthlyChannel = null; }
       var monthlyLastQueryTime = 0;
       var monthlyFlowNotes = {
-        annualSummary: pageDocumentation.simTrafficHistory.page.description + "\n\n次月1-3号，每天晚上12：00更新数据；\n\n按各月最新保存的月流量值展示；年度使用流量总计单位为MB。--表示未同步或尚未出账，不作零用量；点击月份数值查看该卡该月全部查询记录。仅支持手动刷新最近6个已结束月份的月流量。",
+        annualSummary: pageDocumentation.simTrafficHistory.page.description + "\n\n次月1-3号，每天晚上12：00更新数据；\n\n按各月最新保存的月流量值展示；年度使用流量总计单位为MB。--表示未同步或尚未出账，不作零用量；点击月份数值进入该卡该月统计，详情中可复查查询记录。仅支持手动刷新最近6个已结束月份的月流量。",
         cumulativeFlow: "累计流量值MB：运营商日流量同步数据累加。",
         monthFlow: "月流量值MB：次月初同步上月运营商月流量；年度视图取各月最后一次保存的查询结果，不累加查询版本。",
         currentUsage: "本月数据用量：点击刷新按钮实时同步本月运营商流量。历史月份不查询当前月用量。"
@@ -7322,26 +7564,37 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var tx = db.transaction("latest", "readwrite");
           var store = tx.objectStore("latest");
           // A new calendar month gets an unqueried row without inventing a monthly result.
-          if (year === dateFilterToday().slice(0, 4)) {
-            monthlyTrafficRowsSeed.filter(function (row) { return row.month === dateFilterToday().slice(0, 7); }).forEach(function (seed) {
+          var currentMonth = dateFilterToday().slice(0, 7);
+          var currentYear = currentMonth.slice(0, 4);
+          if (!year || year === currentYear) {
+            monthlyTrafficRowsSeed.filter(function (row) { return row.month === currentMonth; }).forEach(function (seed) {
               store.get(seed.id).onsuccess = function (event) {
-                if (!event.target.result) { store.put(Object.assign({}, seed, { year: year, _revision: 0 })); }
+                if (!event.target.result) { store.put(Object.assign({}, seed, { year: currentYear, _revision: 0 })); }
               };
             });
           }
           var values = [];
           tx.oncomplete = function () {
             var read = db.transaction("latest");
-            read.objectStore("latest").index("year").getAll(IDBKeyRange.only(year)).onsuccess = function (event) { values = event.target.result; };
+            var latest = read.objectStore("latest");
+            var request = year ? latest.index("year").getAll(IDBKeyRange.only(year)) : latest.getAll();
+            request.onsuccess = function (event) { values = event.target.result; };
             read.oncomplete = function () { resolve(values); };
             read.onabort = read.onerror = function () { reject(new Error("读取月流量失败，请重试。")); };
           };
           tx.onabort = tx.onerror = function () { reject(new Error("读取月流量失败，请重试。")); };
         });
         if (epoch !== state.monthlyProjectionEpoch) { return loadMonthlyProjection(year); }
+        if (!year) { rows.sort(function (a, b) { return b.month.localeCompare(a.month) || a.iccid.localeCompare(b.iccid); }); }
         state.monthlyProjectionCache.set(year, rows);
         while (state.monthlyProjectionCache.size > 2) { state.monthlyProjectionCache.delete(state.monthlyProjectionCache.keys().next().value); }
         return rows;
+      }
+
+      function monthlyCardMatches(row, keyword) {
+        var value = keyword.toLowerCase();
+        var card = state.simRows.find(function (item) { return item.iccid === row.iccid; });
+        return row.iccid.toLowerCase().indexOf(value) !== -1 || !!(card && String(card.msisdn || "").toLowerCase().indexOf(value) !== -1);
       }
 
       function monthlyRowMatches(row, q, ignoreAmount) {
@@ -7349,9 +7602,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           (!q.monthlyTrafficVendor || row.vendor.indexOf(q.monthlyTrafficVendor) !== -1) &&
           (!q.monthlyTrafficMerchant || row.merchant.indexOf(q.monthlyTrafficMerchant) !== -1) &&
           (!q.monthlyTrafficCarrier || row.carrier === q.monthlyTrafficCarrier) &&
-          (!q.monthlyTrafficIccid || row.iccid.toLowerCase().indexOf(q.monthlyTrafficIccid.toLowerCase()) !== -1) &&
-          (ignoreAmount || ((q.monthlyTrafficMin === "" || (row.monthFlow !== null && row.monthFlow >= Number(q.monthlyTrafficMin))) &&
-            (q.monthlyTrafficMax === "" || (row.monthFlow !== null && row.monthFlow <= Number(q.monthlyTrafficMax)))));
+          (!q.monthlyTrafficIccid || monthlyCardMatches(row, q.monthlyTrafficIccid)) &&
+          (ignoreAmount || ((q.monthlyTrafficMin === "" || (row[monthlyIsCurrent(row.month) ? "cumulativeFlow" : "monthFlow"] != null && row[monthlyIsCurrent(row.month) ? "cumulativeFlow" : "monthFlow"] >= Number(q.monthlyTrafficMin))) &&
+            (q.monthlyTrafficMax === "" || (row[monthlyIsCurrent(row.month) ? "cumulativeFlow" : "monthFlow"] != null && row[monthlyIsCurrent(row.month) ? "cumulativeFlow" : "monthFlow"] <= Number(q.monthlyTrafficMax)))));
       }
 
       function monthlySnapshotSource(tx, query) {
@@ -7402,32 +7655,35 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function captureAnnualScroll() {
-        if (state.activePage !== "simMonthlyTraffic" || state.monthlyTrafficTab !== "history") { return null; }
+        if (!isMonthlyTrafficPage(state.activePage) || state.monthlyTrafficTab !== "history") { return null; }
         var table = document.querySelector("#content .table-shell"), content = document.getElementById("content");
         return { context: JSON.stringify(state.trafficHistoryApplied), left: table ? table.scrollLeft : 0, top: table ? table.scrollTop : 0, contentTop: content.scrollTop };
       }
 
       function restoreAnnualScroll(position) {
-        if (!position || state.activePage !== "simMonthlyTraffic" || state.monthlyTrafficTab !== "history" || JSON.stringify(state.trafficHistoryApplied) !== position.context) { return; }
+        if (!position || !isMonthlyTrafficPage(state.activePage) || state.monthlyTrafficTab !== "history" || JSON.stringify(state.trafficHistoryApplied) !== position.context) { return; }
         var table = document.querySelector("#content .table-shell");
         if (table) { table.scrollLeft = position.left; table.scrollTop = position.top; }
         document.getElementById("content").scrollTop = position.contentTop;
       }
 
       async function loadMonthlyView(scrollPosition) {
+        var viewPosition = captureMonthlyPosition();
         var generation = ++state.monthlyViewRequest;
         var tab = state.monthlyTrafficTab;
         var query = Object.assign({}, state.monthlyTrafficApplied);
-        var year = tab === "history" ? state.trafficHistoryApplied.trafficHistoryYear : query.monthlyTrafficMonth.slice(0, 4);
+        var detail = state.monthlyDetail;
+        var detailQuery = detail ? monthlyDetailQuery() : null;
+        var year = detail ? detail.month.slice(0, 4) : (tab === "history" ? state.trafficHistoryApplied.trafficHistoryYear : query.monthlyTrafficMonth.slice(0, 4));
         state.monthlyViewLoading = true;
         state.monthlyStoreError = "";
-        if (state.activePage === "simMonthlyTraffic") { renderContent(); restoreAnnualScroll(scrollPosition); }
+        if (isMonthlyTrafficPage(state.activePage)) { renderContent(); restoreAnnualScroll(scrollPosition); }
         try {
           state.monthlyProjectionCache.delete(year);
           await loadMonthlyProjection(year);
           var pageRows = [], count = 0;
-          if (tab === "queries") {
-            var snapshotPage = await readMonthlySnapshotPage(query, state.monthlyTrafficPage);
+          if (detail) {
+            var snapshotPage = await readMonthlySnapshotPage(detailQuery, detail.page);
             pageRows = snapshotPage.rows;
             count = snapshotPage.total;
           }
@@ -7441,7 +7697,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }
         if (generation === state.monthlyViewRequest) {
           state.monthlyViewLoading = false;
-          if (state.activePage === "simMonthlyTraffic") { renderContent(); restoreAnnualScroll(scrollPosition); }
+          if (isMonthlyTrafficPage(state.activePage)) { renderContent(); restoreAnnualScroll(scrollPosition); restoreMonthlyPosition(viewPosition); }
         }
       }
 
@@ -7461,6 +7717,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           tx.onabort = tx.onerror = function () { reject(new Error("保存失败，本次结果未生效，原查询记录保持不变。请检查浏览器存储空间后重试。")); };
         });
         state.monthlyProjectionEpoch += 1;
+        state.monthlyProjectionCache.delete("");
         rows.forEach(function (row) { state.monthlyProjectionCache.delete(row.year); });
         if (monthlyChannel) { monthlyChannel.postMessage("updated"); }
       }
@@ -7470,7 +7727,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var busy = state.monthlyTrafficRefreshing.has(row.id);
         return '<span class="monthly-traffic-usage" aria-busy="' + busy + '"><span>' + monthlyTrafficValue(row, "currentUsage") + '</span>' +
           '<button class="refresh-card ' + (busy ? "spinning" : "") + '" data-action="refresh-monthly-traffic" data-id="' + esc(row.id) +
-          '" title="刷新本月数据用量并保存查询记录" aria-label="刷新' + esc(row.iccid) + '本月数据用量"' + (busy || !state.monthlyStoreReady ? " disabled" : "") + '>↻</button></span>';
+          '" title="刷新本月数据用量并保存查询记录" aria-label="刷新' + esc(row.iccid) + '本月数据用量"' + (busy || state.monthlyViewLoading || state.monthlyStoreError || !state.monthlyStoreReady ? " disabled" : "") + '>↻</button></span>';
       }
 
       function monthlyTrafficValue(row, key) {
@@ -7483,68 +7740,330 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return '';
       }
 
+      function dismissMonthlyPeriod(restoreFocus) {
+        state.simDateOpen = false;
+        state.monthlyTrafficDraftMonth = state.monthlyTrafficApplied.monthlyTrafficMonth;
+        var field = document.querySelector('.monthly-period-actions .date-field');
+        if (!field) { return; }
+        var popup = field.querySelector('.date-popover');
+        if (popup) { popup.remove(); }
+        field.classList.remove('open');
+        var trigger = field.querySelector('.date-trigger');
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.removeAttribute('aria-controls');
+        if (restoreFocus) { trigger.focus({ preventScroll: true }); }
+      }
+
+      var monthlyListLayoutFrame = 0;
+      function scheduleMonthlyListLayout() {
+        if (monthlyListLayoutFrame) { return; }
+        monthlyListLayoutFrame = window.requestAnimationFrame(function () {
+          monthlyListLayoutFrame = 0;
+          fitMonthlyLists();
+        });
+      }
+
+      function fitMonthlyLists() {
+        if (!isMonthlyTrafficPage(state.activePage)) { return; }
+        var content = document.getElementById('content');
+        var view = content.querySelector('[data-monthly-view]');
+        if (!view) { return; }
+        var popup = view.querySelector('#monthlyTrafficMonthPicker');
+        if (popup) {
+          popup.style.maxWidth = Math.max(0, view.clientWidth - 36) + 'px';
+          var anchor = popup.parentElement.getBoundingClientRect();
+          var bounds = view.getBoundingClientRect();
+          var popupRect = popup.getBoundingClientRect();
+          var popupScale = popupRect.width / popup.offsetWidth || 1;
+          var left = Math.min(Math.max(anchor.left, bounds.left + 18 * popupScale), bounds.right - 18 * popupScale - popupRect.width);
+          popup.style.left = (left - anchor.left) / popupScale + 'px';
+          popup.style.maxHeight = Math.max(160, window.innerHeight - popupRect.top - 16) / popupScale + 'px';
+          popup.style.overflowY = 'auto';
+        }
+        var shell = view.querySelector('.table-shell');
+        var pager = view.querySelector('.pagination');
+        if (pager && !pager.querySelector('.monthly-pagination-pages')) {
+          var buttons = Array.from(pager.querySelectorAll('button'));
+          if (buttons.length) {
+            var pages = document.createElement('span');
+            pages.className = 'monthly-pagination-pages';
+            pages.setAttribute('role', 'group');
+            pages.setAttribute('aria-label', '分页导航');
+            pager.insertBefore(pages, buttons[0]);
+            var item = pages.nextElementSibling;
+            while (item) {
+              var next = item.nextElementSibling;
+              pages.appendChild(item);
+              if (item === buttons[buttons.length - 1]) { break; }
+              item = next;
+            }
+          }
+          var input = pager.querySelector('input');
+          if (input && input.previousElementSibling && input.nextElementSibling) {
+            var jump = document.createElement('span');
+            jump.className = 'monthly-pagination-jump';
+            var before = input.previousElementSibling, after = input.nextElementSibling;
+            pager.insertBefore(jump, before);
+            jump.appendChild(before); jump.appendChild(input); jump.appendChild(after);
+          }
+        }
+        if (!shell || shell.closest('[hidden]')) { view.classList.remove('monthly-has-list'); return; }
+        view.classList.add('monthly-has-list');
+        shell.tabIndex = 0;
+        shell.setAttribute('role', 'region');
+        shell.setAttribute('aria-label', '流量明细列表，支持横向和纵向滚动');
+        shell.style.setProperty('--monthly-list-width', shell.clientWidth + 'px');
+        Array.from(shell.querySelectorAll('.empty-row td')).forEach(function (cell) {
+          if (cell.querySelector('.monthly-empty-message')) { return; }
+          var message = document.createElement('div');
+          message.className = 'monthly-empty-message';
+          message.textContent = cell.textContent;
+          cell.textContent = '';
+          cell.appendChild(message);
+        });
+        var contentRect = content.getBoundingClientRect();
+        var scale = contentRect.height / content.offsetHeight || 1;
+        var contentStyle = getComputedStyle(content);
+        var pageTop = contentRect.top + window.scrollY;
+        var visibleHeight = Math.min(content.clientHeight, (window.innerHeight - Math.max(0, pageTop)) / scale);
+        var top = (shell.getBoundingClientRect().top - contentRect.top) / scale + content.scrollTop;
+        var trailing = 0, node = shell;
+        // Reserve the actual wrapped footer, help text and panel edges after the list.
+        while (node && node !== view) {
+          trailing += parseFloat(getComputedStyle(node).marginBottom) || 0;
+          var sibling = node.nextElementSibling;
+          while (sibling) {
+            if (getComputedStyle(sibling).display !== 'none') {
+              var style = getComputedStyle(sibling);
+              trailing += sibling.getBoundingClientRect().height / scale + (parseFloat(style.marginTop) || 0) + (parseFloat(style.marginBottom) || 0);
+            }
+            sibling = sibling.nextElementSibling;
+          }
+          node = node.parentElement;
+          if (node) {
+            var parentStyle = getComputedStyle(node);
+            trailing += (parseFloat(parentStyle.paddingBottom) || 0) + (parseFloat(parentStyle.borderBottomWidth) || 0);
+          }
+        }
+        var available = visibleHeight - top - trailing - (parseFloat(contentStyle.paddingBottom) || 0) - 2;
+        var minimum = 180;
+        var natural = available < minimum;
+        view.classList.toggle('monthly-natural-list', natural);
+        shell.style.setProperty('--monthly-list-height', natural ? 'auto' : Math.floor(available) + 'px');
+      }
+
+      function captureMonthlyPosition() {
+        if (!isMonthlyTrafficPage(state.activePage)) { return null; }
+        var content = document.getElementById('content'), view = content.querySelector('[data-monthly-view]');
+        if (!view) { return null; }
+        var shell = view.querySelector('.table-shell'), active = document.activeElement;
+        var focus = null;
+        if (view.contains(active) && active.matches('[data-action], [id]')) {
+          focus = { id: active.id, attributes: Array.from(active.attributes).filter(function (attr) { return attr.name.indexOf('data-') === 0; }).map(function (attr) { return [attr.name, attr.value]; }), start: active.selectionStart, end: active.selectionEnd };
+        }
+        return { page: view.dataset.monthlyPage || state.activePage, view: view.dataset.monthlyView, top: content.scrollTop, left: shell ? shell.scrollLeft : 0, tableTop: shell ? shell.scrollTop : 0, focus: focus };
+      }
+
+      function restoreMonthlyPosition(position) {
+        if (!position || !isMonthlyTrafficPage(state.activePage) || (position.page && position.page !== state.activePage)) { return; }
+        var content = document.getElementById('content'), view = content.querySelector('[data-monthly-view]');
+        if (!view || view.dataset.monthlyView !== position.view) { return; }
+        content.scrollTop = position.top;
+        var shell = view.querySelector('.table-shell');
+        if (shell) { shell.scrollLeft = position.left; shell.scrollTop = position.tableTop; }
+        if (position.focus) {
+          var saved = position.focus;
+          var control = saved.id ? document.getElementById(saved.id) : Array.from(view.querySelectorAll('[data-action]')).find(function (element) {
+            return saved.attributes.every(function (attr) { return element.getAttribute(attr[0]) === attr[1]; });
+          });
+          if (control && !control.disabled) {
+            control.focus({ preventScroll: true });
+            if (saved.start != null && control.setSelectionRange && ['text', 'search'].indexOf(control.type) !== -1) { control.setSelectionRange(saved.start, saved.end); }
+          }
+        }
+      }
+
+      function monthlyPeriodLabel(month) {
+        return month.slice(0, 4) + "年" + Number(month.slice(5, 7)) + "月";
+      }
+
+      function monthlyIsCurrent(month) { return month === dateFilterToday().slice(0, 7); }
+
+      function monthlyFlowColumns() {
+        return [
+          { key: "cumulativeFlow", name: "累计流量值MB", width: 145 },
+          { key: "monthFlow", name: "月流量值MB", width: 145 },
+          { key: "currentUsage", name: "本月数据用量", width: 145 }
+        ];
+      }
+
+      function monthlyVisibleColumns() {
+        var month = state.monthlyTrafficApplied.monthlyTrafficMonth, current = monthlyIsCurrent(month);
+        return [
+          { key: "iccid", name: "ICCID", width: 220 },
+          { key: "month", name: "月份", width: 100 },
+          { key: "merchant", name: "商户名称", width: 130 },
+          { key: "vendor", name: "供应商", width: 160 },
+          { key: "carrier", name: "运营商", width: 90 }
+        ].concat(monthlyFlowColumns()).concat([
+          { key: "syncState", name: !month ? "状态" : current ? "实时查询状态" : "同步状态", width: 100 },
+          { key: "queryTime", name: !month ? "最近更新时间" : current ? "实时查询时间" : "最近同步时间", width: 180 }
+        ]);
+      }
+
+      function monthlyDisplayValue(row, key) {
+        var current = monthlyIsCurrent(row.month);
+        var ready = row[current ? "currentUsage" : "monthFlow"] != null;
+        if (key === "currentUsage" && !current) { return "--"; }
+        if (key === "syncState") { return ready ? (current ? "已查询" : "已同步") : (current ? "未查询" : "待同步"); }
+        if (key === "queryTime") { return ready ? String(row.updated || "--").slice(0, 19) : "--"; }
+        return monthlyTrafficValue(row, key);
+      }
+
+      function selectMonthlyPeriod(month) {
+        if (month !== "" && (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month) || month > dateFilterToday().slice(0, 7))) { return; }
+        var triggerAction = document.activeElement && document.activeElement.dataset.action;
+        state.monthlyTrafficQuery = Object.assign({}, state.monthlyTrafficApplied, { monthlyTrafficMonth: month });
+        state.monthlyTrafficApplied = Object.assign({}, state.monthlyTrafficQuery);
+        state.monthlyTrafficPage = 1;
+        state.monthlyTrafficTab = "records";
+        state.monthlyDetail = null;
+        state.monthlyTrafficError = "";
+        state.simDateOpen = false;
+        state.openSelect = state.openCombo = "";
+        loadMonthlyView().then(function () {
+          if (!isMonthlyTrafficPage(state.activePage) || state.monthlyDetail || state.monthlyTrafficTab !== 'records' || state.monthlyTrafficApplied.monthlyTrafficMonth !== month || document.activeElement !== document.body) { return; }
+          var control = Array.from(document.querySelectorAll('.monthly-period-actions [data-action]')).find(function (element) { return element.dataset.action === triggerAction && !element.disabled; });
+          (control || document.querySelector('[data-action="toggle-monthly-traffic-month"]')).focus({ preventScroll: true });
+        });
+      }
+
+      function monthlyPeriodNavigationMarkup() {
+        var month = state.monthlyTrafficApplied.monthlyTrafficMonth, current = monthlyIsCurrent(month);
+        return '<div class="monthly-period-bar"><div class="monthly-period-actions" role="group" aria-label="月份范围">' +
+          (month ? '<button class="btn btn-outline" data-action="monthly-period-prev">上月</button>' : '') + monthlyTrafficMonthMarkup() +
+          (month ? '<button class="btn btn-outline" data-action="monthly-period-next"' + (current ? ' disabled' : '') + '>下月</button>' : '') +
+          '<button class="btn btn-gray" data-action="monthly-period-today"' + (current ? ' disabled' : '') + '>本月</button></div></div>';
+      }
+
       function monthlyTrafficMarkup() {
+        if (state.monthlyDetail) { return monthlyDetailMarkup(); }
         if (state.monthlyTrafficTab === "history") { return trafficHistoryMarkup(); }
-        var q = state.monthlyTrafficQuery;
-        var snapshots = state.monthlyTrafficTab === "queries";
-        var rows = snapshots ? state.monthlySnapshotRows : filteredMonthlyTrafficRows();
-        var total = snapshots ? state.monthlySnapshotTotal : rows.length;
-        var totalPages = Math.max(1, Math.ceil(total / 20));
-        state.monthlyTrafficPage = Math.max(1, Math.min(state.monthlyTrafficPage, totalPages));
-        var pageRows = snapshots ? rows : rows.slice((state.monthlyTrafficPage - 1) * 20, state.monthlyTrafficPage * 20);
+        var q = state.monthlyTrafficQuery, rows = filteredMonthlyTrafficRows(), columns = monthlyVisibleColumns();
+        var totalPages = Math.max(1, Math.ceil(rows.length / 20));
+        state.monthlyTrafficPage = Math.max(1, Math.min(totalPages, state.monthlyTrafficPage));
+        var pageRows = rows.slice((state.monthlyTrafficPage - 1) * 20, state.monthlyTrafficPage * 20);
         var disabled = state.monthlyViewLoading || !!state.monthlyStoreError || !state.monthlyStoreReady;
-        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page">' + monthlyTrafficTabsMarkup() +
-          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-' + state.monthlyTrafficTab + '">' +
-          '<div class="filters"><div class="filter-grid">' +
-            simTrafficInputMarkup("monthlyTrafficIccid", q.monthlyTrafficIccid, "请输入ICCID", false) + '<label>' + monthlyTrafficMonthMarkup() + '</label>' +
-            '<label>' + comboMarkup("monthlyTrafficVendor", q.monthlyTrafficVendor, vendors, "请输入或选择供应商") + '</label>' +
-            '<label>' + comboMarkup("monthlyTrafficMerchant", q.monthlyTrafficMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label>' +
-            '<label>' + selectMarkup("monthlyTrafficCarrier", q.monthlyTrafficCarrier, carriers, "请选择运营商", true) + '</label>' +
-            simTrafficInputMarkup("monthlyTrafficMin", q.monthlyTrafficMin, "月流量最小值（MB）", true) + simTrafficInputMarkup("monthlyTrafficMax", q.monthlyTrafficMax, "月流量最大值（MB）", true) +
-          '</div><div class="actions"><button class="btn btn-outline" data-action="monthly-traffic-search">搜索</button><button class="btn btn-gray" data-action="monthly-traffic-reset">重置</button></div>' +
-            (state.monthlyTrafficError ? '<div class="traffic-filter-error" id="trafficFilterError" role="alert">' + esc(state.monthlyTrafficError) + '</div>' : '') + '</div>' +
-          '<div class="operate-bar"><div class="operate-actions">' + (!snapshots ? '<button class="btn btn-primary" data-action="sync-monthly-traffic"' + (disabled || state.monthlySyncing || state.monthlyTrafficRefreshing.size ? ' disabled' : '') + '>' + (state.monthlySyncing ? '同步中…' : '同步月流量') + '</button>' : '') +
-            '<button class="btn btn-gray" data-action="export-monthly-traffic"' + (disabled || state.monthlyExporting ? ' disabled' : '') + '>' + (state.monthlyExporting ? '导出中…' : '导出') + '</button></div>' +
-          '<p class="monthly-flow-note">' + (snapshots ? '每次接口返回单独保存，包括相同结果；更新时间为本次查询时间。搜索、切换和导出不会产生新查询。' : '默认展示本月。月流量值于次月初同步；本月数据用量点击刷新获取。点击ICCID查看全年，搜索只读取已保存数据。') + '</p>' + monthlyStatusMarkup() + '</div>' +
-          '<div class="table-shell"><table><colgroup>' + monthlyTrafficColumns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join('') + '</colgroup><thead><tr>' +
-          monthlyTrafficColumns.map(function (column) { return '<th scope="col">' + (monthlyFlowNotes[column.key] ? '<span class="group-field-title">' + esc(column.name) + infoIconMarkup("monthly-flow-info", column.name + "说明", column.key) + '</span>' : esc(column.name)) + '</th>'; }).join('') +
-          '</tr></thead><tbody>' + (state.monthlyViewLoading ? '<tr class="empty-row"><td colspan="10" role="status">正在读取已保存的流量数据…</td></tr>' : disabled ? '<tr class="empty-row"><td colspan="10">流量记录暂不可用，请重试</td></tr>' : pageRows.length ? pageRows.map(function (row) {
-            return '<tr>' + monthlyTrafficColumns.map(function (column) {
-              if (!snapshots && column.key === "currentUsage") { return '<td>' + monthlyTrafficUsageMarkup(row) + '</td>'; }
-              var value = monthlyTrafficValue(row, column.key);
-              if (!snapshots && column.key === "iccid") { return '<td><button class="iccid-link" data-action="monthly-card-year" data-iccid="' + esc(row.iccid) + '">' + esc(value) + '</button></td>'; }
-              return '<td title="' + esc(value) + '">' + esc(value) + '</td>';
-            }).join('') + '</tr>';
-          }).join('') : '<tr class="empty-row"><td colspan="10">暂无符合条件的数据，请调整月份或筛选条件</td></tr>') + '</tbody></table></div>' +
-          simTrafficPaginationMarkup(total, totalPages, true) + '</div></div>';
+        var month = state.monthlyTrafficApplied.monthlyTrafficMonth, current = monthlyIsCurrent(month);
+        var historicalMonth = month && !current;
+        var cells = columns.length + 1;
+        var syncReason = historicalMonth ? annualMonthRefreshUnavailableReason(month) : '';
+        var amountLabel = !month ? "流量" : current ? "累计流量" : "月流量";
+        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page monthly-overview ' + (current ? '' : 'monthly-history-overview') + '" data-monthly-view="records|' + state.monthlyTrafficApplied.monthlyTrafficMonth + '">' + monthlyTrafficTabsMarkup() +
+          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="region" aria-labelledby="monthlyTrafficTab-records">' + monthlyPeriodNavigationMarkup() +
+          '<div class="filters"><div class="filter-grid">' + simTrafficInputMarkup("monthlyTrafficIccid", q.monthlyTrafficIccid, "请输入ICCID/MSISDN", false) +
+          '<label>' + comboMarkup("monthlyTrafficVendor", q.monthlyTrafficVendor, vendors, "请输入或选择供应商") + '</label>' +
+          '<label>' + comboMarkup("monthlyTrafficMerchant", q.monthlyTrafficMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label>' +
+          '<label>' + selectMarkup("monthlyTrafficCarrier", q.monthlyTrafficCarrier, carriers, "请选择运营商", true) + '</label>' +
+          simTrafficInputMarkup("monthlyTrafficMin", q.monthlyTrafficMin, amountLabel + "最小值（MB）", true) +
+          simTrafficInputMarkup("monthlyTrafficMax", q.monthlyTrafficMax, amountLabel + "最大值（MB）", true) +
+          '</div><div class="actions"><button class="btn btn-outline" data-action="monthly-traffic-search">搜索</button><button class="btn btn-gray" data-action="monthly-traffic-reset">重置筛选</button></div>' +
+          (state.monthlyTrafficError ? '<div class="traffic-filter-error" id="trafficFilterError" role="alert">' + esc(state.monthlyTrafficError) + '</div>' : '') + '</div>' +
+          '<div class="operate-bar"><div class="operate-actions"><strong>' + (current ? '当月卡明细' : '月流量明细') + '</strong>' +
+          (historicalMonth ? '<button class="btn btn-primary" data-action="sync-monthly-traffic"' + (disabled || syncReason || !rows.length || state.monthlySyncing || state.monthlyTrafficRefreshing.size ? ' disabled' : '') + '>' + (state.monthlySyncing ? '同步中…' : '同步月流量') + '</button>' : '') +
+          '<button class="btn btn-gray" data-action="export-monthly-traffic"' + (disabled || state.monthlyExporting ? ' disabled' : '') + '>' + (state.monthlyExporting ? '导出中…' : '导出明细') + '</button></div>' + (syncReason ? '<p class="monthly-flow-note">' + esc(syncReason) + '；该月已保存的统计和查询记录仍可查看。</p>' : '') + monthlyStatusMarkup() + '</div>' +
+          '<div class="table-shell"><table><colgroup>' + columns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join('') + '<col style="width:100px"></colgroup><thead><tr>' +
+          columns.map(function (column) { return '<th scope="col">' + esc(column.name) + '</th>'; }).join('') + '<th scope="col">操作</th></tr></thead><tbody>' +
+          (disabled ? '<tr class="empty-row"><td colspan="' + cells + '" role="status">' + (state.monthlyViewLoading ? '正在读取月流量明细…' : '流量记录暂不可用，请重试') + '</td></tr>' : pageRows.length ? pageRows.map(function (row) {
+            return '<tr>' + columns.map(function (column) {
+              if (column.key === "currentUsage") { return '<td>' + monthlyTrafficUsageMarkup(row) + '</td>'; }
+              var value = monthlyDisplayValue(row, column.key);
+              return '<td title="' + esc(value) + '">' + (column.key === 'iccid' ? '<button class="iccid-link" data-action="monthly-card-detail" data-iccid="' + esc(row.iccid) + '" data-month="' + row.month + '">' + esc(value) + '</button>' : esc(value)) + '</td>';
+            }).join('') + '<td><button class="link" data-action="monthly-card-detail" data-iccid="' + esc(row.iccid) + '" data-month="' + row.month + '">查看详情</button></td></tr>';
+          }).join('') : '<tr class="empty-row"><td colspan="' + cells + '">暂无符合条件的数据，请调整筛选条件</td></tr>') + '</tbody></table></div>' +
+          simTrafficPaginationMarkup(rows.length, totalPages, true) + '</div></div>';
       }
 
       function monthlyTrafficTabsMarkup() {
-        return '<div class="inner-tabs monthly-traffic-tabs" role="tablist" aria-label="SIM卡月流量记录类型">' +
-          [{ id: "records", label: "月流量记录" }, { id: "history", label: "年度月流量" }, { id: "queries", label: "查询记录" }].map(function (tab) {
+        return '<nav class="inner-tabs monthly-traffic-tabs" aria-label="月流量页面导航">' +
+          [{ id: 'records', label: '按月统计' }, { id: 'history', label: '年度总览' }].map(function (tab) {
             var active = state.monthlyTrafficTab === tab.id;
-            return '<button class="inner-tab ' + (active ? 'active' : '') + '" id="monthlyTrafficTab-' + tab.id + '" role="tab" aria-selected="' + active + '" aria-controls="monthlyTrafficTabPanel" tabindex="' + (active ? '0' : '-1') + '" data-action="monthly-traffic-tab" data-tab="' + tab.id + '">' + tab.label + '</button>';
-          }).join('') + '</div>';
+            return '<button class="inner-tab ' + (active ? 'active' : '') + '" id="monthlyTrafficTab-' + tab.id + '"' + (active ? ' aria-current="page"' : '') + ' data-action="monthly-traffic-tab" data-tab="' + tab.id + '">' + tab.label + '</button>';
+          }).join('') + '</nav>';
       }
 
-      function setMonthlyTrafficTab(tab) {
-        if (["records", "history", "queries"].indexOf(tab) === -1 || tab === state.monthlyTrafficTab) { return; }
-        if (tab === "history") {
-          var q = state.monthlyTrafficApplied;
-          state.trafficHistoryQuery = Object.assign({}, state.trafficHistoryQuery, { trafficHistoryYear: q.monthlyTrafficMonth.slice(0, 4), trafficHistoryKeyword: q.monthlyTrafficIccid, trafficHistoryVendor: q.monthlyTrafficVendor, trafficHistoryMerchant: q.monthlyTrafficMerchant, trafficHistoryCarrier: q.monthlyTrafficCarrier });
-          state.trafficHistoryApplied = Object.assign({}, state.trafficHistoryQuery);
-        } else if (state.monthlyTrafficTab === "history") {
-          var h = state.trafficHistoryApplied;
-          var selectedCard = state.simRows.find(function (card) { return card.iccid === h.trafficHistoryKeyword || card.msisdn === h.trafficHistoryKeyword; });
-          state.monthlyTrafficQuery = Object.assign({}, state.monthlyTrafficQuery, { monthlyTrafficIccid: selectedCard ? selectedCard.iccid : h.trafficHistoryKeyword, monthlyTrafficVendor: h.trafficHistoryVendor, monthlyTrafficMerchant: h.trafficHistoryMerchant, monthlyTrafficCarrier: h.trafficHistoryCarrier });
-          state.monthlyTrafficApplied = Object.assign({}, state.monthlyTrafficQuery);
-        }
-        state.monthlyTrafficTab = tab;
-        state.monthlyTrafficPage = 1;
-        state.trafficHistoryPage = 1;
-        state.openSelect = state.openCombo = "";
-        state.simDateOpen = false;
-        loadMonthlyView();
+      function monthlyQueryColumns() {
+        return [{ key: "updated", name: "查询时间" }].concat(monthlyFlowColumns());
+      }
+
+      function monthlyDetailQuery() {
+        return Object.assign(blankMonthlyTrafficQuery(), { monthlyTrafficMonth: state.monthlyDetail.month, monthlyTrafficIccid: state.monthlyDetail.iccid });
+      }
+
+      function openMonthlyDetail(iccid, month) {
+        var values = monthlyPageValues();
+        values.monthlyTrafficTab = 'records';
+        values.monthlyDetail = { iccid: iccid, month: month, page: 1 };
+        values.monthlySnapshotRows = []; values.monthlySnapshotTotal = 0;
+        var parent = state.activePage;
+        openMonthlyPage('simMonthlyTraffic/detail', 'SIM卡月流量详情', values, parent);
+      }
+
+      function openMonthlyPeriod(iccid, month) {
+        var annual = state.trafficHistoryApplied;
+        var query = Object.assign(blankMonthlyTrafficQuery(), {
+          monthlyTrafficMonth: month, monthlyTrafficIccid: iccid,
+          monthlyTrafficVendor: state.monthlyTrafficTab === 'history' ? annual.trafficHistoryVendor : state.monthlyTrafficApplied.monthlyTrafficVendor,
+          monthlyTrafficMerchant: state.monthlyTrafficTab === 'history' ? annual.trafficHistoryMerchant : state.monthlyTrafficApplied.monthlyTrafficMerchant,
+          monthlyTrafficCarrier: state.monthlyTrafficTab === 'history' ? annual.trafficHistoryCarrier : state.monthlyTrafficApplied.monthlyTrafficCarrier
+        });
+        var values = monthlyPageValues();
+        values.monthlyTrafficQuery = query; values.monthlyTrafficApplied = Object.assign({}, query);
+        values.monthlyTrafficTab = 'records'; values.monthlyTrafficPage = 1; values.monthlyTrafficError = ''; values.monthlyDetail = null;
+        openMonthlyPage('simMonthlyTraffic/period', '单卡月流量', values, state.activePage);
+      }
+
+      function monthlyDetailMarkup() {
+        var detail = state.monthlyDetail;
+        var row = monthlyProjection(detail.month.slice(0, 4)).find(function (item) { return item.iccid === detail.iccid && item.month === detail.month; });
+        var current = monthlyIsCurrent(detail.month), disabled = state.monthlyViewLoading || !!state.monthlyStoreError || !state.monthlyStoreReady;
+        var fields = row ? [{ key: "iccid", name: "ICCID" }, { key: "merchant", name: "商户名称" }, { key: "vendor", name: "供应商" }, { key: "carrier", name: "运营商" },
+          { key: "cumulativeFlow", name: "累计流量值MB" }, { key: "monthFlow", name: "月流量值MB" }].concat([{ key: "queryTime", name: current ? "实时查询时间" : "最近同步时间" }]) : [];
+        var refreshReason = annualMonthRefreshUnavailableReason(detail.month);
+        var refreshBusy = state.monthlyTrafficRefreshing.has(detail.iccid + "|" + detail.month);
+        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page monthly-detail-page" data-monthly-view="detail|' + detail.iccid + '|' + detail.month + '"><div class="monthly-detail-header"><h2 id="monthlyDetailHeading" tabindex="-1">' + monthlyPeriodLabel(detail.month) + ' · 单卡详情</h2></div>' +
+          monthlyStatusMarkup() + (state.monthlyViewLoading ? '<p class="monthly-summary-note" role="status">正在读取单卡统计…</p>' : '') +
+          '<dl class="sim-info-grid monthly-detail-fields">' + fields.map(function (field) { return simInfoItemMarkup(field.name, monthlyDisplayValue(row, field.key), field.key); }).join('') + '</dl>' +
+          (!row && !disabled ? '<p class="monthly-summary-note">该卡在所选月份暂无统计记录。</p>' : '') +
+          '<div class="operate-bar"><div class="operate-actions">' + (row && current ? '<span>本月数据用量</span>' + monthlyTrafficUsageMarkup(row) : (!current ? '<button class="btn btn-primary" data-action="refresh-annual-month" data-iccid="' + esc(detail.iccid) + '" data-month="' + detail.month + '"' + (disabled || refreshReason || refreshBusy || state.monthlySyncing ? ' disabled' : '') + '>' + (refreshBusy ? '同步中…' : '同步该月流量') + '</button>' : '')) +
+          '</div><p class="monthly-flow-note">' + (!current && refreshReason ? esc(refreshReason) + '。' : '') + '查询记录用于复查该卡在所选月份的历次返回结果；查看记录不会发起新查询。</p></div>' + monthlyQueryRecordsMarkup() + '</div>';
+      }
+
+      function monthlyQueryRecordsMarkup() {
+        var detail = state.monthlyDetail;
+        var queryColumns = monthlyQueryColumns();
+        var disabled = state.monthlyViewLoading || !!state.monthlyStoreError || !state.monthlyStoreReady;
+        var pages = Math.max(1, Math.ceil(state.monthlySnapshotTotal / 20));
+        return '<section class="monthly-query-section" id="monthlyDetailQueries" aria-label="该卡所选月份的查询记录"><div class="operate-bar"><div class="operate-actions"><strong>月流量查询记录</strong><button class="btn btn-gray" data-action="export-monthly-traffic"' + (disabled || state.monthlyExporting ? ' disabled' : '') + '>' + (state.monthlyExporting ? '导出中…' : '导出查询记录') + '</button></div></div>' +
+          '<div class="table-shell"><table><thead><tr>' + queryColumns.map(function (column) { return '<th scope="col">' + column.name + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          (disabled ? '<tr class="empty-row"><td colspan="' + queryColumns.length + '" role="status">' + (state.monthlyViewLoading ? '正在读取查询记录…' : '查询记录暂不可用，请重试') + '</td></tr>' : state.monthlySnapshotRows.length ? state.monthlySnapshotRows.map(function (item) {
+            return '<tr>' + queryColumns.map(function (column) { return '<td>' + esc(monthlyTrafficValue(item, column.key)) + '</td>'; }).join('') + '</tr>';
+          }).join('') : '<tr class="empty-row"><td colspan="' + queryColumns.length + '">该卡在所选月份暂无查询记录</td></tr>') + '</tbody></table></div><p class="monthly-summary-note">每行展示一次查询保存的完整快照，查询时间对应本次记录。</p>' +
+          listPaginationMarkup(state.monthlySnapshotTotal, pages, { currentPage: detail.page, pageAction: "monthly-detail-page", jumpAction: "monthly-detail-jump", label: "单卡月流量查询记录分页", windowed: true }) + '</section>';
+      }
+
+      function setMonthlyTrafficTab(tab, iccid) {
+        if (tab === 'records') { openPage('simMonthlyTraffic'); render(); return; }
+        if (tab !== 'history' || (state.activePage === 'simMonthlyTraffic/year' && !iccid)) { return; }
+        var q = state.monthlyTrafficApplied;
+        var values = monthlyPageValues();
+        values.monthlyTrafficTab = 'history'; values.monthlyDetail = null;
+        values.trafficHistoryQuery = Object.assign({}, values.trafficHistoryQuery, {
+          trafficHistoryYear: q.monthlyTrafficMonth.slice(0, 4) || trafficHistoryCurrentYear(), trafficHistoryKeyword: iccid || q.monthlyTrafficIccid,
+          trafficHistoryVendor: q.monthlyTrafficVendor, trafficHistoryMerchant: q.monthlyTrafficMerchant, trafficHistoryCarrier: q.monthlyTrafficCarrier
+        });
+        values.trafficHistoryApplied = Object.assign({}, values.trafficHistoryQuery); values.trafficHistoryPage = 1;
+        openMonthlyPage('simMonthlyTraffic/year', 'SIM卡年度月流量', values, state.activePage);
       }
 
       function trafficHistoryYearOptions() {
@@ -7571,7 +8090,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function trafficHistoryColumns() {
-        var columns = [{ key: "msisdn", name: "MSISDN", width: 140 }, { key: "iccid", name: "ICCID", width: 240 }, { key: "vendor", name: "供应商", width: 190 }, { key: "merchant", name: "商户名称", width: 150 }, { key: "carrier", name: "运营商", width: 100 }, { key: "annualFlow", name: "年度使用流量总计", width: 180 }];
+        var columns = [{ key: "msisdn", name: "MSISDN", width: 140 }, { key: "iccid", name: "ICCID", width: 240 }, { key: "vendor", name: "供应商", width: 190 }, { key: "merchant", name: "商户名称", width: 150 }, { key: "carrier", name: "运营商", width: 100 }, { key: "annualFlow", name: "已同步月份合计（MB）", width: 180 }];
         for (var month = 1; month <= 12; month += 1) {
           var key = state.trafficHistoryApplied.trafficHistoryYear + "-" + String(month).padStart(2, "0");
           columns.push({ key: key, name: key + "（MB）", width: 130, isMonth: true });
@@ -7582,10 +8101,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function trafficHistoryValue(row, column) {
         if (column.key === "annualFlow") {
           var values = Object.keys(row.months).map(function (key) { return row.months[key]; });
-          return values.length ? (values.reduce(function (sum, value) { return sum + value; }, 0) / 100).toFixed(3) : "--";
+          return values.length ? (values.reduce(function (sum, value) { return sum + value; }, 0) / 100).toFixed(2) : "--";
         }
         if (!column.isMonth) { return row[column.key]; }
-        return Object.prototype.hasOwnProperty.call(row.months, column.key) ? (row.months[column.key] / 100).toFixed(3) : "--";
+        return Object.prototype.hasOwnProperty.call(row.months, column.key) ? (row.months[column.key] / 100).toFixed(2) : "--";
       }
 
       function searchTrafficHistory() {
@@ -7606,24 +8125,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function monthlyYearValueMarkup(row, column) {
-        var value = trafficHistoryValue(row, column);
+        var value = trafficHistoryValue(row, column), today = dateFilterToday().slice(0, 7);
+        if (column.key > today) { return '<span class="monthly-year-empty">未到月份</span>'; }
         var busy = state.monthlyTrafficRefreshing.has(row.iccid + "|" + column.key);
-        var unavailableReason = annualMonthRefreshUnavailableReason(column.key);
-        var expired = column.key < dateFilterToday().slice(0, 7) && !!unavailableReason;
-        var disabled = !!unavailableReason || busy || state.monthlySyncing || !state.monthlyStoreReady || !!state.monthlyStoreError || state.monthlyTrafficRefreshing.size >= 3;
-        var title = unavailableReason || "刷新该月月流量值并保存查询记录";
-        return '<span class="annual-month-value" aria-busy="' + busy + '">' + (value === "--" ? '<span class="monthly-year-empty" title="未同步或尚未出账">--</span>' :
-          '<button class="link" data-action="monthly-show-queries" data-iccid="' + esc(row.iccid) + '" data-month="' + column.key + '" aria-label="查看' + esc(row.iccid) + '在' + column.key + '的月流量查询记录">' + esc(value) + '</button>') +
-          (expired ? '' : '<button class="refresh-card ' + (busy ? 'spinning' : '') + '" data-action="refresh-annual-month" data-iccid="' + esc(row.iccid) + '" data-month="' + column.key +
-          '" title="' + title + '" aria-label="刷新' + esc(row.iccid) + '在' + column.key + '的月流量"' + (disabled ? ' disabled' : '') + '>↻</button>') + '</span>';
-      }
-
-      function monthlyYearCardMarkup(row, columns) {
-        return '<div class="monthly-year-card"><dl class="sim-info-grid">' + columns.filter(function (column) { return !column.isMonth; }).map(function (column) {
-          return simInfoItemMarkup(column.name, trafficHistoryValue(row, column), column.key);
-        }).join('') + '</dl><div class="monthly-year-grid">' + columns.filter(function (column) { return column.isMonth; }).map(function (column) {
-          return '<div class="monthly-year-cell"><span>' + esc(column.name) + '</span>' + monthlyYearValueMarkup(row, column) + '</div>';
-        }).join('') + '</div></div>';
+        var reason = annualMonthRefreshUnavailableReason(column.key);
+        var disabled = !!reason || busy || state.monthlySyncing || !state.monthlyStoreReady || !!state.monthlyStoreError || state.monthlyTrafficRefreshing.size >= 3;
+        return '<span class="annual-month-value" aria-busy="' + busy + '"><button class="link" data-action="monthly-open-period" data-iccid="' + esc(row.iccid) + '" data-month="' + column.key + '" aria-label="查看' + esc(row.iccid) + '在' + column.key + '的月流量统计">' + (value === '--' ? (column.key === today ? '查看当月' : '待同步') : esc(value)) + '</button>' +
+          (reason ? '' : '<button class="refresh-card ' + (busy ? 'spinning' : '') + '" data-action="refresh-annual-month" data-iccid="' + esc(row.iccid) + '" data-month="' + column.key + '" title="刷新该月月流量" aria-label="刷新' + esc(row.iccid) + '在' + column.key + '的月流量"' + (disabled ? ' disabled' : '') + '>↻</button>') + '</span>';
       }
 
       function trafficHistoryMarkup() {
@@ -7631,14 +8139,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var totalPages = Math.max(1, Math.ceil(rows.length / 20));
         state.trafficHistoryPage = Math.max(1, Math.min(state.trafficHistoryPage, totalPages));
         var disabled = state.monthlyViewLoading || !!state.monthlyStoreError || !state.monthlyStoreReady;
-        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page traffic-history-page">' + monthlyTrafficTabsMarkup() +
-          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="tabpanel" aria-labelledby="monthlyTrafficTab-history"><div class="filters"><div class="filter-grid">' +
+        return '<div class="panel page-panel sim-traffic-page monthly-traffic-page traffic-history-page" data-monthly-view="history|' + state.trafficHistoryApplied.trafficHistoryYear + '">' + monthlyTrafficTabsMarkup() +
+          '<div class="monthly-traffic-panel" id="monthlyTrafficTabPanel" role="region" aria-labelledby="monthlyTrafficTab-history"><div class="filters"><div class="filter-grid">' +
           '<label>' + selectMarkup("trafficHistoryYear", q.trafficHistoryYear, trafficHistoryYearOptions(), "请选择年份", false) + '</label>' + simTrafficInputMarkup("trafficHistoryKeyword", q.trafficHistoryKeyword, "请输入ICCID/MSISDN", false) +
           '<label>' + comboMarkup("trafficHistoryVendor", q.trafficHistoryVendor, vendors, "请输入或选择供应商") + '</label><label>' + comboMarkup("trafficHistoryMerchant", q.trafficHistoryMerchant, simRowsSeed.map(function (row) { return row.merchant; }), "请输入或选择商户") + '</label><label>' + selectMarkup("trafficHistoryCarrier", q.trafficHistoryCarrier, carriers, "请选择运营商", true) + '</label>' +
           '</div><div class="actions"><button class="btn btn-outline" data-action="traffic-history-search">搜索</button><button class="btn btn-gray" data-action="traffic-history-reset">重置</button></div></div>' +
           '<div class="operate-bar"><div class="operate-actions"><button class="btn btn-primary" data-action="export-traffic-history"' + (disabled || state.monthlyExporting ? ' disabled' : '') + '>' + (state.monthlyExporting ? '导出中…' : '导出') + '</button></div>' +
           '<div>' + infoIconMarkup("monthly-flow-info", "年度月流量说明", "annualSummary") + '</div>' + monthlyStatusMarkup() + '</div>' +
-          (!disabled && rows.length === 1 ? monthlyYearCardMarkup(rows[0], columns) : '<div class="table-shell"><table><colgroup>' + columns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join('') + '</colgroup><thead><tr>' + columns.map(function (column) { return '<th scope="col">' + esc(column.name) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          ('<div class="table-shell"><table><colgroup>' + columns.map(function (column) { return '<col style="width:' + column.width + 'px">'; }).join('') + '</colgroup><thead><tr>' + columns.map(function (column) { return '<th scope="col">' + esc(column.name) + '</th>'; }).join('') + '</tr></thead><tbody>' +
           (disabled ? '<tr class="empty-row"><td colspan="18" role="status">' + (state.monthlyViewLoading ? '正在读取年度流量…' : '流量记录暂不可用，请重试') + '</td></tr>' : rows.length ? rows.slice((state.trafficHistoryPage - 1) * 20, state.trafficHistoryPage * 20).map(function (row) {
             return '<tr>' + columns.map(function (column) {
               var value = trafficHistoryValue(row, column);
@@ -7664,6 +8172,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (state.monthlyTrafficRefreshing.size >= 3) { toast("最多同时刷新3个月份，请稍后再试"); return; }
         var card = state.simRows.find(function (item) { return item.iccid === iccid; });
         if (!card) { return; }
+        var viewPosition = captureMonthlyPosition();
         state.monthlyTrafficRefreshing.add(id);
         var position = captureAnnualScroll();
         renderContent(); restoreAnnualScroll(position);
@@ -7679,8 +8188,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         position = captureAnnualScroll();
         var returnFocus = document.activeElement === document.body;
         if (!state.monthlyStoreError) { await loadMonthlyView(position); }
-        else if (state.activePage === "simMonthlyTraffic") { renderContent(); restoreAnnualScroll(position); }
-        if (returnFocus && position && state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab === "history" && JSON.stringify(state.trafficHistoryApplied) === position.context) {
+        else if (isMonthlyTrafficPage(state.activePage)) { renderContent(); restoreAnnualScroll(position); }
+        restoreMonthlyPosition(viewPosition);
+        if (returnFocus && position && isMonthlyTrafficPage(state.activePage) && state.monthlyTrafficTab === "history" && JSON.stringify(state.trafficHistoryApplied) === position.context) {
           var button = document.querySelector('[data-action="refresh-annual-month"][data-iccid="' + iccid + '"][data-month="' + month + '"]');
           if (button) { button.focus({ preventScroll: true }); }
         }
@@ -7689,9 +8199,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       async function syncMonthlyTraffic() {
         if (state.monthlySyncing || state.monthlyTrafficRefreshing.size || !state.monthlyStoreReady || state.monthlyStoreError) { return; }
         var q = Object.assign({}, state.monthlyTrafficApplied);
-        if (q.monthlyTrafficMonth >= dateFilterToday().slice(0, 7)) { toast("月流量值于次月初同步，本月请刷新本月数据用量"); return; }
-        var rows = monthlyProjection(q.monthlyTrafficMonth.slice(0, 4)).filter(function (row) { return monthlyRowMatches(row, q, true); });
+        var unavailableReason = annualMonthRefreshUnavailableReason(q.monthlyTrafficMonth);
+        if (unavailableReason) { toast(unavailableReason); return; }
+        var rows = monthlyProjection(q.monthlyTrafficMonth.slice(0, 4)).filter(function (row) { return monthlyRowMatches(row, q); });
         if (!rows.length) { toast("没有可同步的卡，请调整筛选条件"); return; }
+        var viewPosition = captureMonthlyPosition();
         state.monthlySyncing = true;
         renderContent();
         try {
@@ -7702,14 +8214,17 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } catch (error) { state.monthlyStoreError = error.message; toast(error.message); }
         state.monthlySyncing = false;
         if (!state.monthlyStoreError) { await loadMonthlyView(); }
-        else if (state.activePage === "simMonthlyTraffic") { renderContent(); }
+        else if (isMonthlyTrafficPage(state.activePage)) { renderContent(); }
+        restoreMonthlyPosition(viewPosition);
       }
 
       async function refreshMonthlyTraffic(id) {
         var month = id.slice(-7);
-        if (month !== dateFilterToday().slice(0, 7) || state.monthlyTrafficRefreshing.has(id) || !state.monthlyStoreReady) { return; }
-        var row = monthlyProjection(month.slice(0, 4)).find(function (item) { return item.id === id; });
+        if (month !== dateFilterToday().slice(0, 7) || state.monthlyTrafficRefreshing.has(id) || state.monthlyViewLoading || state.monthlyStoreError || !state.monthlyStoreReady) { return; }
+        var year = state.monthlyDetail ? month.slice(0, 4) : state.monthlyTrafficApplied.monthlyTrafficMonth.slice(0, 4);
+        var row = monthlyProjection(year).find(function (item) { return item.id === id; });
         if (!row) { return; }
+        var viewPosition = captureMonthlyPosition();
         state.monthlyTrafficRefreshing.add(id);
         renderContent();
         try {
@@ -7721,7 +8236,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } catch (error) { state.monthlyStoreError = error.message; toast(error.message); }
         state.monthlyTrafficRefreshing.delete(id);
         if (!state.monthlyStoreError) { await loadMonthlyView(); }
-        else if (state.activePage === "simMonthlyTraffic") { renderContent(); }
+        else if (isMonthlyTrafficPage(state.activePage)) { renderContent(); }
+        restoreMonthlyPosition(viewPosition);
       }
 
       function monthlyCsvLine(values) {
@@ -7730,21 +8246,22 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       async function exportMonthlyView(history) {
         if (state.monthlyExporting || state.monthlyViewLoading || state.monthlyStoreError) { return; }
-        var snapshots = !history && state.monthlyTrafficTab === "queries";
-        var q = Object.assign({}, state.monthlyTrafficApplied);
+        var snapshots = !history && !!state.monthlyDetail;
+        var q = snapshots ? monthlyDetailQuery() : Object.assign({}, state.monthlyTrafficApplied);
         var exportYear = state.trafficHistoryApplied.trafficHistoryYear;
-        var columns = history ? trafficHistoryColumns() : monthlyTrafficColumns;
+        var columns = history ? trafficHistoryColumns() : (snapshots ? monthlyQueryColumns() : monthlyVisibleColumns());
         var rows = history ? filteredTrafficHistoryRows() : (snapshots ? null : filteredMonthlyTrafficRows());
-        var parts = ["\ufeff", monthlyCsvLine(columns.map(function (column) { return column.key === "currentUsage" ? column.name + "（MB）" : column.name; }))];
+        var parts = ["\ufeff", monthlyCsvLine(columns.map(function (column) { return column.name; }))];
         var lines = [], count = 0;
         function collect(row) {
           lines.push(monthlyCsvLine(columns.map(function (column) {
-            var value = history ? trafficHistoryValue(row, column) : monthlyTrafficValue(row, column.key);
+            var value = history ? trafficHistoryValue(row, column) : (snapshots ? monthlyTrafficValue(row, column.key) : monthlyDisplayValue(row, column.key));
             return value + (column.key === "iccid" || column.key === "msisdn" ? "\t" : "");
           })));
           count += 1;
           if (lines.length === 200) { parts.push(lines.join('')); lines = []; }
         }
+        var viewPosition = captureMonthlyPosition();
         state.monthlyExporting = true;
         renderContent();
         try {
@@ -7762,14 +8279,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             var blob = new Blob(parts, { type: "text/csv;charset=utf-8" });
             var url = URL.createObjectURL(blob), link = document.createElement("a");
             link.href = url;
-            link.download = history ? "SIM卡历史流量记录-" + exportYear + ".csv" : "SIM卡" + (snapshots ? "月流量查询记录-" : "月流量-") + q.monthlyTrafficMonth + ".csv";
+            link.download = history ? "SIM卡历史流量记录-" + exportYear + ".csv" : "SIM卡" + (snapshots ? "月流量查询记录-" : "月流量-") + (q.monthlyTrafficMonth || "全部月份") + ".csv";
             document.body.appendChild(link); link.click(); link.remove();
             window.setTimeout(function () { URL.revokeObjectURL(url); }, 30000);
             toast("已导出 " + count + " 条记录");
           }
         } catch (error) { toast("导出失败，请重试：" + error.message); }
         state.monthlyExporting = false;
-        if (state.activePage === "simMonthlyTraffic") { renderContent(); }
+        if (isMonthlyTrafficPage(state.activePage)) { renderContent(); restoreMonthlyPosition(viewPosition); }
       }
 
       function exportTrafficHistory() { exportMonthlyView(true); }
@@ -8377,7 +8894,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             '</div><div class="form-control">' + selectMarkup("simDetailOperationValue", state.simDetailOperationValue, options, "请选择", false) + '</div></div>';
         }
         return '<div class="modal-mask"><section class="batch-dialog sim-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="simDetailOperationTitle">' +
-          '<header class="modal-head"><h2 id="simDetailOperationTitle">' + name + '</h2><button class="modal-close" data-action="sim-detail-cancel" aria-label="关闭' + name + '">×</button></header>' +
+          '<header class="modal-head"><h2 id="simDetailOperationTitle">' + name + '</h2><button class="modal-close" data-action="sim-detail-cancel" aria-label="关闭' + name + '">' + closeIconMarkup() + '</button></header>' +
           '<div class="dialog-body config-body"><p class="sim-detail-context">ICCID：' + esc(currentSimDetailRow().iccid) + '</p>' +
           (field || '<p>确认对当前SIM卡执行“' + name + '”操作吗？</p>') +
           '<div class="dialog-actions"><button class="btn btn-gray" data-action="sim-detail-cancel">取消</button>' +
@@ -8602,7 +9119,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<div class="redlist-notify-help" id="redlistNotifyRecipientHelp" role="status">已选择 ' + selected.length + ' 个账号，可多选</div>' +
           '<div class="redlist-notify-selected">' + selected.map(function (account) {
             return '<span class="redlist-notify-chip">' + esc(account.name + ' ' + account.phone) +
-              '<button data-action="remove-redlist-notify-recipient" data-id="' + account.id + '" aria-label="移除通知账号 ' + esc(account.name + ' ' + account.phone) + '">×</button></span>';
+              '<button data-action="remove-redlist-notify-recipient" data-id="' + account.id + '" aria-label="移除通知账号 ' + esc(account.name + ' ' + account.phone) + '">' + closeIconMarkup() + '</button></span>';
           }).join("") + '</div>' + redlistNotifyErrorMarkup("recipients");
       }
 
@@ -8667,7 +9184,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function redlistNotificationMarkup() {
         var draft = state.redlistNotifyDraft;
         return '<div class="modal-mask redlist-notify-mask"><section class="batch-dialog redlist-notify-dialog" role="dialog" aria-modal="true" aria-labelledby="redlistNotifyTitle">' +
-          '<header class="modal-head"><h2 id="redlistNotifyTitle">通知配置</h2><button class="modal-close" data-action="close-redlist-notification" aria-label="关闭通知配置">×</button></header>' +
+          '<header class="modal-head"><h2 id="redlistNotifyTitle">通知配置</h2><button class="modal-close" data-action="close-redlist-notification" aria-label="关闭通知配置">' + closeIconMarkup() + '</button></header>' +
           '<div class="dialog-body">' +
             '<div class="form-row"><label class="form-label required" for="redlistNotifyDays">提前通知天数</label><div class="form-control">' +
               '<div class="redlist-notify-inline"><input class="text-input" id="redlistNotifyDays" type="number" min="1" step="1" inputmode="numeric" data-action="redlist-notify-days" value="' + esc(draft.days) + '" placeholder="请输入天数" aria-required="true" aria-describedby="redlistNotifyDaysHelp redlistNotifyError-days"><span>天</span></div>' +
@@ -8682,7 +9199,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<div class="redlist-notify-help" id="redlistNotifyTimeHelp">使用24小时制（HH:mm），按北京时间发送通知。</div>' + redlistNotifyErrorMarkup("time") + '</div></div>' +
             '<div class="form-row"><div class="form-label required" id="redlistNotifyRecipientsLabel">通知对象</div><div class="form-control">' +
               '<div class="redlist-notify-search combo"><input class="text-input" id="redlistNotifySearch" data-action="redlist-notify-search" value="' + esc(state.redlistNotifySearch) + '" placeholder="搜索姓名或电话号码" aria-label="搜索通知账号姓名或电话号码" aria-describedby="redlistNotifyRecipientHelp redlistNotifyError-recipients">' +
-                '<button class="clear-value" data-action="clear-redlist-notify-search" aria-label="清空账号搜索"' + (state.redlistNotifySearch ? '' : ' hidden') + '>×</button></div>' +
+                '<button class="clear-value" data-action="clear-redlist-notify-search" aria-label="清空账号搜索"' + (state.redlistNotifySearch ? '' : ' hidden') + '>' + closeIconMarkup() + '</button></div>' +
               '<div id="redlistNotifyRecipients">' + redlistNotifyRecipientsMarkup() + '</div></div></div>' +
               redlistNotifyErrorMarkup("save") +
           '</div><footer class="dialog-actions"><button class="btn btn-gray" data-action="close-redlist-notification">取消</button>' +
@@ -8819,6 +9336,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function renderContent() {
+        var monthlyPosition = captureMonthlyPosition();
         hideManageStopPopover();
         var markup;
         if (state.activePage === "home") {
@@ -8831,7 +9349,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           markup = simTrafficMarkup();
         } else if (state.activePage === "simActivation") {
           markup = activationMarkup();
-        } else if (state.activePage === "simMonthlyTraffic") {
+        } else if (isMonthlyTrafficPage(state.activePage)) {
           markup = monthlyTrafficMarkup();
         } else if (state.activePage === "esim") {
           markup = esimCardMarkup();
@@ -8861,10 +9379,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           markup = accountMarkup();
         }
         $("#content").innerHTML = markup;
-        if (state.activePage === "simTraffic" || state.activePage === "simActivation" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") { prepareSimTrafficFields(); }
+        var monthlyView = document.querySelector('#content [data-monthly-view]');
+        if (monthlyView) { monthlyView.dataset.monthlyPage = state.activePage; }
+        document.title = pageName(state.activePage) + ' - SIM卡管理平台';
+        if (state.activePage === "simTraffic" || state.activePage === "simActivation" || isMonthlyTrafficPage(state.activePage) || state.activePage === "redlist" || state.activePage === "resourceHistory") { prepareSimTrafficFields(); }
         applyDocumentationAnchors();
         renderPageDocumentation();
         renderDatePicker();
+        fitMonthlyLists();
+        restoreMonthlyPosition(monthlyPosition);
       }
 
       function choiceGroupMarkup(action, current, options, extraName) {
@@ -8878,7 +9401,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function addMarkup() {
         return '<div class="modal-mask">' +
           '<section class="edit-dialog" role="dialog" aria-modal="true" aria-label="运营商账户添加">' +
-            '<header class="modal-head"><h2>运营商账户添加</h2><button class="modal-close" data-action="close-add">×</button></header>' +
+            '<header class="modal-head"><h2>运营商账户添加</h2><button class="modal-close" data-action="close-add" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body">' +
               '<label class="edit-row"><span class="field-label required">供应商</span><input id="addVendor" class="text-input" placeholder="请输入供应商名称"></label>' +
               '<label class="edit-row"><span class="field-label required">运营商</span><input id="addCarrier" class="text-input" placeholder="请输入运营商"></label>' +
@@ -8894,7 +9417,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var isFile = state.authInputMode === "file";
         return '<div class="modal-mask">' +
           '<section class="batch-dialog" role="dialog" aria-modal="true" aria-label="二次认证配置">' +
-            '<header class="modal-head"><h2>二次认证配置</h2><button class="modal-close" data-action="close-auth-config">×</button></header>' +
+            '<header class="modal-head"><h2>二次认证配置</h2><button class="modal-close" data-action="close-auth-config" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body config-body">' +
               '<div class="form-row compact"><div class="form-label required">二次认证开关</div><div class="form-control">' +
                 choiceGroupMarkup("set-auth-switch", state.authSwitch, [{ label: "关闭", value: "关闭" }, { label: "开启", value: "开启" }]) +
@@ -8925,7 +9448,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function editMarkup(row) {
         return '<div class="modal-mask">' +
           '<section class="edit-dialog" role="dialog" aria-modal="true">' +
-            '<header class="modal-head"><h2>编辑运营商账户</h2><button class="modal-close" data-action="close-edit">×</button></header>' +
+            '<header class="modal-head"><h2>编辑运营商账户</h2><button class="modal-close" data-action="close-edit" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body">' +
               '<label class="edit-row"><span class="field-label">供应商</span><input class="text-input" value="' + esc(row.vendor) + '" disabled></label>' +
               '<label class="edit-row"><span class="field-label">运营商平台</span><input id="editPlatform" class="text-input" value="' + esc(row.platform) + '"></label>' +
@@ -8940,7 +9463,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var isFile = state.esimAllocateMode === "file";
         return '<div class="modal-mask">' +
           '<section class="batch-dialog" role="dialog" aria-modal="true" aria-label="可写码号划拨/移出">' +
-            '<header class="modal-head"><h2>可写码号划拨/移出</h2><button class="modal-close" data-action="close-esim-allocate">×</button></header>' +
+            '<header class="modal-head"><h2>可写码号划拨/移出</h2><button class="modal-close" data-action="close-esim-allocate" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body config-body">' +
               '<div class="form-row compact"><div class="form-label required">操作类型</div><div class="form-control">' +
                 selectMarkup("esimAllocateType", state.esimAllocateType, ["可写码号划拨", "可写码号移出"], "请选择操作类型", true) +
@@ -8974,7 +9497,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var isDelete = state.esimChipStockType === "ESIM芯片删除";
         return '<div class="modal-mask">' +
           '<section class="batch-dialog stock-dialog" role="dialog" aria-modal="true" aria-label="ESIM芯片入库/删除">' +
-            '<header class="modal-head"><h2>ESIM芯片入库/删除</h2><button class="modal-close" data-action="close-esim-chip-stock">×</button></header>' +
+            '<header class="modal-head"><h2>ESIM芯片入库/删除</h2><button class="modal-close" data-action="close-esim-chip-stock" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body config-body">' +
               '<div class="form-row compact"><div class="form-label required">操作类型</div><div class="form-control">' +
                 selectMarkup("chipStockType", state.esimChipStockType, esimChipChangeOperationOptions, "请选择操作类型", true) +
@@ -9003,7 +9526,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var isStop = state.manageStopChangeStatus === "管理停用";
         return '<div class="modal-mask">' +
           '<section class="batch-dialog" role="dialog" aria-modal="true" aria-label="管理停用状态变更">' +
-            '<header class="modal-head"><h2>管理停用状态变更</h2><button class="modal-close" data-action="close-manage-stop-change">×</button></header>' +
+            '<header class="modal-head"><h2>管理停用状态变更</h2><button class="modal-close" data-action="close-manage-stop-change" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body config-body">' +
               '<div class="form-row compact"><div class="form-label required">变更状态</div><div class="form-control">' +
                 selectMarkup("manageStopChangeStatus", state.manageStopChangeStatus, manageStopOptions, "请选择变更状态", true) +
@@ -9039,7 +9562,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var rows = state.manageStopRiskRows || [];
         return '<div class="modal-mask">' +
           '<section class="confirm-dialog risk-dialog" role="dialog" aria-modal="true" aria-label="管理停用风险提示">' +
-            '<header class="modal-head"><h2>管理停用风险提示</h2><button class="modal-close" data-action="cancel-manage-stop-risk">×</button></header>' +
+            '<header class="modal-head"><h2>管理停用风险提示</h2><button class="modal-close" data-action="cancel-manage-stop-risk" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="risk-content">' +
               '<div class="risk-alert">以下码号存在生效中的套餐、实名信息或未清除的亲情号。可选择继续操作、跳过这些码号后继续执行其他可执行码号，或取消操作。</div>' +
               '<div class="risk-table"><table>' +
@@ -9062,7 +9585,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var rows = filteredDetectionRows();
         return '<div class="modal-mask">' +
           '<section class="batch-dialog record-dialog" role="dialog" aria-modal="true" aria-label="检测记录">' +
-            '<header class="modal-head"><h2>检测记录</h2><button class="modal-close" data-action="close-detection-modal">×</button></header>' +
+            '<header class="modal-head"><h2>检测记录</h2><button class="modal-close" data-action="close-detection-modal" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body">' +
               '<div class="filters">' +
                 '<div class="filter-grid">' +
@@ -9091,7 +9614,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var rows = filteredChipDetectionRows();
         return '<div class="modal-mask">' +
           '<section class="batch-dialog record-dialog" role="dialog" aria-modal="true" aria-label="检测记录">' +
-            '<header class="modal-head"><h2>检测记录</h2><button class="modal-close" data-action="close-chip-detection-modal">×</button></header>' +
+            '<header class="modal-head"><h2>检测记录</h2><button class="modal-close" data-action="close-chip-detection-modal" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body">' +
               '<div class="filters">' +
                 '<div class="filter-grid">' +
@@ -9146,7 +9669,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           singleCardSupply: row.singleCardSupply, replenishmentPrice: row.replenishmentPrice };
         return '<div class="modal-mask">' +
           '<section class="group-edit-dialog" role="dialog" aria-modal="true" aria-label="编辑群组">' +
-            '<header class="modal-head"><h2>编辑</h2><button class="modal-close" data-action="close-group-edit">×</button></header>' +
+            '<header class="modal-head"><h2>编辑</h2><button class="modal-close" data-action="close-group-edit" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="group-edit-body">' +
               '<div class="form-row compact"><div class="form-label required">供应商</div><div class="form-control"><input class="text-input" value="' + esc(row.supplier) + '" disabled></div></div>' +
               '<div class="form-row compact"><div class="form-label required">群组名称</div><div class="form-control"><input class="text-input" value="' + esc(row.groupName) + '" disabled></div></div>' +
@@ -9163,26 +9686,40 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function batchTaskAddErrorMarkup(field) {
         return state.batchTaskAddErrorField === field && state.batchTaskAddError ?
-          '<div class="batch-task-error" id="batchTaskAddError" role="alert">' + esc(state.batchTaskAddError) + '</div>' : "";
+          '<div class="batch-task-error" id="batchTaskAddError" role="alert"' +
+          (field === "batchTaskPoolBalance" ? ' tabindex="-1"' : '') + '>' + esc(state.batchTaskAddError) + '</div>' : "";
       }
 
-      function batchTaskPoolEstimateMarkup() {
-        if (state.batchTaskAddType !== "激活卡" || state.batchTaskAddPoolUsage !== "资源池补池" ||
-            state.batchTaskFileDetecting || state.batchTaskFileDetectionError || !state.batchTaskIccids || !state.batchTaskIccids.length) { return ""; }
-        var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
-        if (!group) { return ""; }
+      function batchTaskPoolEstimateMarkup(group, eligibleCount) {
         var pools = resourceBaseRows().filter(function (pool) { return pool.supplier === group.supplier && pool.group === group.groupName; });
         var reason = pools.length === 0 ? "所选群组暂无匹配的资源池用量数据，暂无法估算。" :
           (pools.length > 1 ? "所选群组匹配到多个资源池，请先核对资源池配置，暂无法估算。" : "");
-        var cardsByIccid = new Map(state.simRows.map(function (card) { return [card.iccid, card]; }));
-        var eligible = Array.from(new Set(state.batchTaskIccids)).filter(function (iccid) {
-          return cardMatchesActivationGroup(cardsByIccid.get(iccid), group.id);
-        });
-        if (!reason && !eligible.length) { reason = "本次没有通过所选群组校验的可补池卡，暂无法估算。"; }
-        var forecast = reason ? { reason: reason } : resourcePoolCoverageForecast(pools[0], group.singleCardSupply, eligible.length);
-        if (forecast.reason) { return '<div class="batch-task-pool-estimate" id="batchTaskPoolEstimate">' + esc(forecast.reason) + '</div>'; }
-        return '<div class="batch-task-pool-estimate" id="batchTaskPoolEstimate">补池完成后，预计能用 <b>' + esc(forecast.daysText) +
-          '</b> 天，至 <b>' + esc(forecast.untilDate) + '</b>。</div>';
+        if (!reason && !eligibleCount) { reason = "本次没有通过所选群组校验的可补池卡，暂无法估算。"; }
+        var forecast = reason ? { reason: reason } : resourcePoolCoverageForecast(pools[0], group.singleCardSupply, eligibleCount);
+        return '<li id="batchTaskPoolEstimate">' + (forecast.reason ? esc(forecast.reason) :
+          '补池完成后，预计能用 <b>' + esc(forecast.daysText) + '</b> 天，至 <b>' + esc(forecast.untilDate) + '</b>。') + '</li>';
+      }
+
+      function batchTaskPoolPreviewMarkup() {
+        var estimate = "";
+        if (!state.batchTaskFileDetecting && !state.batchTaskFileDetectionError && state.batchTaskIccids) {
+          var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
+          if (!group) {
+            estimate = '<li>选择所属群组后，可查看补池用量和余额预估。</li>';
+          } else {
+            var count = batchTaskPoolEligibleCount(group);
+            var balance = batchTaskPoolBalance(group, count);
+            var charge = balance.chargeCents == null ? "" : '本次激活预计扣减账户余额 <b>' + (balance.chargeCents / 100).toFixed(2) +
+              '</b> 元';
+            var balanceText = balance.error ? (charge ? charge + '；' : '') + esc(balance.error) :
+              charge + '，当前群组对应账号余额为 <b>' + (balance.balanceCents / 100).toFixed(2) + '</b> 元，' +
+              (balance.remainingCents < 0 ? '<strong class="balance-warning">账户余额不足</strong>' :
+                '补池后预计剩余 <b>' + (balance.remainingCents / 100).toFixed(2) + '</b> 元') + '。';
+            estimate = batchTaskPoolEstimateMarkup(group, count) + '<li id="batchTaskPoolBalance">' + balanceText + '</li>';
+          }
+        }
+        return '<ul class="batch-task-pool-preview"><li id="batchTaskActivationCount">' + batchTaskActivationCountMarkup() + '</li>' +
+          estimate + '</ul>' + batchTaskAddErrorMarkup("batchTaskPoolBalance");
       }
 
       function batchTaskFileStateMarkup() {
@@ -9198,13 +9735,17 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function batchTaskFileFeedbackMarkup() {
         var summary = "";
-        if (state.batchTaskAddType === "激活卡") {
-          var value = state.batchTaskFileDetecting ? "正在检测…" : (state.batchTaskFileDetectionError ? "检测失败" : "上传后自动检测");
-          if (state.batchTaskIccids) { value = '<strong>' + state.batchTaskIccids.length + '</strong><span>张</span>'; }
+        if (state.batchTaskAddType === "激活卡" && !batchTaskIsPoolActivation()) {
           summary = '<div class="batch-task-file-summary" id="batchTaskActivationCount" role="status" aria-live="polite" aria-busy="' + state.batchTaskFileDetecting + '">' +
-            '<span>本次待激活卡数：</span>' + value + batchTaskPoolEstimateMarkup() + '</div>';
+            batchTaskActivationCountMarkup() + '</div>';
         }
         return summary + batchTaskAddErrorMarkup("batchTaskFile");
+      }
+
+      function batchTaskActivationCountMarkup() {
+        var value = state.batchTaskFileDetecting ? "正在检测…" : (state.batchTaskFileDetectionError ? "检测失败" : "上传后自动检测");
+        if (state.batchTaskIccids) { value = '<strong class="batch-task-count-value">' + state.batchTaskIccids.length + '</strong><span> 张</span>'; }
+        return '<span>本次待激活卡数：</span>' + value;
       }
 
       function batchTaskAddMarkup() {
@@ -9212,7 +9753,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
         return '<div class="modal-mask">' +
           '<section class="batch-dialog batch-task-add-dialog" role="dialog" aria-modal="true" aria-label="批量操作新增" aria-busy="' + state.batchTaskSubmitting + '">' +
-            '<header class="modal-head"><h2>批量操作新增</h2><button class="modal-close" data-action="close-batch-task-add" aria-label="关闭批量操作新增">×</button></header>' +
+            '<header class="modal-head"><h2>批量操作新增</h2><button class="modal-close" data-action="close-batch-task-add" aria-label="关闭批量操作新增">' + closeIconMarkup() + '</button></header>' +
             '<div class="dialog-body config-body">' +
               '<div class="form-row compact">' +
                 '<div class="form-label required" id="batchTaskFileLabel">SIM卡文件</div>' +
@@ -9240,7 +9781,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
                   '<div class="batch-hint" id="batchTaskGroupHint">仅对属于所选群组的ICCID执行激活，不一致的码号判定失败，并在任务详情的“失败原因”字段中记录原因。</div>' + batchTaskAddErrorMarkup("batchTaskAddGroup") + '</div></div>' : "") +
               '<div class="form-row">' +
                 '<label class="form-label" for="batchTaskAddRemark">备注</label>' +
-                '<div class="form-control"><textarea id="batchTaskAddRemark" class="textarea-input" data-action="batch-task-add-remark" placeholder="请输入备注">' + esc(state.batchTaskAddRemark) + "</textarea></div>" +
+                '<div class="form-control"><textarea id="batchTaskAddRemark" class="textarea-input" data-action="batch-task-add-remark" placeholder="请输入备注">' + esc(state.batchTaskAddRemark) + '</textarea>' +
+                  (batchTaskIsPoolActivation() ? '<div id="batchTaskPoolFeedback" aria-live="polite" aria-busy="' + state.batchTaskFileDetecting + '">' + batchTaskPoolPreviewMarkup() + '</div>' : '') + '</div>' +
               "</div>" +
               '<div class="dialog-actions"><button class="btn btn-gray" data-action="close-batch-task-add">取消</button><button class="btn btn-primary" data-action="confirm-batch-task-add">确定</button></div>' +
             "</div>" +
@@ -9290,7 +9832,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function confirmMarkup(row) {
         return '<div class="modal-mask">' +
           '<section class="confirm-dialog" role="dialog" aria-modal="true">' +
-            '<header class="modal-head"><h2>删除确认</h2><button class="modal-close" data-action="cancel-delete">×</button></header>' +
+            '<header class="modal-head"><h2>删除确认</h2><button class="modal-close" data-action="cancel-delete" aria-label="关闭弹窗">' + closeIconMarkup() + '</button></header>' +
             '<div class="confirm-content">确定删除该运营商账户配置吗？<small>' + esc(row.vendor) + " / " + esc(row.platform) + "</small></div>" +
             '<div class="dialog-actions"><button class="btn btn-gray" data-action="cancel-delete">取消</button><button class="btn btn-primary" data-action="confirm-delete">确定</button></div>' +
           "</section>" +
@@ -9299,7 +9841,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function simDataResetConfirmMarkup() {
         return '<div class="modal-mask"><section class="confirm-dialog sim-reset-dialog" role="dialog" aria-modal="true" aria-labelledby="simDataResetTitle" aria-describedby="simDataResetDescription">' +
-          '<header class="modal-head"><h2 id="simDataResetTitle">重置数据服务确认</h2><button class="modal-close" data-action="cancel-sim-data-reset" aria-label="关闭重置数据服务确认">×</button></header>' +
+          '<header class="modal-head"><h2 id="simDataResetTitle">重置数据服务确认</h2><button class="modal-close" data-action="cancel-sim-data-reset" aria-label="关闭重置数据服务确认">' + closeIconMarkup() + '</button></header>' +
           '<div class="confirm-content">确定重置以下SIM卡的数据服务吗？<small>ICCID：' + esc(state.simDataResetConfirmIccid) + '</small>' +
             '<small id="simDataResetDescription">同一卡3分钟内仅可重置1次。</small></div>' +
           '<div class="dialog-actions"><button class="btn btn-gray" data-action="cancel-sim-data-reset">取消</button>' +
@@ -9364,6 +9906,22 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         renderBreadcrumb();
         renderContent();
         renderOverlay();
+        if (isMonthlyTrafficPage(state.activePage) && state.monthlyPageNeedsLoad) {
+          state.monthlyPageNeedsLoad = false;
+          var page = state.activePage;
+          var context = state.monthlyPages[page];
+          loadMonthlyView().then(function () {
+            if (state.activePage !== page) { return; }
+            if (context && context.position) { restoreMonthlyPosition(context.position); }
+            else {
+              document.getElementById('content').scrollTop = 0;
+              var table = document.querySelector('#content .table-shell');
+              if (table) { table.scrollLeft = 0; table.scrollTop = 0; }
+              var heading = document.querySelector('#content h2');
+              if (heading) { heading.setAttribute('tabindex', '-1'); heading.focus({ preventScroll: true }); }
+            }
+          });
+        }
       }
 
       function showManageStopPopover(target) {
@@ -9515,7 +10073,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var poolUsage = event.target.value;
           if (["资源池补池", "非资源池补池"].indexOf(poolUsage) === -1) { return; }
           state.batchTaskAddPoolUsage = poolUsage;
-          if (state.batchTaskAddErrorField === "batchTaskAddPoolUsage") {
+          if (state.batchTaskAddErrorField === "batchTaskAddPoolUsage" || state.batchTaskAddErrorField === "batchTaskPoolBalance") {
             state.batchTaskAddError = "";
             state.batchTaskAddErrorField = "";
           }
@@ -9709,12 +10267,16 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             return;
           }
         }
-        if (state.activePage !== "simTraffic" && state.activePage !== "simActivation" && state.activePage !== "simMonthlyTraffic" && state.activePage !== "redlist" && state.activePage !== "resourceHistory") { return; }
+        if (state.activePage !== "simTraffic" && state.activePage !== "simActivation" && !isMonthlyTrafficPage(state.activePage) && state.activePage !== "redlist" && state.activePage !== "resourceHistory") { return; }
         var poolHistory = state.activePage === "resourceHistory";
         var activation = state.activePage === "simActivation";
         var redlist = state.activePage === "redlist";
-        var monthly = state.activePage === "simMonthlyTraffic";
+        var monthly = isMonthlyTrafficPage(state.activePage);
+        if (monthly && state.monthlyDetail && target.dataset.action !== "monthly-detail-jump") { return; }
         var history = monthly && state.monthlyTrafficTab === "history";
+        if (monthly && state.simDateOpen && state.dateTarget === 'monthlyTraffic' && event.key === 'Escape') {
+          dismissMonthlyPeriod(true); event.preventDefault(); return;
+        }
         if (event.key === "Escape" && (state.trafficHistoryInfoOpen || target.closest('[data-action="traffic-history-info"]'))) {
           hideManageStopPopover();
           event.preventDefault();
@@ -9724,9 +10286,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           setResourceHistoryMode(poolMode);
           document.getElementById("poolHistoryTab-" + poolMode).focus();
         } else if (target.dataset.action === "monthly-traffic-tab" && ["ArrowLeft", "ArrowRight", "Home", "End"].indexOf(event.key) !== -1) {
-          var tabs = ["records", "history", "queries"];
+          var tabs = ["records", "history"];
           var position = tabs.indexOf(state.monthlyTrafficTab);
-          var tab = tabs[event.key === "Home" ? 0 : (event.key === "End" ? 2 : (position + (event.key === "ArrowLeft" ? 2 : 1)) % 3)];
+          var tab = tabs[event.key === "Home" ? 0 : (event.key === "End" ? 1 : (position + 1) % 2)];
           event.preventDefault();
           setMonthlyTrafficTab(tab);
           document.getElementById("monthlyTrafficTab-" + tab).focus();
@@ -9743,6 +10305,12 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           }
           var monthPrefix = poolMonth ? "pool-history" : "monthly-traffic";
           var calendarYear = poolMonth ? state.poolHistoryCalendarYear : state.monthlyTrafficCalendarYear;
+          if (!poolMonth && calendarYear + "-" + String(nextMonth + 1).padStart(2, "0") > dateFilterToday().slice(0, 7)) {
+            state.monthlyTrafficCalendarYear = Number(dateFilterToday().slice(0, 4));
+            calendarYear = state.monthlyTrafficCalendarYear;
+            nextMonth = Number(dateFilterToday().slice(5, 7)) - 1;
+            renderContent();
+          }
           document.querySelector('[data-action="' + monthPrefix + '-month-select"][data-value="' + calendarYear + '-' + String(nextMonth + 1).padStart(2, "0") + '"]').focus();
           event.preventDefault();
         } else if (event.key === "Escape" && (state.openCombo || state.openSelect || state.simDateOpen)) {
@@ -9795,11 +10363,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var historyPages = Math.max(1, Math.ceil(filteredTrafficHistoryRows().length / 20));
           state.trafficHistoryPage = Math.max(1, Math.min(historyPages, Math.floor(Number(target.value) || 1)));
           renderContent();
+        } else if (event.key === "Enter" && target.dataset.action === "monthly-detail-jump" && state.monthlyDetail) {
+          event.preventDefault();
+          state.monthlyDetail.page = Math.max(1, Math.min(Math.max(1, Math.ceil(state.monthlySnapshotTotal / 20)), Math.floor(Number(target.value) || 1)));
+          loadMonthlyView();
         } else if (event.key === "Enter" && target.dataset.action === "monthly-traffic-jump") {
           event.preventDefault();
-          var monthlyPages = Math.max(1, Math.ceil((state.monthlyTrafficTab === "queries" ? state.monthlySnapshotTotal : filteredMonthlyTrafficRows().length) / 20));
+          var monthlyPages = Math.max(1, Math.ceil(filteredMonthlyTrafficRows().length / 20));
           state.monthlyTrafficPage = Math.max(1, Math.min(monthlyPages, Math.floor(Number(target.value) || 1)));
-          if (state.monthlyTrafficTab === "queries") { loadMonthlyView(); }
           renderContent();
         } else if (event.key === "Enter" && target.dataset.action === "sim-traffic-jump") {
           event.preventDefault();
@@ -9854,6 +10425,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             (!target || target.dataset.action !== openDateDefinition.action)) {
           dismissDatePicker();
         }
+        if (state.simDateOpen && state.dateTarget === "monthlyTraffic" && !event.target.closest('.monthly-period-actions .date-field')) { dismissMonthlyPeriod(); }
         var infoAction = target && target.matches(inlineInfoSelector);
         if (state.monthlyFlowInfoOpen && !infoAction) { hideManageStopPopover(); }
         if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen || state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen) && !infoAction) {
@@ -9992,9 +10564,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           openPage("simTraffic");
           render();
         } else if (action === "open-monthly-traffic") {
-          openPage("simMonthlyTraffic");
+          openPage('simMonthlyTraffic');
           render();
-          loadMonthlyView();
         } else if (action === "open-sim-activation") {
           openPage("simActivation");
           render();
@@ -10021,15 +10592,22 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (action === "refresh-annual-month") {
           refreshAnnualMonth(target.dataset.iccid, target.dataset.month);
         } else if (action === "monthly-card-year") {
-          state.monthlyTrafficApplied.monthlyTrafficIccid = target.dataset.iccid;
-          state.monthlyTrafficQuery.monthlyTrafficIccid = target.dataset.iccid;
-          setMonthlyTrafficTab("history");
-        } else if (action === "monthly-show-queries") {
-          state.monthlyTrafficQuery = Object.assign(blankMonthlyTrafficQuery(), { monthlyTrafficMonth: target.dataset.month, monthlyTrafficIccid: target.dataset.iccid });
-          state.monthlyTrafficApplied = Object.assign({}, state.monthlyTrafficQuery);
-          state.monthlyTrafficTab = "queries";
-          state.monthlyTrafficPage = 1;
+          setMonthlyTrafficTab('history', target.dataset.iccid);
+        } else if (action === "monthly-open-period") {
+          openMonthlyPeriod(target.dataset.iccid, target.dataset.month);
+        } else if (action === "monthly-card-detail") {
+          openMonthlyDetail(target.dataset.iccid, target.dataset.month);
+        } else if (action === "monthly-detail-back") {
+          returnMonthlyParent();
+        } else if (action === "monthly-detail-page") {
+          state.monthlyDetail.page = Math.max(1, Math.min(Math.max(1, Math.ceil(state.monthlySnapshotTotal / 20)), Number(target.dataset.page) || 1));
           loadMonthlyView();
+        } else if (action === "monthly-period-cancel") {
+          dismissMonthlyPeriod(true);
+        } else if (action === "monthly-period-prev" || action === "monthly-period-next" || action === "monthly-period-today") {
+          var selected = state.monthlyTrafficApplied.monthlyTrafficMonth;
+          var nextPeriod = action === "monthly-period-today" ? dateFilterToday().slice(0, 7) : new Date(Date.UTC(Number(selected.slice(0, 4)), Number(selected.slice(5, 7)) - 1 + (action === "monthly-period-prev" ? -1 : 1), 1)).toISOString().slice(0, 7);
+          selectMonthlyPeriod(nextPeriod);
         } else if (action === "monthly-traffic-tab") {
           setMonthlyTrafficTab(target.dataset.tab);
         } else if (action === "traffic-history-search") {
@@ -10054,7 +10632,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           searchSimTraffic(true);
         } else if (action === "monthly-traffic-reset") {
           state.monthlyTrafficQuery = blankMonthlyTrafficQuery();
-          state.monthlyTrafficApplied = blankMonthlyTrafficQuery();
+          state.monthlyTrafficApplied = Object.assign({}, state.monthlyTrafficQuery);
           state.monthlyTrafficPage = 1;
           state.monthlyTrafficError = "";
           state.openSelect = "";
@@ -10064,9 +10642,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           toast("SIM卡月流量筛选条件已重置");
           loadMonthlyView();
         } else if (action === "monthly-traffic-page") {
-          var monthlyTotalPages = Math.max(1, Math.ceil((state.monthlyTrafficTab === "queries" ? state.monthlySnapshotTotal : filteredMonthlyTrafficRows().length) / 20));
+          var monthlyTotalPages = Math.max(1, Math.ceil(filteredMonthlyTrafficRows().length / 20));
           state.monthlyTrafficPage = Math.max(1, Math.min(monthlyTotalPages, Number(target.dataset.page) || 1));
-          if (state.monthlyTrafficTab === "queries") { loadMonthlyView(); }
           renderContent();
         } else if (action === "toggle-monthly-traffic-month") {
           var monthOpen = !(state.simDateOpen && state.dateTarget === "monthlyTraffic");
@@ -10075,22 +10652,21 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.openSelect = "";
           state.openCombo = "";
           state.monthlyTrafficDraftMonth = state.monthlyTrafficQuery.monthlyTrafficMonth;
-          state.monthlyTrafficCalendarYear = Number((state.monthlyTrafficDraftMonth || monthlyTrafficRowsSeed[0].month).slice(0, 4));
+          state.monthlyTrafficCalendarYear = Number((state.monthlyTrafficDraftMonth || dateFilterToday()).slice(0, 4));
           renderContent();
         } else if (action === "monthly-traffic-year-prev" || action === "monthly-traffic-year-next") {
-          state.monthlyTrafficCalendarYear += action === "monthly-traffic-year-prev" ? -1 : 1;
+          state.monthlyTrafficCalendarYear = Math.min(Number(dateFilterToday().slice(0, 4)), state.monthlyTrafficCalendarYear + (action === "monthly-traffic-year-prev" ? -1 : 1));
           renderContent();
         } else if (action === "monthly-traffic-month-select") {
+          if (target.dataset.value > dateFilterToday().slice(0, 7)) { return; }
           state.monthlyTrafficDraftMonth = target.dataset.value;
           renderContent();
           document.querySelector('[data-action="monthly-traffic-month-select"][data-value="' + state.monthlyTrafficDraftMonth + '"]').focus();
         } else if (action === "monthly-traffic-month-clear") {
-          state.monthlyTrafficDraftMonth = "";
-          renderContent();
+          selectMonthlyPeriod("");
+          document.querySelector('[data-action="toggle-monthly-traffic-month"]').focus();
         } else if (action === "monthly-traffic-month-confirm") {
-          state.monthlyTrafficQuery.monthlyTrafficMonth = state.monthlyTrafficDraftMonth;
-          state.simDateOpen = false;
-          renderContent();
+          selectMonthlyPeriod(state.monthlyTrafficDraftMonth);
           document.querySelector('[data-action="toggle-monthly-traffic-month"]').focus();
         } else if (action === "refresh-monthly-traffic") {
           refreshMonthlyTraffic(target.dataset.id, target);
@@ -10111,7 +10687,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (action === "clear-sim-traffic-input") {
           setQueryValue(key, "");
           if (state.activePage === "redlist") { state.redlistError = ""; }
-          else if (state.activePage === "simMonthlyTraffic" && state.monthlyTrafficTab !== "history") { state.monthlyTrafficError = ""; }
+          else if (isMonthlyTrafficPage(state.activePage) && state.monthlyTrafficTab !== "history") { state.monthlyTrafficError = ""; }
           else if (state.activePage === "simTraffic") { state.simTrafficError = ""; }
           renderContent();
           document.getElementById(key).focus();
@@ -10236,7 +10812,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             if (isBatchTaskAddKey(key)) { document.querySelector('#overlay [data-action="toggle-select"][data-key="' + key + '"]').focus(); }
           } else {
             renderContent();
-            if (state.activePage === "simTraffic" || state.activePage === "simActivation" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") {
+            if (state.activePage === "simTraffic" || state.activePage === "simActivation" || isMonthlyTrafficPage(state.activePage) || state.activePage === "redlist" || state.activePage === "resourceHistory") {
               var trafficSelect = document.querySelector('[data-action="toggle-select"][data-key="' + key + '"]');
               if (trafficSelect) { trafficSelect.focus(); }
             }
@@ -10264,7 +10840,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           setQueryValue(key, target.dataset.value);
           state.openCombo = "";
           renderContent();
-          if (state.activePage === "simTraffic" || state.activePage === "simActivation" || state.activePage === "simMonthlyTraffic" || state.activePage === "redlist" || state.activePage === "resourceHistory") { focusField(key); }
+          if (state.activePage === "simTraffic" || state.activePage === "simActivation" || isMonthlyTrafficPage(state.activePage) || state.activePage === "redlist" || state.activePage === "resourceHistory") { focusField(key); }
         } else if (action === "clear-combo") {
           event.stopPropagation();
           setQueryValue(key, "");
@@ -10992,6 +11568,12 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         Object.assign(state.simDataResetCooldowns, readSimDataResetCooldowns() || {});
       });
 
+      if (window.ResizeObserver) {
+        var monthlyContentObserver = new ResizeObserver(scheduleMonthlyListLayout);
+        monthlyContentObserver.observe(document.getElementById('content'));
+      }
+      window.addEventListener('resize', scheduleMonthlyListLayout);
+      window.addEventListener('resize', fitBreadcrumbTabs);
       render();
     }());
   </script>
