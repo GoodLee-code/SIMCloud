@@ -350,15 +350,6 @@
       grid-template-columns: repeat(2, minmax(180px, 1fr));
     }
 
-    body.page-doc-open .resource-filter {
-      grid-template-columns: minmax(140px, 180px) minmax(160px, 220px);
-    }
-
-    body.page-doc-open .resource-filter-actions {
-      grid-column: 1 / -1;
-      justify-content: flex-start;
-    }
-
     .page-doc-trigger {
       position: fixed;
       z-index: 45;
@@ -824,6 +815,7 @@
       grid-template-columns: minmax(420px, 1fr) minmax(520px, 1fr);
       gap: 18px;
       min-height: 460px;
+      flex-shrink: 0;
     }
 
     .home-panel {
@@ -983,9 +975,8 @@
       position: relative;
       z-index: 3;
       display: grid;
-      grid-template-columns: minmax(140px, 180px) minmax(160px, 220px) minmax(160px, 220px) auto;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 146px), 1fr));
       gap: 10px;
-      justify-content: start;
       align-items: center;
       padding: 10px 12px;
       border-bottom: 1px solid #e7ebf1;
@@ -1009,6 +1000,10 @@
     .resource-table table {
       min-width: 1260px;
       font-size: 12px;
+    }
+
+    .resource-coverage {
+      font-variant-numeric: tabular-nums;
     }
 
     .resource-table th,
@@ -3915,7 +3910,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         singleCardSupply: "每往资源池中加入一张卡，资源池总流量增加x G；",
         replenishmentPrice: "每激活一张资源池补池的卡需要花费的账户余额。"
       };
-      var resourceReplenishmentNote = "建议补卡数量（张）=资源池最近7天流量平均使用量/单卡流量补给量；";
+      var resourceReplenishmentDays = 3;
+      var resourceReplenishmentNote = [
+        "固定按够用 " + resourceReplenishmentDays + " 天计算。近 7 天只用于估算日均用量。",
+        "1. 日均用量 = 近 7 天总用量 ÷ 7。",
+        "2. 还缺的流量 = 日均用量 × " + resourceReplenishmentDays + " − 剩余用量。结果小于或等于 0，建议补 0 张。",
+        "3. 建议补卡数量 = 还缺的流量 ÷ 单卡流量补给量，有小数就向上取整。",
+        "",
+        "例：日均用 100 GB，3 天需 300 GB。还剩 150 GB，就差 150 GB。每张卡补 20 GB，150 ÷ 20 = 7.5，建议补 8 张。"
+      ].join("\n");
       var redlistRemainingBalanceNote = "剩余余额=红名单额度+账户余额；";
       var inlineInfoSelector = '[data-action="traffic-history-info"], [data-action="sim-reset-info"], [data-action="group-field-info"], [data-action="resource-replenishment-info"], [data-action="redlist-balance-info"]';
       inlineInfoSelector += ', [data-action="monthly-flow-info"]';
@@ -4853,7 +4856,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             { name: "首次激活来源待确认", version: "待补充", todo: true, text: "该接口不返回首次激活时间。首次激活日期的权威来源、上线前存量回填方式及历史数据覆盖起点待业务确认；确认前不得用最近激活时间或创建时间填充未知的首次激活日期。" }
           ],
           interactions: [
-            { name: "筛选与统计", version: "待补充", text: "选择日期范围、输入ICCID/MSISDN或模糊选择供应商、商户后点击搜索。重置恢复本月1日至今天，并清空其他条件。无匹配结果时数量显示0、表格显示空态且不允许导出。" }
+            { name: "筛选与统计", version: "待补充", text: "选择日期范围、输入ICCID/MSISDN或模糊选择供应商、商户后点击搜索。点击更新数据重新加载模拟记录，按已提交的筛选条件更新统计和明细。重置恢复本月1日至今天，并清空其他条件。无匹配结果时数量显示0、表格显示空态且不允许导出。" }
           ]
         },
         simMonthlyTraffic: emptyPageDocumentation("SIM卡月流量"),
@@ -6986,20 +6989,35 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function resourceReplenishmentAdvice(row) {
-        var raw = [row.remain, row.used, row.recent7DaysUsed, row.totalCards];
+        var raw = [row.remain, row.recent7DaysUsed];
         if (raw.some(function (value) { return value == null || String(value).trim() === "" || ["number", "string"].indexOf(typeof value) === -1; })) { return null; }
         var values = raw.map(function (value) { return Number(String(value).replace(/,/g, "")); });
-        if (values.some(function (value) { return !isFinite(value) || value < 0; }) || !Number.isSafeInteger(values[3]) || values[3] < 1) { return null; }
-        // Resource flows use hundredths of GB; integer division avoids rounding an exact result up again.
-        var totalCents = Math.round(values[0] * 100) + Math.round(values[1] * 100);
-        var recentCents = Math.round(values[2] * 100);
-        if (!Number.isSafeInteger(totalCents) || totalCents <= 0 || !Number.isSafeInteger(recentCents)) { return null; }
-        var numerator = BigInt(recentCents) * BigInt(values[3]);
-        var denominator = BigInt(totalCents);
-        return {
-          cards: ((numerator + denominator - BigInt(1)) / denominator).toString(),
-          recentUsage: (recentCents / 100).toFixed(2), totalCards: values[3], totalFlow: (totalCents / 100).toFixed(2)
+        if (values.some(function (value) { return !isFinite(value) || value < 0; })) { return null; }
+        var remainCents = Math.round(values[0] * 100), recentCents = Math.round(values[1] * 100);
+        if (!Number.isSafeInteger(remainCents) || !Number.isSafeInteger(recentCents)) { return null; }
+        var days = recentCents ? 7 * remainCents / recentCents : null;
+        // Multiply the remaining flow by 7 to compare without rounding the daily average.
+        var available = 7n * BigInt(remainCents);
+        var weekly = BigInt(recentCents);
+        var shortfall = weekly * BigInt(resourceReplenishmentDays) - available;
+        var advice = {
+          cards: shortfall > 0n ? null : "0",
+          daysText: days == null ? null : (days > 0 && days < 0.01 ? "<0.01" : days.toFixed(2)),
+          dailyUsage: (recentCents / 700).toFixed(2), remain: (remainCents / 100).toFixed(2),
+          singleCardSupply: null
         };
+        if (shortfall <= 0n) { return advice; }
+        var group = state.groupRows.find(function (item) { return item.supplier === row.supplier && item.groupName === row.group; });
+        var supplyValue = group && Number(group.singleCardSupply);
+        if (!Number.isFinite(supplyValue) || supplyValue <= 0) { return advice; }
+        var supply = String(supplyValue).split("e");
+        var digits = supply[0].split(".");
+        var scale = (digits[1] || "").length - Number(supply[1] || 0);
+        var numerator = shortfall * 10n ** BigInt(Math.max(0, scale));
+        var denominator = 700n * BigInt(digits.join("")) * 10n ** BigInt(Math.max(0, -scale));
+        advice.cards = ((numerator + denominator - 1n) / denominator).toString();
+        advice.singleCardSupply = supplyValue;
+        return advice;
       }
 
       function resourcePoolCoverageForecast(pool, singleCardSupply, cardCount, now) {
@@ -7034,24 +7052,33 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         };
       }
 
-      function resourceReplenishmentMarkup(row) {
-        var advice = resourceReplenishmentAdvice(row);
-        if (!advice) { return '<td title="缺少有效的最近7天使用量、资源池总卡数或资源池总流量，暂无法计算">--</td>'; }
-        var title = "建议补充 " + advice.cards + " 张卡；最近7天使用量：" + advice.recentUsage + " GB；资源池总流量（剩余用量+使用量）：" + advice.totalFlow +
-          " GB；资源池总卡数：" + advice.totalCards + " 张；建议卡数 = 最近7天使用量 /（资源池总流量 / 资源池总卡数），向上取整";
+      function resourceCoverageMarkup(advice) {
+        if (!advice) { return '<td title="缺少有效的剩余用量或近 7 天使用量">--</td>'; }
+        if (advice.daysText == null) { return '<td title="近 7 天无流量消耗，暂无法估算天数">近 7 天无用量</td>'; }
+        var title = "剩余用量 " + advice.remain + " GB ÷ 近 7 天日均用量（约 " + advice.dailyUsage + " GB）";
+        return '<td class="resource-coverage" title="' + esc(title) + '">' + esc(advice.daysText) + '</td>';
+      }
+
+      function resourceReplenishmentMarkup(advice) {
+        if (!advice) { return '<td title="缺少有效的剩余用量或近 7 天使用量">--</td>'; }
+        if (advice.cards == null) { return '<td title="流量不足以覆盖目标天数，请先在群组管理配置单卡流量补给量">--</td>'; }
+        var title = "按保障 " + resourceReplenishmentDays + " 天估算，建议补充 " + advice.cards + " 张卡。";
+        if (advice.singleCardSupply != null) { title += "每张卡可补给 " + advice.singleCardSupply + " GB。"; }
         return '<td title="' + esc(title) + '">' + esc(advice.cards) + '</td>';
       }
 
       function resourceRowMarkup(row) {
+        var advice = resourceReplenishmentAdvice(row);
         return "<tr>" +
           "<td>" + esc(row.supplier) + "</td>" +
           '<td title="' + esc(row.group) + '">' + esc(row.group) + "</td>" +
-          "<td>" + esc(row.shortName) + "</td>" +
+          resourceCoverageMarkup(advice) +
+          resourceReplenishmentMarkup(advice) +
           "<td>" + esc(row.remain) + "</td>" +
+          "<td>" + esc(row.shortName) + "</td>" +
           "<td>" + esc(row.used) + "</td>" +
           '<td title="本月已用量 / 本月已用天数">' + esc(resourceAverageUsage(row)) + "</td>" +
           "<td>" + esc(row.percent) + "</td>" +
-          resourceReplenishmentMarkup(row) +
           "<td>" + esc(row.time) + "</td>" +
         "</tr>";
       }
@@ -7072,10 +7099,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               "</div>" +
             "</div>" +
             '<div class="resource-table">' +
-              '<table><colgroup><col style="width:12%"><col style="width:15%"><col style="width:12%"><col style="width:13%"><col style="width:13%"><col style="width:14%"><col style="width:11%"><col style="width:18%"><col style="width:16%"></colgroup>' +
-                '<thead><tr><th>供应商</th><th>群组名称</th><th>群组简称</th><th>剩余用量(GB)</th><th>使用量(GB)</th><th title="本月已用量 / 本月已用天数">本月日均用量（GB）</th><th>使用量百分比</th>' +
-                  '<th><span class="resource-column-title">建议补卡数量（张）' + infoIconMarkup("resource-replenishment-info", "建议补卡数量（张）计算说明") + '</span></th><th>时间</th></tr></thead>' +
-                "<tbody>" + (rows.length ? rows.map(resourceRowMarkup).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的资源池</td></tr>') + "</tbody>" +
+              '<table><colgroup><col style="width:94px"><col style="width:130px"><col style="width:112px"><col style="width:140px"><col style="width:112px"><col style="width:105px"><col style="width:124px"><col style="width:138px"><col style="width:115px"><col style="width:190px"></colgroup>' +
+                '<thead><tr><th>供应商</th><th>群组名称</th><th>预计可用天数（天）</th>' +
+                  '<th><span class="resource-column-title">建议补卡数量（张）' + infoIconMarkup("resource-replenishment-info", "建议补卡数量（张）计算说明") + '</span></th>' +
+                  '<th>剩余用量(GB)</th><th>群组简称</th><th>使用量(GB)</th><th title="本月已用量 / 本月已用天数">本月日均用量（GB）</th><th>使用量百分比</th><th>时间</th></tr></thead>' +
+                "<tbody>" + (rows.length ? rows.map(resourceRowMarkup).join("") : '<tr class="empty-row"><td colspan="10">暂无符合条件的资源池</td></tr>') + "</tbody>" +
               "</table>" +
             "</div>" +
           "</div>" +
@@ -7374,7 +7402,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<div class="activation-metric" data-doc-field="activationCardCount">激活卡数（张，去重）<strong>' + cardCount + '</strong></div>' +
           '<div class="activation-metric" data-doc-field="activationRecordCount">激活记录数（条）<strong>' + rows.length + '</strong></div>' +
           '<p class="activation-period">统计日期：' + esc(period) + '<span>同一张卡在所选范围内重复激活，仅计为1张。</span></p></section>' +
-          '<div class="operate-bar"><button class="btn btn-primary" data-action="export-activation"' + (!rows.length ? ' disabled' : '') + '>导出</button></div>' +
+          '<div class="operate-bar"><div class="operate-actions"><button class="btn btn-primary" data-action="activation-update">更新数据</button>' +
+          '<button class="btn btn-gray" data-action="export-activation"' + (!rows.length ? ' disabled' : '') + '>导出</button></div></div>' +
           '<p class="activation-note">统计中国移动 OneLink 已激活状态变更记录；首次激活时间以平台已确认数据为准，未知时显示“--”。</p>' +
           '<div class="table-shell"><table><colgroup><col style="width:70px"><col style="width:250px"><col style="width:150px"><col style="width:210px"><col style="width:180px"><col style="width:110px"><col style="width:200px"><col style="width:170px"></colgroup>' +
           '<thead><tr><th scope="col">序号</th><th scope="col">ICCID</th><th scope="col">MSISDN</th><th scope="col">供应商</th><th scope="col">商户名称</th><th scope="col">运营商</th><th scope="col">激活时间</th><th scope="col">首次激活时间</th></tr></thead><tbody>' +
@@ -9960,7 +9989,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           (target.dataset.action === "group-field-info" ? groupSupplyNotes[target.dataset.field] :
             (target.dataset.action === "sim-reset-info" ? simDataResetNote : pageDocumentation.simTrafficHistory.page.description)));
         if (target.dataset.action === "group-field-info" || target.dataset.action === "resource-replenishment-info" || target.dataset.action === "redlist-balance-info") { target.setAttribute("aria-expanded", "true"); }
-        showFloatingPopover(target, esc(text));
+        var markup = esc(text);
+        if (target.dataset.action === "resource-replenishment-info") { markup = markup.replace(/\n/g, "<br>"); }
+        showFloatingPopover(target, markup);
       }
 
       function isInlineInfoPinned(target) {
@@ -10591,6 +10622,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var activationTotalPages = Math.max(1, Math.ceil(filteredActivationRows().length / 20));
           state.activationPage = Math.max(1, Math.min(activationTotalPages, Math.floor(Number(target.dataset.page) || 1)));
           renderContent();
+        } else if (action === "activation-update") {
+          state.activationRows = activationRecordsSeed();
+          state.openSelect = state.openCombo = "";
+          state.simDateOpen = false;
+          renderContent();
+          document.querySelector('#content [data-action="activation-update"]').focus({ preventScroll: true });
+          toast("激活统计数据已更新（模拟数据）");
         } else if (action === "export-activation") {
           exportActivation();
         } else if (action === "retry-monthly-storage") {
