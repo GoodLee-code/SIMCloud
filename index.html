@@ -934,6 +934,12 @@
       margin-bottom: 0;
     }
 
+    .resource-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .resource-history-page.monthly-traffic-page table {
       min-width: 1100px;
     }
@@ -2857,6 +2863,9 @@
     .redlist-notify-error { margin-top: 6px; color: #f05252; line-height: 1.6; }
     .redlist-notify-dialog [aria-invalid="true"] { border-color: #f05252; }
     .redlist-notify-dialog [hidden] { display: none !important; }
+    .resource-notify-record { margin-top: 10px; line-height: 1.6; overflow-wrap: anywhere; }
+    .resource-notify-record summary { color: #1687e8; cursor: pointer; }
+    .resource-notify-record ul { margin: 6px 0 0; padding-left: 20px; }
     body.redlist-notify-open { overflow: hidden; }
     body.redlist-notify-open .page-doc-trigger { visibility: hidden; }
     @media (max-width: 520px) {
@@ -3910,15 +3919,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         singleCardSupply: "每往资源池中加入一张卡，资源池总流量增加x G；",
         replenishmentPrice: "每激活一张资源池补池的卡需要花费的账户余额。"
       };
-      var resourceReplenishmentDays = 3;
-      var resourceReplenishmentNote = [
-        "固定按够用 " + resourceReplenishmentDays + " 天计算。近 7 天只用于估算日均用量。",
-        "1. 日均用量 = 近 7 天总用量 ÷ 7。",
-        "2. 还缺的流量 = 日均用量 × " + resourceReplenishmentDays + " − 剩余用量。结果小于或等于 0，建议补 0 张。",
-        "3. 建议补卡数量 = 还缺的流量 ÷ 单卡流量补给量，有小数就向上取整。",
-        "",
-        "例：日均用 100 GB，3 天需 300 GB。还剩 150 GB，就差 150 GB。每张卡补 20 GB，150 ÷ 20 = 7.5，建议补 8 张。"
-      ].join("\n");
+      var defaultResourceReplenishmentDays = 3;
+      var defaultResourceLookbackDays = 7;
+      var maxResourceLookbackDays = 30;
+      var resourceNotificationStorageKey = "simcloud.resource-pool.notification.v1";
       var redlistRemainingBalanceNote = "剩余余额=红名单额度+账户余额；";
       var inlineInfoSelector = '[data-action="traffic-history-info"], [data-action="sim-reset-info"], [data-action="group-field-info"], [data-action="resource-replenishment-info"], [data-action="redlist-balance-info"]';
       inlineInfoSelector += ', [data-action="monthly-flow-info"]';
@@ -4177,6 +4181,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         { supplier: "广州华米", group: "儿童手表小流量", shortName: "手表卡", remain: "8760.90", used: "124.10", avg: "4.14", percent: "1.40%", totalCards: 35000, recent7DaysUsed: "31.20", time: "2026-05-28 15:08:55" }
       ];
 
+      resourceLargeRows.concat(resourceSmallRows).forEach(function (row) {
+        row.dailyUsageCents = seedResourceDailyUsage(row);
+      });
+
       var resourceHistoryRowsSeed = createResourceHistoryRows();
 
       var resourceHistoryColumns = [
@@ -4426,10 +4434,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         redlistPage: 1,
         redlistError: "",
         redlistNotifyConfig: readRedlistNotificationConfig(),
-        redlistNotifyOpen: false,
-        redlistNotifyDraft: null,
-        redlistNotifySearch: "",
-        redlistNotifyErrors: {},
+        resourceNotifyConfig: readResourceNotificationConfig(),
+        notificationKind: "",
+        notificationDraft: null,
+        notificationSearch: "",
+        notificationErrors: {},
         batchTaskRows: batchTaskRowsSeed.slice(),
         batchTaskQuery: blankBatchTaskQuery(),
         batchTaskApplied: blankBatchTaskQuery(),
@@ -6988,22 +6997,62 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return (used / resourceUsedDays(row)).toFixed(2);
       }
 
-      function resourceReplenishmentAdvice(row) {
-        var raw = [row.remain, row.recent7DaysUsed];
-        if (raw.some(function (value) { return value == null || String(value).trim() === "" || ["number", "string"].indexOf(typeof value) === -1; })) { return null; }
-        var values = raw.map(function (value) { return Number(String(value).replace(/,/g, "")); });
-        if (values.some(function (value) { return !isFinite(value) || value < 0; })) { return null; }
-        var remainCents = Math.round(values[0] * 100), recentCents = Math.round(values[1] * 100);
-        if (!Number.isSafeInteger(remainCents) || !Number.isSafeInteger(recentCents)) { return null; }
-        var days = recentCents ? 7 * remainCents / recentCents : null;
-        // Multiply the remaining flow by 7 to compare without rounding the daily average.
-        var available = 7n * BigInt(remainCents);
-        var weekly = BigInt(recentCents);
-        var shortfall = weekly * BigInt(resourceReplenishmentDays) - available;
+      function resourceUsageCents(value) {
+        if ((typeof value !== "number" && typeof value !== "string") || String(value).trim() === "") { return null; }
+        var amount = Number(String(value).replace(/,/g, ""));
+        var cents = Math.round(amount * 100);
+        return amount >= 0 && Number.isSafeInteger(cents) ? cents : null;
+      }
+
+      function seedResourceDailyUsage(row) {
+        var weekly = resourceUsageCents(row.recent7DaysUsed);
+        if (weekly == null) { return []; }
+        // Seed newest-first daily figures without changing the existing seven-day total.
+        var weights = [112, 93, 124, 86, 95, 105, 85];
+        var cumulative = 0;
+        var daily = weights.map(function (weight) {
+          var previous = Math.round(weekly * cumulative / 700);
+          cumulative += weight;
+          return Math.round(weekly * cumulative / 700) - previous;
+        });
+        var monthly = resourceUsageCents(row.used);
+        var earlierDays = resourceUsedDays(row) - daily.length;
+        if (monthly == null || monthly < weekly || earlierDays <= 0) { return daily; }
+        var earlierAverage = (monthly - weekly) / earlierDays;
+        for (var index = 0; daily.length < maxResourceLookbackDays; index += 1) {
+          daily.push(Math.round(earlierAverage * (index + 1)) - Math.round(earlierAverage * index));
+        }
+        return daily;
+      }
+
+      function resourceReplenishmentNote() {
+        var config = state.resourceNotifyConfig;
+        return [
+          "当前保障 " + config.days + " 天，日均用量按最近 " + config.lookbackDays + " 天计算。两项均可在「补卡与通知配置」中修改。",
+          "1. 日均用量 = 最近 " + config.lookbackDays + " 天总用量 ÷ " + config.lookbackDays + "。",
+          "2. 还缺的流量 = 日均用量 × " + config.days + " − 剩余用量。结果小于或等于 0，建议补 0 张。",
+          "3. 建议补卡数量 = 还缺的流量 ÷ 单卡流量补给量，有小数就向上取整。",
+          "",
+          "以 3 天为例：日均用 100 GB，3 天需 300 GB。还剩 150 GB，每张卡补 20 GB，(300 − 150) ÷ 20 = 7.5，建议补 8 张。"
+        ].join("\n");
+      }
+
+      function resourceReplenishmentAdvice(row, config) {
+        var remainCents = resourceUsageCents(row.remain);
+        var lookbackDays = config.lookbackDays;
+        if (remainCents == null || !Array.isArray(row.dailyUsageCents) || row.dailyUsageCents.length < lookbackDays) { return null; }
+        var recentCents = row.dailyUsageCents.slice(0, lookbackDays).reduce(function (total, cents) { return total + cents; }, 0);
+        if (!Number.isSafeInteger(recentCents)) { return null; }
+        var days = recentCents ? lookbackDays * remainCents / recentCents : null;
+        // Compare against total usage in the window without rounding the daily average.
+        var windowDays = BigInt(lookbackDays);
+        var shortfall = BigInt(recentCents) * BigInt(config.days) - windowDays * BigInt(remainCents);
         var advice = {
           cards: shortfall > 0n ? null : "0",
+          belowTarget: shortfall > 0n,
           daysText: days == null ? null : (days > 0 && days < 0.01 ? "<0.01" : days.toFixed(2)),
-          dailyUsage: (recentCents / 700).toFixed(2), remain: (remainCents / 100).toFixed(2),
+          recentCents: recentCents,
+          dailyUsage: (recentCents / (100 * lookbackDays)).toFixed(2), remain: (remainCents / 100).toFixed(2),
           singleCardSupply: null
         };
         if (shortfall <= 0n) { return advice; }
@@ -7014,7 +7063,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var digits = supply[0].split(".");
         var scale = (digits[1] || "").length - Number(supply[1] || 0);
         var numerator = shortfall * 10n ** BigInt(Math.max(0, scale));
-        var denominator = 700n * BigInt(digits.join("")) * 10n ** BigInt(Math.max(0, -scale));
+        var denominator = 100n * windowDays * BigInt(digits.join("")) * 10n ** BigInt(Math.max(0, -scale));
         advice.cards = ((numerator + denominator - 1n) / denominator).toString();
         advice.singleCardSupply = supplyValue;
         return advice;
@@ -7053,22 +7102,23 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function resourceCoverageMarkup(advice) {
-        if (!advice) { return '<td title="缺少有效的剩余用量或近 7 天使用量">--</td>'; }
-        if (advice.daysText == null) { return '<td title="近 7 天无流量消耗，暂无法估算天数">近 7 天无用量</td>'; }
-        var title = "剩余用量 " + advice.remain + " GB ÷ 近 7 天日均用量（约 " + advice.dailyUsage + " GB）";
+        var period = "近 " + state.resourceNotifyConfig.lookbackDays + " 天";
+        if (!advice) { return '<td title="缺少有效的剩余用量或' + esc(period) + '使用量">--</td>'; }
+        if (advice.daysText == null) { return '<td title="' + esc(period) + '无流量消耗，暂无法估算天数">' + esc(period) + '无用量</td>'; }
+        var title = "剩余用量 " + advice.remain + " GB ÷ " + period + "日均用量（约 " + advice.dailyUsage + " GB）";
         return '<td class="resource-coverage" title="' + esc(title) + '">' + esc(advice.daysText) + '</td>';
       }
 
       function resourceReplenishmentMarkup(advice) {
-        if (!advice) { return '<td title="缺少有效的剩余用量或近 7 天使用量">--</td>'; }
+        if (!advice) { return '<td title="缺少有效的剩余用量或统计期间使用量">--</td>'; }
         if (advice.cards == null) { return '<td title="流量不足以覆盖目标天数，请先在群组管理配置单卡流量补给量">--</td>'; }
-        var title = "按保障 " + resourceReplenishmentDays + " 天估算，建议补充 " + advice.cards + " 张卡。";
+        var title = "按保障 " + state.resourceNotifyConfig.days + " 天估算，建议补充 " + advice.cards + " 张卡。";
         if (advice.singleCardSupply != null) { title += "每张卡可补给 " + advice.singleCardSupply + " GB。"; }
         return '<td title="' + esc(title) + '">' + esc(advice.cards) + '</td>';
       }
 
       function resourceRowMarkup(row) {
-        var advice = resourceReplenishmentAdvice(row);
+        var advice = resourceReplenishmentAdvice(row, state.resourceNotifyConfig);
         return "<tr>" +
           "<td>" + esc(row.supplier) + "</td>" +
           '<td title="' + esc(row.group) + '">' + esc(row.group) + "</td>" +
@@ -7087,7 +7137,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var rows = resourceRows();
         return '<section class="home-panel resource-panel">' +
           '<div class="resource-head"><div class="resource-title">资源池管理</div>' +
-            '<button class="btn btn-outline" data-action="open-resource-history">查看历史记录</button></div>' +
+            '<div class="resource-head-actions"><button class="btn btn-outline" data-action="open-resource-notification">补卡与通知配置</button>' +
+            '<button class="btn btn-outline" data-action="open-resource-history">查看历史记录</button></div></div>' +
           '<div class="resource-box">' +
             '<div class="resource-filter">' +
               '<label>' + selectMarkup("resourceFlowType", state.homeResourceQuery.resourceFlowType, flowTypeOptions, "请选择流量类型", true) + "</label>" +
@@ -9091,31 +9142,107 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
       }
 
+      function notificationRecipientIds(ids) {
+        return redlistNotificationAccounts.filter(function (account) {
+          return Array.isArray(ids) && ids.indexOf(account.id) !== -1;
+        }).map(function (account) { return account.id; });
+      }
+
       function readRedlistNotificationConfig() {
         try {
           var config = JSON.parse(window.localStorage.getItem(redlistNotificationStorageKey) || "null");
           if (!config || !Number.isSafeInteger(config.days) || config.days < 1 ||
               ["once", "daily"].indexOf(config.frequency) === -1 || !validRedlistNotifyTime(config.time) || !Array.isArray(config.recipientIds)) { return null; }
-          var ids = Array.from(new Set(config.recipientIds)).filter(function (id) {
-            return redlistNotificationAccounts.some(function (account) { return account.id === id; });
-          });
+          var ids = notificationRecipientIds(config.recipientIds);
           if (!ids.length) { return null; }
           return { days: config.days, frequency: config.frequency, time: config.time, timeZone: "Asia/Shanghai", recipientIds: ids };
         } catch (error) { return null; }
       }
 
-      function openRedlistNotification() {
-        var config = state.redlistNotifyConfig;
-        state.redlistNotifyDraft = config ? { days: String(config.days), frequency: config.frequency, time: config.time, recipientIds: config.recipientIds.slice() } :
+      function validResourceLookbackDays(days) {
+        return Number.isSafeInteger(days) && days >= 1 && days <= maxResourceLookbackDays;
+      }
+
+      function readResourceNotificationConfig() {
+        try {
+          var config = JSON.parse(window.localStorage.getItem(resourceNotificationStorageKey) || "null");
+          if (config && Number.isSafeInteger(config.days) && config.days > 0) {
+            var notice = config.lastNotice;
+            var validNotice = notice && typeof notice.key === "string" && typeof notice.at === "string" &&
+              Number.isSafeInteger(notice.days) && notice.days > 0 && Array.isArray(notice.items) &&
+              notice.items.every(function (item) { return typeof item === "string"; }) && Array.isArray(notice.recipientIds);
+            return {
+              days: config.days,
+              lookbackDays: validResourceLookbackDays(config.lookbackDays) ? config.lookbackDays : defaultResourceLookbackDays,
+              recipientIds: notificationRecipientIds(config.recipientIds),
+              lastNotice: validNotice ? notice : null
+            };
+          }
+        } catch (error) {}
+        return { days: defaultResourceReplenishmentDays, lookbackDays: defaultResourceLookbackDays, recipientIds: [], lastNotice: null };
+      }
+
+      function createResourceNotice(config) {
+        if (!config.recipientIds.length) { return null; }
+        var matches = [];
+        var defaultWindow = config.lookbackDays === defaultResourceLookbackDays;
+        resourceBaseRows().forEach(function (row) {
+          var advice = resourceReplenishmentAdvice(row, config);
+          if (advice && advice.belowTarget) {
+            matches.push({
+              snapshot: [row.supplier, row.group, row.flowType, row.time, row.remain, defaultWindow ? row.recent7DaysUsed : advice.recentCents],
+              text: row.supplier + " / " + row.group + "，预计可用 " + advice.daysText + " 天"
+            });
+          }
+        });
+        if (!matches.length) { return null; }
+        // Keep existing seven-day notices deduplicated after adding the setting.
+        var keyParts = [config.days, config.recipientIds.slice().sort(), matches.map(function (match) { return match.snapshot; })];
+        if (!defaultWindow) { keyParts.push(config.lookbackDays); }
+        var key = JSON.stringify(keyParts);
+        if (config.lastNotice && config.lastNotice.key === key) { return null; }
+        return {
+          key: key, days: config.days, lookbackDays: config.lookbackDays, at: new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" }),
+          recipientIds: config.recipientIds.slice(),
+          items: matches.map(function (match) { return match.text; })
+        };
+      }
+
+      function checkResourceNotification() {
+        var config = state.resourceNotifyConfig;
+        var notice = createResourceNotice(config);
+        if (!notice) { return; }
+        config.lastNotice = notice;
+        try { window.localStorage.setItem(resourceNotificationStorageKey, JSON.stringify(config)); }
+        catch (error) {}
+        toast("已生成资源池模拟通知，涉及 " + notice.items.length + " 个资源池");
+      }
+
+      function resourceNoticeMarkup() {
+        var notice = state.resourceNotifyConfig.lastNotice;
+        if (!notice) { return ""; }
+        var recipients = redlistNotificationAccounts.filter(function (account) {
+          return notice.recipientIds.indexOf(account.id) !== -1;
+        }).map(function (account) { return account.name; }).join("、");
+        var lookbackDays = validResourceLookbackDays(notice.lookbackDays) ? notice.lookbackDays : defaultResourceLookbackDays;
+        return '<details class="resource-notify-record"><summary>最近一次模拟通知（' + notice.items.length + ' 个资源池）</summary>' +
+          '<div>' + esc(notice.at) + ' · 目标 ' + esc(notice.days) + ' 天 · 按近 ' + lookbackDays + ' 天算日均</div><div>通知对象：' + esc(recipients) + '</div><ul>' +
+          notice.items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join("") + '</ul></details>';
+      }
+
+      function openNotification(kind) {
+        var config = kind === "resource" ? state.resourceNotifyConfig : state.redlistNotifyConfig;
+        state.notificationDraft = config ? { days: String(config.days), frequency: config.frequency, time: config.time, recipientIds: config.recipientIds.slice() } :
           { days: "", frequency: "once", time: "10:00", recipientIds: [] };
-        state.redlistNotifySearch = "";
-        state.redlistNotifyErrors = {};
+        if (kind === "resource") { state.notificationDraft.lookbackDays = String(config.lookbackDays); }
+        state.notificationSearch = "";
+        state.notificationErrors = {};
         var hadDropdown = state.openSelect || state.openCombo;
         state.openSelect = "";
         state.openCombo = "";
         dismissDatePicker();
         if (hadDropdown) { renderContent(); }
-        state.redlistNotifyOpen = true;
+        state.notificationKind = kind;
         document.body.classList.add("redlist-notify-open");
         document.querySelector(".layout").inert = true;
         document.querySelector(".topbar").inert = true;
@@ -9123,27 +9250,28 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         document.getElementById("redlistNotifyDays").focus();
       }
 
-      function closeRedlistNotification() {
-        state.redlistNotifyOpen = false;
-        state.redlistNotifyDraft = null;
-        state.redlistNotifySearch = "";
-        state.redlistNotifyErrors = {};
+      function closeNotification() {
+        var openerAction = state.notificationKind === "resource" ? "open-resource-notification" : "open-redlist-notification";
+        state.notificationKind = "";
+        state.notificationDraft = null;
+        state.notificationSearch = "";
+        state.notificationErrors = {};
         document.body.classList.remove("redlist-notify-open");
         document.querySelector(".layout").inert = false;
         document.querySelector(".topbar").inert = false;
         renderOverlay();
-        var opener = document.querySelector('[data-action="open-redlist-notification"]');
+        var opener = document.querySelector('[data-action="' + openerAction + '"]');
         if (opener) { opener.focus({ preventScroll: true }); }
       }
 
       function redlistNotifyErrorMarkup(field) {
-        var message = state.redlistNotifyErrors[field] || "";
+        var message = state.notificationErrors[field] || "";
         return '<div class="redlist-notify-error" id="redlistNotifyError-' + field + '" role="alert"' + (message ? '' : ' hidden') + '>' + esc(message) + '</div>';
       }
 
       function redlistNotifyRecipientsMarkup() {
-        var draft = state.redlistNotifyDraft;
-        var keyword = state.redlistNotifySearch.trim().toLowerCase();
+        var draft = state.notificationDraft;
+        var keyword = state.notificationSearch.trim().toLowerCase();
         var accounts = redlistNotificationAccounts.filter(function (account) {
           return !keyword || account.name.toLowerCase().indexOf(keyword) !== -1 || account.phone.indexOf(keyword) !== -1;
         });
@@ -9173,75 +9301,107 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function clearRedlistNotifyError(field) {
-        delete state.redlistNotifyErrors[field];
+        delete state.notificationErrors[field];
         var error = document.getElementById("redlistNotifyError-" + field);
         if (error) { error.textContent = ""; error.hidden = true; }
-        var control = document.getElementById({ days: "redlistNotifyDays", time: "redlistNotifyTime", recipients: "redlistNotifySearch" }[field]);
+        var control = document.getElementById({ days: "redlistNotifyDays", lookbackDays: "resourceNotifyLookback", time: "redlistNotifyTime", recipients: "redlistNotifySearch" }[field]);
         if (field !== "save" && control) { control.removeAttribute("aria-invalid"); }
       }
 
-      function saveRedlistNotification() {
-        var draft = state.redlistNotifyDraft;
+      function saveNotification() {
+        var isResource = state.notificationKind === "resource";
+        var draft = state.notificationDraft;
         var days = Number(draft.days);
-        var time = draft.time.trim();
-        state.redlistNotifyErrors = {};
+        var lookbackDays = Number(draft.lookbackDays);
+        var time = isResource ? "" : draft.time.trim();
+        var errors = state.notificationErrors = {};
         if (!/^\d+$/.test(draft.days) || !Number.isSafeInteger(days) || days < 1) {
-          state.redlistNotifyErrors.days = "请输入大于或等于1的整数天数";
+          errors.days = "请输入大于或等于1的整数天数";
         }
-        if (!validRedlistNotifyTime(time)) { state.redlistNotifyErrors.time = "请输入有效的24小时制时间，例如09:30"; }
-        if (!draft.recipientIds.length) { state.redlistNotifyErrors.recipients = "请至少选择一个通知账号"; }
-        ["days", "time", "recipients", "save"].forEach(function (field) {
+        if (isResource && (!/^\d+$/.test(draft.lookbackDays) || !validResourceLookbackDays(lookbackDays))) {
+          errors.lookbackDays = "请输入 1 至 " + maxResourceLookbackDays + " 的整数天数";
+        }
+        if (!isResource && !validRedlistNotifyTime(time)) { errors.time = "请输入有效的24小时制时间，例如09:30"; }
+        var ids = notificationRecipientIds(draft.recipientIds);
+        if (!ids.length) { errors.recipients = "请至少选择一个通知账号"; }
+        ["days", "lookbackDays", "time", "recipients", "save"].forEach(function (field) {
           var error = document.getElementById("redlistNotifyError-" + field);
-          var message = state.redlistNotifyErrors[field] || "";
-          error.textContent = message;
-          error.hidden = !message;
+          if (error) {
+            error.textContent = errors[field] || "";
+            error.hidden = !errors[field];
+          }
         });
         var dayInput = document.getElementById("redlistNotifyDays");
+        var lookbackInput = document.getElementById("resourceNotifyLookback");
         var timeInput = document.getElementById("redlistNotifyTime");
         var searchInput = document.getElementById("redlistNotifySearch");
-        dayInput.setAttribute("aria-invalid", String(!!state.redlistNotifyErrors.days));
-        timeInput.setAttribute("aria-invalid", String(!!state.redlistNotifyErrors.time));
-        searchInput.setAttribute("aria-invalid", String(!!state.redlistNotifyErrors.recipients));
-        if (state.redlistNotifyErrors.days || state.redlistNotifyErrors.time || state.redlistNotifyErrors.recipients) {
-          (state.redlistNotifyErrors.days ? dayInput : (state.redlistNotifyErrors.time ? timeInput : searchInput)).focus();
+        dayInput.setAttribute("aria-invalid", String(!!errors.days));
+        if (lookbackInput) { lookbackInput.setAttribute("aria-invalid", String(!!errors.lookbackDays)); }
+        if (timeInput) { timeInput.setAttribute("aria-invalid", String(!!errors.time)); }
+        searchInput.setAttribute("aria-invalid", String(!!errors.recipients));
+        if (errors.days || errors.lookbackDays || errors.time || errors.recipients) {
+          (errors.days ? dayInput : errors.lookbackDays ? lookbackInput : errors.time ? timeInput : searchInput).focus();
           return;
         }
-        var config = { days: days, frequency: draft.frequency, time: time, timeZone: "Asia/Shanghai", recipientIds: draft.recipientIds.slice() };
-        try { window.localStorage.setItem(redlistNotificationStorageKey, JSON.stringify(config)); }
+        var config = { days: days, recipientIds: ids };
+        var notice = null;
+        if (isResource) {
+          config.lookbackDays = lookbackDays;
+          config.lastNotice = state.resourceNotifyConfig.lastNotice;
+          notice = createResourceNotice(config);
+          if (notice) { config.lastNotice = notice; }
+        } else {
+          Object.assign(config, { frequency: draft.frequency, time: time, timeZone: "Asia/Shanghai" });
+        }
+        try { window.localStorage.setItem(isResource ? resourceNotificationStorageKey : redlistNotificationStorageKey, JSON.stringify(config)); }
         catch (error) {
           var storageError = document.getElementById("redlistNotifyError-save");
           storageError.textContent = "配置保存失败，请检查浏览器存储权限后重试";
           storageError.hidden = false;
           return;
         }
-        state.redlistNotifyConfig = config;
-        closeRedlistNotification();
-        toast("通知配置已保存");
+        if (isResource) {
+          state.resourceNotifyConfig = config;
+          renderContent();
+        } else {
+          state.redlistNotifyConfig = config;
+        }
+        closeNotification();
+        toast(isResource ? (notice ? "配置已保存，已生成 " + notice.items.length + " 个资源池的模拟通知" : "补卡与通知配置已保存") : "通知配置已保存");
       }
 
-      function redlistNotificationMarkup() {
-        var draft = state.redlistNotifyDraft;
+      function notificationMarkup() {
+        var isResource = state.notificationKind === "resource";
+        var draft = state.notificationDraft;
+        var title = isResource ? "补卡与通知配置" : "通知配置";
         return '<div class="modal-mask redlist-notify-mask"><section class="batch-dialog redlist-notify-dialog" role="dialog" aria-modal="true" aria-labelledby="redlistNotifyTitle">' +
-          '<header class="modal-head"><h2 id="redlistNotifyTitle">通知配置</h2><button class="modal-close" data-action="close-redlist-notification" aria-label="关闭通知配置">' + closeIconMarkup() + '</button></header>' +
+          '<header class="modal-head"><h2 id="redlistNotifyTitle">' + title + '</h2><button class="modal-close" data-action="close-notification" aria-label="关闭' + title + '">' + closeIconMarkup() + '</button></header>' +
           '<div class="dialog-body">' +
-            '<div class="form-row"><label class="form-label required" for="redlistNotifyDays">提前通知天数</label><div class="form-control">' +
+            '<div class="form-row"><label class="form-label required" for="redlistNotifyDays">' + (isResource ? "目标可用天数" : "提前通知天数") + '</label><div class="form-control">' +
               '<div class="redlist-notify-inline"><input class="text-input" id="redlistNotifyDays" type="number" min="1" step="1" inputmode="numeric" data-action="redlist-notify-days" value="' + esc(draft.days) + '" placeholder="请输入天数" aria-required="true" aria-describedby="redlistNotifyDaysHelp redlistNotifyError-days"><span>天</span></div>' +
-              '<div class="redlist-notify-help" id="redlistNotifyDaysHelp">距离红名单到期指定天数时通知。</div>' + redlistNotifyErrorMarkup("days") + '</div></div>' +
-            '<div class="form-row"><div class="form-label required" id="redlistNotifyFrequencyLabel">通知频率</div><div class="form-control">' +
+              '<div class="redlist-notify-help" id="redlistNotifyDaysHelp">' + (isResource ?
+                "按够用该天数计算建议补卡数量。预计可用天数低于目标时通知所选人员；等于目标时不通知。" :
+                "距离红名单到期指定天数时通知。") + '</div>' + redlistNotifyErrorMarkup("days") + '</div></div>' +
+            (isResource ? '<div class="form-row"><label class="form-label required" for="resourceNotifyLookback">日均统计天数</label><div class="form-control">' +
+              '<div class="redlist-notify-inline"><input class="text-input" id="resourceNotifyLookback" type="number" min="1" max="' + maxResourceLookbackDays + '" step="1" inputmode="numeric" data-action="resource-notify-lookback" value="' + esc(draft.lookbackDays) + '" aria-required="true" aria-describedby="resourceNotifyLookbackHelp redlistNotifyError-lookbackDays"><span>天</span></div>' +
+              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">取最近指定天数的总用量计算日均（1 至 ' + maxResourceLookbackDays + ' 天），用于补卡建议、可用天数估算和通知判断。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
+              '<div class="form-row"><div class="form-label required" id="redlistNotifyFrequencyLabel">通知频率</div><div class="form-control">' +
               '<fieldset class="redlist-notify-frequency" aria-labelledby="redlistNotifyFrequencyLabel">' +
               [{ value: "once", label: "仅通知一次" }, { value: "daily", label: "每日通知" }].map(function (item) {
                 return '<label><input type="radio" name="redlistNotifyFrequency" data-action="redlist-notify-frequency" value="' + item.value + '"' + (draft.frequency === item.value ? ' checked' : '') + '>' + item.label + '</label>';
               }).join("") + '</fieldset></div></div>' +
             '<div class="form-row"><label class="form-label required" for="redlistNotifyTime">通知时间</label><div class="form-control">' +
               '<div class="redlist-notify-inline"><input class="text-input" id="redlistNotifyTime" data-action="redlist-notify-time" value="' + esc(draft.time) + '" placeholder="HH:mm" maxlength="5" autocomplete="off" aria-required="true" aria-describedby="redlistNotifyTimeHelp redlistNotifyError-time"></div>' +
-              '<div class="redlist-notify-help" id="redlistNotifyTimeHelp">使用24小时制（HH:mm），按北京时间发送通知。</div>' + redlistNotifyErrorMarkup("time") + '</div></div>' +
+              '<div class="redlist-notify-help" id="redlistNotifyTimeHelp">使用24小时制（HH:mm），按北京时间发送通知。</div>' + redlistNotifyErrorMarkup("time") + '</div></div>') +
             '<div class="form-row"><div class="form-label required" id="redlistNotifyRecipientsLabel">通知对象</div><div class="form-control">' +
-              '<div class="redlist-notify-search combo"><input class="text-input" id="redlistNotifySearch" data-action="redlist-notify-search" value="' + esc(state.redlistNotifySearch) + '" placeholder="搜索姓名或电话号码" aria-label="搜索通知账号姓名或电话号码" aria-describedby="redlistNotifyRecipientHelp redlistNotifyError-recipients">' +
-                '<button class="clear-value" data-action="clear-redlist-notify-search" aria-label="清空账号搜索"' + (state.redlistNotifySearch ? '' : ' hidden') + '>' + closeIconMarkup() + '</button></div>' +
-              '<div id="redlistNotifyRecipients">' + redlistNotifyRecipientsMarkup() + '</div></div></div>' +
+              '<div class="redlist-notify-search combo"><input class="text-input" id="redlistNotifySearch" data-action="redlist-notify-search" value="' + esc(state.notificationSearch) + '" placeholder="搜索姓名或电话号码" aria-label="搜索通知账号姓名或电话号码" aria-describedby="redlistNotifyRecipientHelp redlistNotifyError-recipients">' +
+                '<button class="clear-value" data-action="clear-redlist-notify-search" aria-label="清空账号搜索"' + (state.notificationSearch ? '' : ' hidden') + '>' + closeIconMarkup() + '</button></div>' +
+              '<div id="redlistNotifyRecipients">' + redlistNotifyRecipientsMarkup() + '</div>' +
+              (isResource ? resourceNoticeMarkup() : '') +
+              '</div></div>' +
               redlistNotifyErrorMarkup("save") +
-          '</div><footer class="dialog-actions"><button class="btn btn-gray" data-action="close-redlist-notification">取消</button>' +
-            '<button class="btn btn-primary" data-action="save-redlist-notification">保存</button></footer></section></div>';
+          '</div><footer class="dialog-actions"><button class="btn btn-gray" data-action="close-notification">取消</button>' +
+            '<button class="btn btn-primary" data-action="save-notification">保存</button></footer></section></div>';
       }
 
       function accountMarkup() {
@@ -9905,8 +10065,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               });
             }
           }
-        } else if (state.redlistNotifyOpen) {
-          overlay.innerHTML = redlistNotificationMarkup();
+        } else if (state.notificationKind) {
+          overlay.innerHTML = notificationMarkup();
         } else if (state.simDataResetConfirmIccid) {
           overlay.innerHTML = simDataResetConfirmMarkup();
         } else if (state.manageStopRiskOpen) {
@@ -9944,6 +10104,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         renderBreadcrumb();
         renderContent();
         renderOverlay();
+        if (state.activePage === "home") { checkResourceNotification(); }
         if (isMonthlyTrafficPage(state.activePage) && state.monthlyPageNeedsLoad) {
           state.monthlyPageNeedsLoad = false;
           var page = state.activePage;
@@ -9985,7 +10146,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           return;
         }
         var text = target.dataset.action === "redlist-balance-info" ? redlistRemainingBalanceNote :
-          (target.dataset.action === "resource-replenishment-info" ? resourceReplenishmentNote :
+          (target.dataset.action === "resource-replenishment-info" ? resourceReplenishmentNote() :
           (target.dataset.action === "group-field-info" ? groupSupplyNotes[target.dataset.field] :
             (target.dataset.action === "sim-reset-info" ? simDataResetNote : pageDocumentation.simTrafficHistory.page.description)));
         if (target.dataset.action === "group-field-info" || target.dataset.action === "resource-replenishment-info" || target.dataset.action === "redlist-balance-info") { target.setAttribute("aria-expanded", "true"); }
@@ -10038,15 +10199,19 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       document.addEventListener("input", function (event) {
         var target = event.target;
         if (target.dataset.action === "redlist-notify-days") {
-          state.redlistNotifyDraft.days = target.value;
+          state.notificationDraft.days = target.value;
           clearRedlistNotifyError("days");
           clearRedlistNotifyError("save");
+        } else if (target.dataset.action === "resource-notify-lookback") {
+          state.notificationDraft.lookbackDays = target.value;
+          clearRedlistNotifyError("lookbackDays");
+          clearRedlistNotifyError("save");
         } else if (target.dataset.action === "redlist-notify-time") {
-          state.redlistNotifyDraft.time = target.value;
+          state.notificationDraft.time = target.value;
           clearRedlistNotifyError("time");
           clearRedlistNotifyError("save");
         } else if (target.dataset.action === "redlist-notify-search") {
-          state.redlistNotifySearch = target.value;
+          state.notificationSearch = target.value;
           target.parentNode.querySelector(".clear-value").hidden = !target.value;
           renderRedlistNotifyRecipients();
         } else if (target.dataset.action === "sim-traffic-input") {
@@ -10120,13 +10285,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           renderOverlay();
           document.querySelector('[name="batchTaskAddPoolUsage"][value="' + poolUsage + '"]').focus();
         } else if (event.target.dataset.action === "redlist-notify-frequency") {
-          state.redlistNotifyDraft.frequency = event.target.value;
+          state.notificationDraft.frequency = event.target.value;
           clearRedlistNotifyError("save");
         } else if (event.target.dataset.action === "redlist-notify-recipient") {
           var id = event.target.dataset.id;
-          var ids = state.redlistNotifyDraft.recipientIds.filter(function (item) { return item !== id; });
+          var ids = state.notificationDraft.recipientIds.filter(function (item) { return item !== id; });
           if (event.target.checked) { ids.push(id); }
-          state.redlistNotifyDraft.recipientIds = ids;
+          state.notificationDraft.recipientIds = ids;
           clearRedlistNotifyError("recipients");
           clearRedlistNotifyError("save");
           renderRedlistNotifyRecipients(id);
@@ -10224,11 +10389,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           document.getElementById("simDetailTab-" + state.simDetailTab).focus();
           return;
         }
-        if (state.redlistNotifyOpen) {
-          if (event.key === "Escape") { event.preventDefault(); closeRedlistNotification(); }
+        if (state.notificationKind) {
+          if (event.key === "Escape") { event.preventDefault(); closeNotification(); }
           else if (event.key === "Tab") {
             var dialog = document.querySelector(".redlist-notify-dialog");
-            var controls = Array.prototype.slice.call(dialog.querySelectorAll("button:not(:disabled), input:not(:disabled)")).filter(function (control) { return control.offsetParent !== null; });
+            var controls = Array.prototype.slice.call(dialog.querySelectorAll("button:not(:disabled), input:not(:disabled), summary")).filter(function (control) { return control.offsetParent !== null; });
             var first = controls[0];
             var last = controls[controls.length - 1];
             if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
@@ -10768,20 +10933,22 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (action === "redlist-search") {
           searchRedlist();
         } else if (action === "open-redlist-notification") {
-          openRedlistNotification();
-        } else if (action === "close-redlist-notification") {
-          closeRedlistNotification();
-        } else if (action === "save-redlist-notification") {
-          saveRedlistNotification();
+          openNotification("redlist");
+        } else if (action === "open-resource-notification") {
+          openNotification("resource");
+        } else if (action === "close-notification") {
+          closeNotification();
+        } else if (action === "save-notification") {
+          saveNotification();
         } else if (action === "clear-redlist-notify-search") {
-          state.redlistNotifySearch = "";
+          state.notificationSearch = "";
           var search = document.getElementById("redlistNotifySearch");
           search.value = "";
           target.hidden = true;
           renderRedlistNotifyRecipients();
           search.focus();
         } else if (action === "remove-redlist-notify-recipient") {
-          state.redlistNotifyDraft.recipientIds = state.redlistNotifyDraft.recipientIds.filter(function (id) { return id !== target.dataset.id; });
+          state.notificationDraft.recipientIds = state.notificationDraft.recipientIds.filter(function (id) { return id !== target.dataset.id; });
           clearRedlistNotifyError("recipients");
           clearRedlistNotifyError("save");
           renderRedlistNotifyRecipients();
