@@ -2831,6 +2831,57 @@
       width: 600px;
     }
 
+    .batch-task-detail-dialog {
+      width: min(1080px, calc(100vw - 32px));
+      max-height: calc(100dvh - 48px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .batch-task-detail-dialog.summary {
+      width: min(600px, calc(100vw - 32px));
+    }
+
+    .batch-task-detail-dialog .modal-head {
+      flex-shrink: 0;
+    }
+
+    .batch-task-detail-body {
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .batch-task-detail-body .detail-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .batch-task-detail-body .table-shell {
+      margin-bottom: 18px;
+    }
+
+    .batch-task-detail-footer {
+      flex-shrink: 0;
+    }
+
+    .batch-task-detail-footer .dialog-actions {
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 14px 18px;
+      border-top: 1px solid #edf1f5;
+    }
+
+    .pool-task-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px 10px;
+      padding: 6px 0;
+    }
+
+    .pool-task-actions .link + .link {
+      margin-left: 0;
+    }
+
     .modal-mask.redlist-notify-mask { padding: 24px 16px; }
     .redlist-notify-dialog {
       width: min(640px, calc(100vw - 32px));
@@ -2991,8 +3042,7 @@
       }
     }
 
-    .batch-task-file-summary,
-    .batch-task-pool-preview {
+    .batch-task-file-summary {
       margin-top: 8px;
       padding: 6px 10px;
       color: #596273;
@@ -3009,29 +3059,11 @@
       min-height: 36px;
     }
 
-    .batch-task-pool-preview {
-      margin-bottom: 0;
-      padding: 8px 12px 8px 26px;
-      list-style: disc;
-      overflow-wrap: anywhere;
-    }
-
-    .batch-task-pool-preview li + li { margin-top: 4px; }
-
-    .batch-task-file-summary strong,
-    .batch-task-pool-preview .batch-task-count-value {
+    .batch-task-file-summary strong {
       color: var(--blue);
       font-size: 16px;
       font-variant-numeric: tabular-nums;
     }
-
-    .batch-task-pool-preview b {
-      color: var(--blue);
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .batch-task-pool-preview .balance-warning { color: #b42318; }
 
     .batch-task-add-dialog .select-option {
       overflow: hidden;
@@ -3939,6 +3971,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       var flowTypeOptions = ["大流量", "小流量"];
       var taskOperationOptions = ["停卡", "激活卡", "同步卡状态", "同步实名状态", "开启流量限速", "关闭流量限速", "变更卡状态", "卡销号", "卡状态查询"];
       var taskStatusOptions = ["未完成", "已完成"];
+      var poolTaskStatuses = ["待校验", "校验中", "待确认", "校验失败", "已取消", "激活中", "部分成功", "激活失败"];
       var cardFormOptions = ["插拔卡", "eSIM", "贴片卡"];
       var writeStatusOptions = ["未写卡", "写卡中", "写卡成功", "写卡失败"];
       var writeTaskTypeOptions = ["首次写卡", "补写卡", "换卡写卡", "重试写卡"];
@@ -4261,10 +4294,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return { taskBatchNo: "", taskType: "", taskStatus: "" };
       };
 
-      var blankBatchTaskDetailQuery = function () {
-        return { detailIccid: "", detailStatus: "" };
-      };
-
       var blankSimTrafficQuery = function () {
         return { trafficMin: "", trafficMax: "", trafficVendor: "", trafficMerchant: "", trafficCarrier: "", trafficIccid: "", trafficDate: "", trafficDateEnd: "" };
       };
@@ -4440,6 +4469,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         notificationSearch: "",
         notificationErrors: {},
         batchTaskRows: batchTaskRowsSeed.slice(),
+        poolTaskRows: [],
+        poolTaskConfirm: null,
         batchTaskQuery: blankBatchTaskQuery(),
         batchTaskApplied: blankBatchTaskQuery(),
         batchTaskAddOpen: false,
@@ -4459,8 +4490,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         batchTaskSubmitting: false,
         batchTaskSubmissionId: 0,
         selectedBatchTaskId: null,
-        batchTaskDetailQuery: blankBatchTaskDetailQuery(),
-        batchTaskDetailApplied: blankBatchTaskDetailQuery(),
+        batchTaskDetailOpener: null,
         simRows: simRowsSeed.slice(),
         simQuery: blankSimQuery(),
         simApplied: blankSimQuery(),
@@ -4742,8 +4772,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         taskBatchNo: "batchNo",
         taskType: "operationType",
         taskStatus: "status",
-        detailIccid: "iccid",
-        detailStatus: "status",
         simKeyword: "iccid",
         simCarrier: "carrier",
         simVendor: "vendor",
@@ -4920,7 +4948,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               name: "上传文件与激活数量检测（功能说明）",
               version: "V3.1.5",
               ticket: "1002321",
-              text: "激活卡文件上传后自动检测ICCID数量。资源池补池时在备注下方展示待激活卡数、用量估算和余额预估；非资源池补池时仍在上传区展示待激活卡数。支持XLS、XLSX，单次文件不超过10MB、10000条，首个工作表需包含ICCID列，码号按文本格式填写。待激活卡数按非空ICCID记录统计，不代表最终激活成功数量。预计扣减按通过群组校验的去重卡数乘以补池单价计算；点击确定时重新校验群组绑定账户的余额，余额不足或无法校验时不创建任务"
+              text: "非资源池补池时仍在上传区展示待激活卡数。支持XLS、XLSX，单次文件不超过10MB、10000条，首个工作表需包含ICCID列，码号按文本格式填写。资源池补池点击上传并校验后异步生成预校验结果，预计扣费按通过预校验且去重的卡数计算；余额不足、无合格卡片或费用发生变化时不得直接激活。"
             },
             {
               name: "批量任务详情失败原因（功能说明）",
@@ -4935,23 +4963,22 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               name: "上传后数量反馈（交互说明）",
               version: "V3.1.5",
               ticket: "1002321",
-              text: "支持先选择激活卡再上传文件，也支持先上传文件再选择激活卡，两种顺序均自动触发数量检测。检测期间数量区域显示正在检测，确定按钮暂不可点击，用户仍可选择所属群组、填写备注。检测完成后显示待激活卡数并恢复确定按钮，检测结果更新不打断当前填写或下拉选择"
+              text: "支持先选择激活卡再上传文件，也支持先上传文件再选择激活卡。非资源池补池自动检测数量；用于补池时不在新增弹窗计算，提交后可在任务详情查看检测到的卡数、扣减金额、扣减账户、账户余额和扣减后余额。"
             },
             {
               name: "文件替换与异常处理（交互说明）",
               version: "V3.1.5",
               ticket: "1002321",
-              text: "更换文件后立即清除旧数量，并自动检测新文件。格式错误、文件超限、缺少ICCID列、无可处理ICCID或码号存在精度丢失风险时，显示检测失败及具体提示，不保留旧数量，不允许提交激活任务，已填写的群组及备注保留。重新上传正确文件后恢复数量展示。关闭弹窗后清空本次填写；取消、更换文件或切换操作类型后，过期检测结果不覆盖当前界面"
+              text: "非资源池补池更换文件后立即清除旧数量，并自动检测新文件。格式错误、文件超限、缺少ICCID列、无可处理ICCID或码号存在精度丢失风险时，显示检测失败及具体提示，不保留旧数量，不允许提交激活任务，已填写的群组及备注保留。重新上传正确文件后恢复数量展示。关闭弹窗后清空本次填写；取消、更换文件或切换操作类型后，过期检测结果不覆盖当前界面。用于补池时可在详情查看文件校验失败原因，重新发起后可更换文件。"
             },
             {
               name: "提交与结果查看（交互说明）",
               version: "V3.1.5",
               ticket: "1002321",
-              text: "点击确定前校验SIM卡文件、操作类型、所属群组及文件检测结果；未通过时保留弹窗并提示对应字段。提交后逐条校验群组归属，任务操作数量与弹窗检测数量一致，提示成功及失败数量。点击批次号或操作列详情进入批量任务详情，查看对应ICCID的状态和失败原因，并支持按ICCID、成功或失败状态筛选。"
+              text: "非资源池补池沿用原有提交与详情流程。用于补池时，创建预校验并不执行激活；用户确认后再次检查卡片资格、资费、余额及重复执行，才创建异步激活任务。执行前显示预计扣减及余额，执行后显示扣减结果，失败明细仍支持下载。"
             }
           ]
         },
-        batchTaskDetail: emptyPageDocumentation("批量任务详情"),
         esim: emptyPageDocumentation("ESIM可写码号列表"),
         esimRecords: emptyPageDocumentation("ESIM可写码号变更记录"),
         esimChangeDetail: emptyPageDocumentation("可写码号变更详情"),
@@ -5200,8 +5227,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           account: "运营商账户配置",
           group: "群组管理",
           redlist: "红名单账户",
-          batchTask: "批量任务",
-          batchTaskDetail: "批量任务详情"
+          batchTask: "批量任务"
         }[page] || page;
       }
 
@@ -5704,10 +5730,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return key.indexOf("task") === 0;
       }
 
-      function isBatchTaskDetailKey(key) {
-        return key.indexOf("detail") === 0;
-      }
-
       function isHomeResourceKey(key) {
         return key === "resourceFlowType" || key === "resourceSupplier" || key === "resourceGroup";
       }
@@ -5791,7 +5813,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             var group = state.groupRows.find(function (item) { return batchTaskGroupLabel(item) === value; });
             state.batchTaskAddGroup = group ? group.id : null;
           }
-          if (state.batchTaskAddErrorField === key || state.batchTaskAddErrorField === "batchTaskPoolBalance" ||
+          if (state.batchTaskAddErrorField === key ||
               (key === "batchTaskAddType" && value !== "激活卡")) {
             state.batchTaskAddError = "";
             state.batchTaskAddErrorField = "";
@@ -5801,8 +5823,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.groupQuery[key] = value;
         } else if (isBatchTaskKey(key)) {
           state.batchTaskQuery[key] = value;
-        } else if (isBatchTaskDetailKey(key)) {
-          state.batchTaskDetailQuery[key] = value;
         } else {
           state.accountQuery[key] = value;
         }
@@ -6161,7 +6181,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function filteredBatchTaskRows() {
         var q = state.batchTaskApplied;
-        return state.batchTaskRows.filter(function (row) {
+        return state.poolTaskRows.concat(state.batchTaskRows).filter(function (row) {
           return (!q.taskBatchNo || row.batchNo.indexOf(q.taskBatchNo) !== -1) &&
             (!q.taskType || row.operationType === q.taskType) &&
             (!q.taskStatus || row.status === q.taskStatus);
@@ -6169,12 +6189,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function currentBatchTask() {
-        return state.batchTaskRows.find(function (row) { return row.id === state.selectedBatchTaskId; }) || state.batchTaskRows[0];
+        return state.poolTaskRows.concat(state.batchTaskRows).find(function (row) { return row.id === state.selectedBatchTaskId; });
       }
 
-      function batchTaskDetailRows() {
-        var task = currentBatchTask();
-        if (!task) { return []; }
+      function batchTaskDetailRows(task) {
         if (Array.isArray(task.details)) { return task.details; }
         var statuses = ["成功", "成功", "失败", "成功", "成功", "失败", "成功", "成功"];
         var beforeMap = {
@@ -6207,14 +6225,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         });
       }
 
-      function filteredBatchTaskDetailRows() {
-        var q = state.batchTaskDetailApplied;
-        return batchTaskDetailRows().filter(function (row) {
-          return (!q.detailIccid || row.iccid.indexOf(q.detailIccid) !== -1) &&
-            (!q.detailStatus || row.status === q.detailStatus);
-        });
-      }
-
       function batchTaskGroupLabel(group) {
         return group.groupName + "（" + group.supplier + "）";
       }
@@ -6227,29 +6237,38 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         return state.batchTaskAddType === "激活卡" && state.batchTaskAddPoolUsage === "资源池补池";
       }
 
-      function batchTaskPoolEligibleCount(group) {
-        var codes = new Set(state.batchTaskIccids);
-        return new Set(state.simRows.filter(function (card) {
-          return codes.has(card.iccid) && cardMatchesActivationGroup(card, group.id);
-        }).map(function (card) { return card.iccid; })).size;
+      function poolTaskToCents(value) {
+        var match = /^(-?)(\d*)(?:\.(\d+))?$/.exec(String(value == null ? "" : value).trim());
+        if (!match || (!match[2] && !match[3])) { return NaN; }
+        var fraction = (match[3] || "").padEnd(3, "0");
+        var cents = Number(match[2] + fraction.slice(0, 2)) + (fraction[2] >= "5" ? 1 : 0);
+        return match[1] ? -cents : cents;
       }
 
-      function batchTaskPoolBalance(group, eligibleCount) {
-        var unitPrice = String(group.replenishmentPrice == null ? "" : group.replenishmentPrice).trim();
-        var chargeCents = Math.round(Number(unitPrice) * 100) * eligibleCount;
-        if (!unitPrice || Number(unitPrice) < 0 || !Number.isSafeInteger(chargeCents)) {
+      function batchTaskPoolBalance(group, eligibleCount, tasks, taskId) {
+        var unitCents = poolTaskToCents(group.replenishmentPrice);
+        var chargeCents = unitCents * eligibleCount;
+        if (unitCents < 0 || !Number.isSafeInteger(unitCents) || !Number.isSafeInteger(chargeCents)) {
           return { error: "所选群组的补池单价无效，无法估算扣减金额。" };
         }
         var account = state.redlistRows.find(function (row) {
           return row.accountId === replenishmentAccountByGroup[group.id] && row.vendor === group.supplier;
         });
-        var balance = account && account.balance != null ? String(account.balance).trim() : "";
-        var balanceCents = Math.round(Number(balance) * 100);
+        var balanceCents = poolTaskToCents(account && account.balance);
+        var validBalance = Number.isSafeInteger(balanceCents);
+        if (account) {
+          balanceCents -= tasks.reduce(function (occupied, task) {
+            var execution = task.execution;
+            if (task.id === taskId || !execution || execution.accountId !== account.accountId) { return occupied; }
+            return occupied + (task.status === "激活中" ? execution.reservedCents : execution.actualCents);
+          }, 0);
+        }
         var remainingCents = balanceCents - chargeCents;
-        if (!balance || !Number.isSafeInteger(balanceCents) || !Number.isSafeInteger(remainingCents)) {
+        if (!validBalance || !Number.isSafeInteger(balanceCents) || !Number.isSafeInteger(remainingCents)) {
           return { chargeCents: chargeCents, error: "无法获取所选群组对应账号的有效余额。" };
         }
-        return { chargeCents: chargeCents, balanceCents: balanceCents, remainingCents: remainingCents };
+        return { accountId: account.accountId, unitCents: unitCents,
+          chargeCents: chargeCents, balanceCents: balanceCents, remainingCents: remainingCents };
       }
 
       function activationTaskDetails(task, codes, cards) {
@@ -6270,10 +6289,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         });
       }
 
-      async function readActivationIccids(file) {
+      function checkActivationFile(file) {
         if (!/\.(xlsx|xls)$/i.test(file.name)) { throw new Error("请上传XLS或XLSX格式的SIM卡文件"); }
         if (!file.size) { throw new Error("文件为空，请重新上传包含ICCID列的文件"); }
         if (file.size > 10 * 1024 * 1024) { throw new Error("文件不能超过10MB，请拆分后重新上传"); }
+      }
+
+      async function readActivationIccids(file, detailed) {
+        checkActivationFile(file);
         var data = new Uint8Array(await file.arrayBuffer());
         var isXlsx = data[0] === 0x50 && data[1] === 0x4b;
         var isXls = data[0] === 0xd0 && data[1] === 0xcf && data[2] === 0x11 && data[3] === 0xe0;
@@ -6296,15 +6319,381 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         rows.slice(headerIndex + 1).forEach(function (row, index) {
           var value = row[column];
           var code = String(value == null ? "" : value).trim();
-          if (!code) { return; }
+          var line = range.s.r + headerIndex + index + 2;
+          if (!code && (!detailed || !row.some(function (cell) { return String(cell).trim() !== ""; }))) { return; }
+          var reason = "";
           if ((typeof value === "number" && !Number.isSafeInteger(value)) || /^[\d.]+e[+-]?\d+$/i.test(code)) {
-            throw new Error("第" + (range.s.r + headerIndex + index + 2) + "行ICCID可能丢失精度，请在原始文件中按文本格式填写完整码号");
+            reason = "ICCID可能丢失精度，请在原始文件中按文本格式填写完整码号";
+            if (!detailed) { throw new Error("第" + line + "行" + reason); }
           }
-          codes.push(code);
+          codes.push(detailed ? { iccid: code, line: line, reason: reason } : code);
         });
         if (!codes.length) { throw new Error("文件中没有可处理的ICCID，请填写码号后重新上传"); }
         if (codes.length > 10000) { throw new Error("单次上传不能超过10000条码号，请拆分文件后重新上传"); }
         return codes;
+      }
+
+      var poolTaskDatabase;
+      var poolTaskJobs = new Map();
+      var poolTaskParsers = new Map();
+      var poolTaskActor = { name: "admin", canActivate: true };
+
+      function poolTaskDb() {
+        if (!poolTaskDatabase) {
+          poolTaskDatabase = new Promise(function (resolve, reject) {
+            var request = indexedDB.open("simcloud.pool-activation.v1", 1);
+            request.onupgradeneeded = function () { request.result.createObjectStore("tasks", { keyPath: "id" }); };
+            request.onsuccess = function () { resolve(request.result); };
+            request.onerror = function () { reject(new Error("无法打开补池任务存储")); };
+            request.onblocked = function () { reject(new Error("补池任务存储被其他页面占用")); };
+          }).catch(function (error) { poolTaskDatabase = null; throw error; });
+        }
+        return poolTaskDatabase;
+      }
+
+      async function poolTaskTransaction(change, refreshBalances) {
+        var db = await poolTaskDb();
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction("tasks", change || refreshBalances ? "readwrite" : "readonly");
+          var store = tx.objectStore("tasks");
+          var read = store.getAll();
+          var rows, saved, failure;
+          read.onsuccess = function () {
+            rows = read.result;
+            try {
+              if (refreshBalances) {
+                rows.forEach(function (task) {
+                  var review = task.review;
+                  if (task.status !== "待确认" || !review || (!review.balance.error && review.balance.remainingCents >= 0)) { return; }
+                  var group = poolTaskGroup(task);
+                  if (!group) { return; }
+                  var balance = batchTaskPoolBalance(group, review.eligible.length, rows, task.id);
+                  if (JSON.stringify(balance) !== JSON.stringify(review.balance)) {
+                    review.balance = balance;
+                    store.put(task);
+                  }
+                });
+              }
+              if (change) { saved = change(rows); }
+              if (saved) { store.put(saved); }
+            } catch (error) { failure = error; tx.abort(); }
+          };
+          tx.onabort = function () { reject(failure || tx.error || new Error("补池任务保存失败")); };
+          tx.oncomplete = function () {
+            if (saved) { rows = rows.filter(function (task) { return task.id !== saved.id; }).concat(saved); }
+            state.poolTaskRows = rows.sort(function (a, b) { return b.createdAt - a.createdAt; });
+            if ((rows.length || change) && state.activePage === "batchTask") {
+              var table = document.querySelector("#content .table-shell");
+              var x = table ? table.scrollLeft : 0;
+              var y = table ? table.scrollTop : 0;
+              renderContent();
+              table = document.querySelector("#content .table-shell");
+              if (table) { table.scrollTo(x, y); }
+            }
+            var selected = state.batchTaskDetailOpener && currentBatchTask();
+            if (selected && selected.fileName) { refreshPoolTaskDetail(selected); }
+            resolve(saved);
+          };
+        });
+      }
+
+      function poolTaskTime() {
+        return new Date().toLocaleString("sv-SE", { timeZone: "Asia/Shanghai" });
+      }
+
+      function poolTaskGroup(task) {
+        return state.groupRows.find(function (group) { return group.id === task.targetGroupId; });
+      }
+
+      function poolTaskParse(task) {
+        return new Promise(function (resolve, reject) {
+          var library = document.querySelector('script[data-vendor^="sheetjs"]').textContent;
+          var code = library + "\n" + checkActivationFile.toString() + "\n" + readActivationIccids.toString() +
+            "\nself.onmessage = async function(event) { try { self.postMessage({ rows: await readActivationIccids(event.data, true) }); } catch(error) { self.postMessage({ error: error.message }); } };";
+          var url = URL.createObjectURL(new Blob([code], { type: "text/javascript" }));
+          var worker;
+          try { worker = new Worker(url); }
+          catch (error) { URL.revokeObjectURL(url); reject(error); return; }
+          function finish(error, rows) {
+            worker.terminate();
+            URL.revokeObjectURL(url);
+            poolTaskParsers.delete(task.id);
+            if (error) { reject(new Error(error)); } else { resolve(rows); }
+          }
+          poolTaskParsers.set(task.id, function () { finish("校验已取消"); });
+          worker.onmessage = function (event) { finish(event.data.error, event.data.rows); };
+          worker.onerror = function () { finish("Excel 解析服务不可用"); };
+          worker.onmessageerror = function () { finish("无法读取 Excel 解析结果"); };
+          try { worker.postMessage(task.file); } catch (error) { finish(error.message); }
+        });
+      }
+
+      function poolTaskCardReason(card, groupId) {
+        if (!card) { return "SIM卡不存在，无法校验所属群组"; }
+        if (!cardMatchesActivationGroup(card, groupId)) { return "SIM卡所属群组与目标群组不一致"; }
+        if (["待激活", "库存", "可测试"].indexOf(card.cardStatus) === -1) { return "当前卡状态不允许激活：" + card.cardStatus; }
+        if (card.needRealName === "是" && card.realNameResult !== "已实名") { return "SIM卡未完成实名认证"; }
+        return "";
+      }
+
+      function poolTaskEvaluation(task, input, tasks) {
+        var group = poolTaskGroup(task);
+        if (!group) { throw new Error("所选群组已不存在，请重新发起任务"); }
+        var cards = new Map(state.simRows.map(function (card) { return [card.iccid, card]; }));
+        var occupied = new Set();
+        tasks.forEach(function (other) {
+          if (other.id === task.id || !other.execution) { return; }
+          other.execution.rows.forEach(function (row) {
+            if (other.status === "激活中" || row.status === "成功") { occupied.add(row.iccid); }
+          });
+        });
+        var seen = new Set(), duplicates = 0, invalid = 0, eligible = [];
+        var rows = input.map(function (item) {
+          var code = item.iccid;
+          var card = cards.get(code);
+          var reason = item.reason || (!code ? "ICCID为空" : (!/^\d{19,20}$/.test(code) ? "ICCID格式不正确" : ""));
+          var duplicate = !reason && seen.has(code);
+          if (!reason) {
+            seen.add(code);
+            if (duplicate) { reason = "重复ICCID"; duplicates += 1; }
+            else { reason = poolTaskCardReason(card, group.id) || (occupied.has(code) ? "SIM卡已在补池任务中执行或已激活" : ""); }
+          }
+          if (reason && !duplicate) { invalid += 1; }
+          else if (!reason) { eligible.push(code); }
+          return { iccid: code, line: item.line, status: duplicate ? "重复" : (reason ? "不通过" : "通过"), reason: reason };
+        });
+        var balance = batchTaskPoolBalance(group, eligible.length, tasks, task.id);
+        var pools = resourceBaseRows().filter(function (pool) { return pool.supplier === group.supplier && pool.group === group.groupName; });
+        var forecast = pools.length === 1 ? resourcePoolCoverageForecast(pools[0], group.singleCardSupply, eligible.length) :
+          { reason: pools.length ? "匹配到多个资源池" : "暂无匹配的资源池用量数据" };
+        return { total: rows.length, invalid: invalid, duplicates: duplicates, eligible: eligible, rows: rows, balance: balance, forecast: forecast, checkedAt: poolTaskTime() };
+      }
+
+      function poolTaskCanConfirm(task) {
+        return !!(task && task.status === "待确认" && task.review && task.review.eligible.length &&
+          !task.review.balance.error && task.review.balance.remainingCents >= 0 && poolTaskActor.canActivate);
+      }
+
+      function runPoolTask(id) {
+        if (poolTaskJobs.has(id)) { return; }
+        var job = (async function () {
+          var task = state.poolTaskRows.find(function (row) { return row.id === id; });
+          if (!task) { return; }
+          if (task.status === "待校验" || task.status === "校验中") {
+            task = await poolTaskTransaction(function (rows) {
+              var current = rows.find(function (row) { return row.id === id; });
+              if (!current || ["待校验", "校验中"].indexOf(current.status) === -1) { return; }
+              current.status = "校验中";
+              current.checkStartedAt = current.checkStartedAt || poolTaskTime();
+              return current;
+            });
+            if (!task) { return; }
+            try {
+              var input = await poolTaskParse(task);
+              await poolTaskTransaction(function (rows) {
+                var current = rows.find(function (row) { return row.id === id; });
+                if (!current || current.status !== "校验中") { return; }
+                current.input = input;
+                current.review = poolTaskEvaluation(current, input, rows);
+                current.status = "待确认";
+                return current;
+              });
+            } catch (error) {
+              await poolTaskTransaction(function (rows) {
+                var current = rows.find(function (row) { return row.id === id; });
+                if (!current || current.status !== "校验中") { return; }
+                current.status = "校验失败";
+                current.checkError = error.message;
+                current.checkEndedAt = poolTaskTime();
+                return current;
+              });
+            }
+          } else if (task.status === "激活中") {
+            await executePoolTask(id);
+          }
+        })().catch(function (error) {
+          toast(error.message || "无法更新补池任务，请刷新重试");
+        }).finally(function () { poolTaskJobs.delete(id); });
+        poolTaskJobs.set(id, job);
+      }
+
+      async function executePoolTask(id) {
+        // Deterministic local receipts stand in for dispatch and reconciliation; no carrier call or real debit.
+        var task = await poolTaskTransaction(function (rows) {
+          var current = rows.find(function (row) { return row.id === id; });
+          if (!current || current.status !== "激活中" || current.execution.dispatched) { return; }
+          var execution = current.execution;
+          var group = poolTaskGroup(current);
+          var balance = group && batchTaskPoolBalance(group, execution.rows.length, rows, id);
+          var block = !poolTaskActor.canActivate ? "当前用户没有批量激活权限" :
+            !balance ? "所选群组已不存在" : balance.error ||
+            (balance.accountId !== execution.accountId || balance.unitCents !== execution.unitCents ? "扣款账户或补池单价已变化" :
+              balance.remainingCents < 0 ? "可用余额已变化，无法完成扣费" : "");
+          var cards = new Map(state.simRows.map(function (card) { return [card.iccid, card]; }));
+          execution.sent = 0;
+          execution.rows.forEach(function (row) {
+            var card = cards.get(row.iccid);
+            var reason = block || poolTaskCardReason(card, current.targetGroupId);
+            if (reason) {
+              row.status = "未执行";
+              row.reason = reason;
+              return;
+            }
+            execution.sent += 1;
+            if (card.id === 4) {
+              row.status = "失败";
+              row.reason = "运营商拒绝激活（模拟）";
+            } else {
+              row.status = "待确认结果";
+            }
+          });
+          execution.dispatched = true;
+          return current;
+        });
+        await poolTaskTransaction(function (rows) {
+          var current = rows.find(function (row) { return row.id === id; });
+          if (!current || current.status !== "激活中" || !(task || current.execution.dispatched)) { return; }
+          var execution = current.execution;
+          execution.rows.forEach(function (row) {
+            if (row.status === "待确认结果") { row.status = "成功"; }
+          });
+          execution.success = execution.rows.filter(function (row) { return row.status === "成功"; }).length;
+          execution.failed = execution.rows.filter(function (row) { return row.status === "失败"; }).length;
+          execution.skipped = execution.rows.length - execution.success - execution.failed;
+          execution.actualCents = execution.success * execution.unitCents;
+          execution.endedAt = poolTaskTime();
+          current.status = !execution.success ? "激活失败" : (execution.failed || execution.skipped ? "部分成功" : "已完成");
+          return current;
+        });
+      }
+
+      async function refreshPoolTasks(silent) {
+        try {
+          await poolTaskTransaction(null, !silent);
+          state.poolTaskRows.forEach(function (task) {
+            if (["待校验", "校验中", "激活中"].indexOf(task.status) !== -1) { runPoolTask(task.id); }
+          });
+        } catch (error) { if (!silent) { toast(error.message || "无法读取补池任务"); } }
+      }
+
+      async function createPoolTask(group) {
+        var file = state.batchTaskFile;
+        try { checkActivationFile(file); }
+        catch (error) { batchTaskAddError("batchTaskFile", error.message); return; }
+        var task = {
+          id: "P" + crypto.randomUUID().replace(/-/g, ""), createdAt: Date.now(),
+          file: file, fileName: file.name, operationType: "激活卡", status: "待校验", poolUsage: "资源池补池",
+          targetGroupId: group.id, targetGroupName: batchTaskGroupLabel(group),
+          remark: state.batchTaskAddRemark.trim(), operator: poolTaskActor.name, operatedAt: poolTaskTime()
+        };
+        task.batchNo = task.id;
+        state.batchTaskSubmitting = true;
+        renderOverlay();
+        try { task = await poolTaskTransaction(function () { return task; }); }
+        catch (error) {
+          state.batchTaskSubmitting = false;
+          batchTaskAddError("batchTaskFile", error.message || "预校验任务创建失败，请重试");
+          return;
+        }
+        state.batchTaskAddOpen = false;
+        resetBatchTaskAdd();
+        renderOverlay();
+        var opener = document.querySelector('[data-action="open-batch-task-add"]');
+        if (opener) { opener.focus(); }
+        toast("预校验任务已创建，系统正在后台校验SIM卡数据。校验完成后，请在任务列表中查看结果并确认激活。");
+        runPoolTask(task.id);
+      }
+
+      function poolTaskQuote(review) {
+        return JSON.stringify([review.eligible, review.balance.accountId, review.balance.unitCents, review.balance.chargeCents]);
+      }
+
+      async function changePoolTask(id, action) {
+        var message = "";
+        var confirmation = state.poolTaskConfirm;
+        try {
+          var saved = await poolTaskTransaction(function (rows) {
+            var task = rows.find(function (item) { return item.id === id; });
+            if (!task) { return; }
+            if (action === "cancel") {
+              if (["待校验", "校验中", "待确认"].indexOf(task.status) === -1) { return; }
+              task.status = "已取消";
+              task.cancelledAt = poolTaskTime();
+              message = "预校验任务已取消";
+              return task;
+            }
+            if (task.status !== "待确认" || !task.input) { return; }
+            if (action === "execute" && (!poolTaskActor.canActivate || !confirmation || confirmation.id !== id)) {
+              message = "当前用户没有批量激活权限，或任务未确认";
+              return;
+            }
+            var review = poolTaskEvaluation(task, task.input, rows);
+            if (!poolTaskCanConfirm(Object.assign({}, task, { review: review }))) {
+              task.review = review;
+              message = review.balance.error || (review.balance.remainingCents < 0 ? "账户余额不足，未执行激活" : "没有符合条件的SIM卡，未执行激活");
+              return task;
+            }
+            if (poolTaskQuote(review) !== confirmation.quote) {
+              task.review = review;
+              message = "可执行卡片或费用已变化，请核对新结果后重新确认";
+              return task;
+            }
+            task.execution = {
+              accountId: review.balance.accountId, unitCents: review.balance.unitCents, reservedCents: review.balance.chargeCents, actualCents: 0,
+              balanceAtConfirm: review.balance.balanceCents,
+              confirmedBy: poolTaskActor.name, confirmedAt: poolTaskTime(), startedAt: poolTaskTime(), success: 0, failed: 0,
+              rows: review.eligible.map(function (code) { return { iccid: code, status: "待执行", reason: "" }; })
+            };
+            task.status = "激活中";
+            message = "批量激活执行任务已创建（模拟）";
+            return task;
+          });
+          if (action === "execute") { closePoolTaskConfirm(); }
+          if (!saved) { toast(message || "任务状态已变化，请查看最新结果"); return; }
+          if (action === "cancel" && poolTaskParsers.has(id)) { poolTaskParsers.get(id)(); }
+          if (message) { toast(message); }
+          if (saved.status === "激活中") {
+            var running = poolTaskJobs.get(id);
+            if (running) { running.then(function () { runPoolTask(id); }); }
+            else { runPoolTask(id); }
+          }
+        } catch (error) {
+          if (action === "execute" && state.poolTaskConfirm) {
+            state.poolTaskConfirm.submitting = false;
+            renderOverlay();
+            document.querySelector('[data-action="pool-task-execute"]').focus();
+          }
+          toast(error.message || "补池任务操作失败，请刷新重试");
+        }
+      }
+
+      function openPoolTaskConfirm(id) {
+        var task = state.poolTaskRows.find(function (row) { return row.id === id; });
+        if (!poolTaskCanConfirm(task)) { return; }
+        state.poolTaskConfirm = { id: id, task: task, quote: poolTaskQuote(task.review), submitting: false, opener: document.activeElement };
+        document.querySelector(".layout").inert = true;
+        document.querySelector(".topbar").inert = true;
+        renderOverlay();
+        document.querySelector('[data-action="pool-task-close-confirm"].btn').focus();
+      }
+
+      function closePoolTaskConfirm() {
+        var confirmation = state.poolTaskConfirm;
+        if (!confirmation) { return; }
+        state.poolTaskConfirm = null;
+        var detailOpen = !!state.batchTaskDetailOpener;
+        document.querySelector(".layout").inert = detailOpen;
+        document.querySelector(".topbar").inert = detailOpen;
+        renderOverlay();
+        if (detailOpen) {
+          var control = document.querySelector('.batch-task-detail-dialog [data-action="pool-task-confirm"]:not(:disabled)') ||
+            document.querySelector('[data-action="close-batch-task-detail"]');
+          if (control) { control.focus({ preventScroll: true }); }
+          return;
+        }
+        var opener = confirmation.opener.isConnected ? confirmation.opener :
+          document.querySelector('[data-action="pool-task-confirm"][data-id="' + confirmation.id + '"]:not(:disabled), [data-action="pool-task-refresh"]');
+        if (opener) { opener.focus({ preventScroll: true }); }
       }
 
       function resetBatchTaskAdd() {
@@ -6349,7 +6738,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       async function detectBatchTaskFile() {
-        if (!state.batchTaskAddOpen || state.batchTaskAddType !== "激活卡" || !state.batchTaskFile || state.batchTaskIccids) { return; }
+        if (!state.batchTaskAddOpen || state.batchTaskAddType !== "激活卡" || batchTaskIsPoolActivation() || !state.batchTaskFile || state.batchTaskIccids) { return; }
         var file = state.batchTaskFile;
         var requestId = ++state.batchTaskFileDetectionId;
         state.batchTaskFileDetecting = true;
@@ -6360,7 +6749,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }
         function isCurrent() {
           return requestId === state.batchTaskFileDetectionId && state.batchTaskAddOpen &&
-            state.batchTaskFile === file && state.batchTaskAddType === "激活卡";
+            state.batchTaskFile === file && state.batchTaskAddType === "激活卡" && !batchTaskIsPoolActivation();
         }
         try {
           var codes = await readActivationIccids(file);
@@ -6377,11 +6766,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         // Refresh feedback without disturbing input focus or an open dropdown.
         var feedback = document.getElementById("batchTaskFileFeedback");
         if (feedback) { feedback.innerHTML = batchTaskFileFeedbackMarkup(); }
-        var poolFeedback = document.getElementById("batchTaskPoolFeedback");
-        if (poolFeedback) {
-          poolFeedback.innerHTML = batchTaskPoolPreviewMarkup();
-          poolFeedback.setAttribute("aria-busy", String(state.batchTaskFileDetecting));
-        }
         var fileState = document.getElementById("batchTaskFileState");
         if (fileState) { fileState.innerHTML = batchTaskFileStateMarkup(); }
         prepareBatchTaskAddFields();
@@ -6391,8 +6775,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.batchTaskAddErrorField = field;
         state.batchTaskAddError = message;
         renderOverlay();
-        var target = field === "batchTaskPoolBalance" ? document.getElementById("batchTaskAddError") :
-          field === "batchTaskFile" ? document.getElementById("batchTaskUpload") :
+        var target = field === "batchTaskFile" ? document.getElementById("batchTaskUpload") :
           (field === "batchTaskAddPoolUsage" ? document.querySelector('[name="batchTaskAddPoolUsage"]') :
             document.querySelector('#overlay [data-action="toggle-select"][data-key="' + field + '"]'));
         if (target) { target.focus(); }
@@ -6404,6 +6787,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (!state.batchTaskAddType) { batchTaskAddError("batchTaskAddType", "请选择操作类型"); return; }
         var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
         var activation = state.batchTaskAddType === "激活卡";
+        if (batchTaskIsPoolActivation()) {
+          if (!group) { batchTaskAddError("batchTaskAddGroup", "请选择所属群组"); return; }
+          await createPoolTask(group);
+          return;
+        }
         if (activation && state.batchTaskFileDetecting) { return; }
         if (activation && !state.batchTaskIccids) {
           batchTaskAddError("batchTaskFile", state.batchTaskFileDetectionError || "请重新上传文件并完成ICCID数量检测");
@@ -6414,13 +6802,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           return;
         }
         if (activation && !group) { batchTaskAddError("batchTaskAddGroup", "请选择所属群组"); return; }
-        if (batchTaskIsPoolActivation()) {
-          var balance = batchTaskPoolBalance(group, batchTaskPoolEligibleCount(group));
-          if (balance.error || balance.remainingCents < 0) {
-            batchTaskAddError("batchTaskPoolBalance", (balance.error || "账户余额不足。") + "请核对账户余额后再提交。");
-            return;
-          }
-        }
         var task = {
           id: state.batchTaskRows.reduce(function (max, item) { return Math.max(max, item.id); }, 10000) + 1,
           batchNo: "BT" + dateFilterToday().replace(/-/g, "") + String(state.batchTaskRows.length + 1).padStart(4, "0"),
@@ -6501,17 +6882,41 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           "激活卡（" + row.poolUsage + "）" : row.operationType;
       }
 
-      function batchTaskRowMarkup(row) {
+      function poolTaskAction(action, label, task, disabled, className) {
+        return '<button class="' + (className || "link") + '" data-action="' + action + '" data-id="' + esc(task.id) + '"' + (disabled ? " disabled" : "") + '>' + label + '</button>';
+      }
+
+      function poolTaskRowActions(task) {
+        var pending = task.status === "待校验" || task.status === "校验中";
+        var label = task.status === "待确认" ? "查看校验结果" : task.status === "激活中" ? "查看执行进度" : task.execution ? "查看执行结果" : "查看详情";
+        return '<div class="pool-task-actions">' + poolTaskAction("open-batch-task-detail", label, task) +
+          (pending ? poolTaskAction("pool-task-cancel", "取消任务", task) : "") +
+          (task.status === "校验失败" ? poolTaskAction("pool-task-retry", "重新发起", task) : "") +
+          (task.execution && (task.execution.failed || task.execution.skipped) ? poolTaskAction("pool-task-export-execution", "下载激活失败明细", task) : "") +
+          '</div>';
+      }
+
+      function poolTaskListFields(task) {
+        if (!task.fileName) { return "<td>--</td>".repeat(7); }
+        var review = task.review;
+        return [task.fileName, "是", task.targetGroupName, review ? review.total : "--", review ? review.eligible.length : "--",
+          review ? review.invalid : "--", review ? poolTaskMoney(review.balance.chargeCents) : "--"
+        ].map(function (value) { return '<td title="' + esc(value) + '">' + esc(value) + '</td>'; }).join("");
+      }
+
+      function batchTaskRowMarkup(row, showPoolFields) {
+        var pool = !!row.fileName;
         return "<tr>" +
           "<td>" + esc(row.id) + "</td>" +
-          '<td><button class="batch-link ' + (state.selectedBatchTaskId === row.id ? "active" : "") + '" data-action="open-batch-task-detail" data-id="' + row.id + '">' + esc(row.batchNo) + "</button></td>" +
+          '<td><button class="batch-link ' + (state.selectedBatchTaskId === row.id ? "active" : "") + '" data-action="open-batch-task-detail" data-id="' + row.id + '" title="' + esc(row.batchNo) + '">' + esc(row.batchNo) + "</button></td>" +
           '<td class="batch-operation-type" title="' + esc(batchTaskOperationLabel(row)) + '">' + esc(batchTaskOperationLabel(row)) + '</td>' +
-          "<td>" + esc(row.count) + "</td>" +
+          "<td>" + esc(pool ? (row.execution && row.execution.dispatched ? row.execution.sent : "--") : row.count) + "</td>" +
           "<td>" + esc(row.status) + "</td>" +
+          (showPoolFields ? poolTaskListFields(row) : "") +
           '<td title="' + esc(row.remark) + '">' + esc(row.remark) + "</td>" +
           "<td>" + esc(row.operator) + "</td>" +
           "<td>" + esc(row.operatedAt) + "</td>" +
-          '<td><button class="link" data-action="open-batch-task-detail" data-id="' + row.id + '">详情</button><button class="link" data-action="download-batch-task" data-id="' + row.id + '">下载</button></td>' +
+          '<td>' + (pool ? poolTaskRowActions(row) : '<button class="link" data-action="open-batch-task-detail" data-id="' + row.id + '">详情</button><button class="link" data-action="download-batch-task" data-id="' + row.id + '">下载</button>') + '</td>' +
         "</tr>";
       }
 
@@ -9481,12 +9886,13 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function batchTaskMarkup() {
         var rows = filteredBatchTaskRows();
+        var showPoolFields = rows.some(function (row) { return !!row.fileName; });
         return '<div class="panel page-panel">' +
           '<div class="filters">' +
             '<div class="filter-grid">' +
               '<label><input class="text-input" data-action="batch-task-input" data-key="taskBatchNo" id="taskBatchNo" value="' + esc(state.batchTaskQuery.taskBatchNo) + '" placeholder="请输入批次号"></label>' +
               '<label>' + selectMarkup("taskType", state.batchTaskQuery.taskType, taskOperationOptions, "请选择操作类型", true) + "</label>" +
-              '<label>' + selectMarkup("taskStatus", state.batchTaskQuery.taskStatus, taskStatusOptions, "请选择任务状态", true) + "</label>" +
+              '<label>' + selectMarkup("taskStatus", state.batchTaskQuery.taskStatus, state.poolTaskRows.length ? taskStatusOptions.concat(poolTaskStatuses) : taskStatusOptions, "请选择任务状态", true) + "</label>" +
             "</div>" +
             '<div class="actions">' +
               '<button class="btn btn-outline" data-action="batch-task-search">搜索</button>' +
@@ -9496,41 +9902,149 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<div class="operate-bar"><div class="operate-actions">' +
             '<button class="btn btn-primary" data-action="open-batch-task-add">批量操作新增</button>' +
             '<button class="btn btn-primary" data-action="download-batch-task-template">下载模版</button>' +
+            (state.poolTaskRows.length ? '<button class="btn btn-gray" data-action="pool-task-refresh">刷新任务状态</button>' : "") +
           "</div></div>" +
           '<div class="table-shell batch-task-table">' +
-            '<table><colgroup><col style="width:80px"><col style="width:180px"><col style="width:210px"><col style="width:100px"><col style="width:100px"><col style="width:200px"><col style="width:100px"><col style="width:190px"><col style="width:120px"></colgroup>' +
-              "<thead><tr><th>ID</th><th>批次号</th><th>操作类型</th><th>操作数量</th><th>状态</th><th>备注</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead>" +
-              "<tbody>" + (rows.length ? rows.map(batchTaskRowMarkup).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据</td></tr>') + "</tbody>" +
+            '<table><colgroup><col style="width:80px"><col style="width:180px"><col style="width:210px"><col style="width:100px"><col style="width:100px">' +
+              (showPoolFields ? '<col style="width:170px"><col style="width:125px"><col style="width:175px"><col style="width:115px"><col style="width:115px"><col style="width:130px"><col style="width:140px">' : "") +
+              '<col style="width:200px"><col style="width:100px"><col style="width:190px"><col style="width:' + (showPoolFields ? 300 : 120) + 'px"></colgroup>' +
+              "<thead><tr><th>ID</th><th>批次号</th><th>操作类型</th><th>操作数量</th><th>状态</th>" +
+              (showPoolFields ? "<th>文件名称</th><th>是否资源池补池</th><th>所属群组</th><th>文件卡片总数</th><th>符合条件卡数</th><th>不符合条件卡数</th><th>预计扣减金额（元）</th>" : "") +
+              "<th>备注</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead>" +
+              "<tbody>" + (rows.length ? rows.map(function (row) { return batchTaskRowMarkup(row, showPoolFields); }).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
           "</div>" +
           '<div class="pagination"><span>共' + rows.length + '条</span><span class="select-mini">20条/页&nbsp;⌄</span><span class="page-box">1</span><span>前往</span><input class="jump-input" value="1" readonly><span>页</span></div>' +
         "</div>";
       }
 
-      function batchTaskDetailMarkup() {
-        var task = currentBatchTask();
-        var rows = filteredBatchTaskDetailRows();
-        return '<div class="panel page-panel">' +
-          '<div class="filters">' +
-            '<div class="filter-grid">' +
-              '<label><input class="text-input" data-action="batch-task-detail-input" data-key="detailIccid" id="detailIccid" value="' + esc(state.batchTaskDetailQuery.detailIccid) + '" placeholder="请输入ICCID"></label>' +
-              '<label>' + selectMarkup("detailStatus", state.batchTaskDetailQuery.detailStatus, ["成功", "失败"], "请选择状态", true) + "</label>" +
-            "</div>" +
-            '<div class="actions">' +
-              '<button class="btn btn-outline" data-action="batch-task-detail-search">搜索</button>' +
-              '<button class="btn btn-gray" data-action="batch-task-detail-reset">重置</button>' +
-            "</div>" +
-          "</div>" +
-          '<div class="operate-bar"><div class="operate-actions"><span>批次号：' + esc(task ? task.batchNo : "-") + "</span>" +
-            (task && task.targetGroupName ? '<span>所属群组：' + esc(task.targetGroupName) + '</span>' : "") + "</div></div>" +
-          '<div class="table-shell">' +
+      function poolTaskMoney(cents) {
+        if (!Number.isSafeInteger(cents)) { return "--"; }
+        var digits = String(Math.abs(cents)).padStart(3, "0");
+        return (cents < 0 ? "-" : "") + digits.slice(0, -2) + "." + digits.slice(-2);
+      }
+
+      function poolTaskSection(title, fields) {
+        return '<section class="detail-section"><div class="detail-section-head"><div class="detail-section-title">' + title +
+          '</div></div><div class="detail-grid">' + fields.map(function (field) {
+            return detailItemMarkup(field[0], field[1] == null || field[1] === "" ? "--" : String(field[1]));
+          }).join("") + '</div></section>';
+      }
+
+      function poolTaskDetailMarkup(task) {
+        var review = task.review;
+        var balance = review && review.balance;
+        var execution = task.execution;
+        var finished = execution && execution.endedAt;
+        var note = task.checkError;
+        if (task.status === "待确认") {
+          note = balance.error || (!review.eligible.length ? "没有符合激活条件的SIM卡，无法确认激活。" :
+            balance.remainingCents < 0 ? "账户余额不足，还需 " + poolTaskMoney(-balance.remainingCents) + " 元。补充余额后，请在列表刷新任务状态。" : "");
+        }
+        return poolTaskSection(esc(task.status), [
+            ["检测到的卡片数量", review ? review.total + " 张" : "--"],
+            [finished ? "实际扣减金额（元）" : "预计扣减金额（元）", poolTaskMoney(finished ? execution.actualCents : balance && balance.chargeCents)],
+            ["扣减账户", finished ? execution.accountId : balance && balance.accountId],
+            [finished ? "确认时账户余额（元）" : "账户余额（元）", poolTaskMoney(finished ? execution.balanceAtConfirm : balance && balance.balanceCents)],
+            [finished ? "扣减后剩余余额（元）" : "预计剩余余额（元）", poolTaskMoney(finished ?
+              execution.balanceAtConfirm - execution.actualCents : balance && balance.remainingCents)]
+          ]) +
+          (note ? '<div class="operate-bar"><div class="batch-task-error" role="alert">' + esc(note) + '</div></div>' : "");
+      }
+
+      function poolTaskExport(id, execution) {
+        var task = state.poolTaskRows.find(function (row) { return row.id === id; });
+        var source = task && (execution ? task.execution : task.review);
+        if (!source) { return; }
+        var rows = source.rows.filter(function (row) { return execution ? row.status === "失败" || row.status === "未执行" : row.status !== "通过"; });
+        if (!rows.length) { return; }
+        var workbook = XLSX.utils.book_new();
+        var sheet = XLSX.utils.aoa_to_sheet([["任务编号", "文件行号", "ICCID", "结果", "失败原因"]].concat(rows.map(function (row) {
+          return [task.batchNo, row.line || "", row.iccid, row.status, row.reason];
+        })));
+        XLSX.utils.book_append_sheet(workbook, sheet, "失败明细");
+        XLSX.writeFile(workbook, task.batchNo + (execution ? "-激活失败明细.xlsx" : "-预校验失败明细.xlsx"));
+      }
+
+      function batchTaskDetailTableMarkup(task) {
+        var rows = batchTaskDetailRows(task);
+        return '<div class="operate-bar"><div class="operate-actions"><span>批次号：' + esc(task.batchNo) + "</span>" +
+            (task.targetGroupName ? '<span>所属群组：' + esc(task.targetGroupName) + '</span>' : "") + "</div></div>" +
+          '<div class="table-shell" role="region" aria-label="卡片结果明细" tabindex="0">' +
             '<table><colgroup><col style="width:70px"><col style="width:150px"><col style="width:190px"><col style="width:210px"><col style="width:110px"><col style="width:130px"><col style="width:110px"><col style="width:100px"><col style="width:80px"><col style="width:280px"><col style="width:180px"><col style="width:100px"><col style="width:150px"></colgroup>' +
               "<thead><tr><th>序号</th><th>批次号</th><th>ICCID</th><th>操作类型</th><th>操作前状态</th><th>操作结果</th><th>供应商</th><th>运营商</th><th>状态</th><th>失败原因</th><th>备注</th><th>操作人</th><th>变更时间</th></tr></thead>" +
               "<tbody>" + (rows.length ? rows.map(batchTaskDetailRowMarkup).join("") : '<tr class="empty-row"><td colspan="13">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
-          "</div>" +
-          '<div class="pagination"><span>共' + rows.length + '条</span><span class="select-mini">20条/页&nbsp;⌄</span><span class="page-box">1</span><span>前往</span><input class="jump-input" value="1" readonly><span>页</span></div>' +
-        "</div>";
+          "</div>";
+      }
+
+      function poolTaskDetailActionsMarkup(task) {
+        var pending = task.status === "待确认";
+        var hasFailures = task.review && (task.review.invalid || task.review.duplicates);
+        if (!pending && !hasFailures) { return ""; }
+        return '<div class="dialog-actions">' +
+          (hasFailures ? poolTaskAction("pool-task-export-review", "下载校验明细", task, false, "btn btn-gray") : "") +
+          (pending ? poolTaskAction("pool-task-cancel", "取消任务", task, false, "btn btn-gray") +
+            poolTaskAction("pool-task-confirm", "确认激活", task, !poolTaskCanConfirm(task), "btn btn-primary") : "") +
+          '</div>';
+      }
+
+      function refreshPoolTaskDetail(task) {
+        var body = document.getElementById("batchTaskDetailBody");
+        var footer = document.getElementById("batchTaskDetailActions");
+        if (!body || !footer) { return; }
+        var active = document.activeElement;
+        var action = footer.contains(active) && active.dataset.action;
+        body.innerHTML = poolTaskDetailMarkup(task);
+        footer.innerHTML = poolTaskDetailActionsMarkup(task);
+        if (action) {
+          var control = footer.querySelector('[data-action="' + action + '"]:not(:disabled)') ||
+            document.querySelector('[data-action="close-batch-task-detail"]');
+          if (control) { control.focus({ preventScroll: true }); }
+        }
+      }
+
+      function batchTaskDetailDialogMarkup() {
+        var task = currentBatchTask();
+        var summary = task && task.fileName;
+        return '<div class="modal-mask"><section class="batch-dialog batch-task-detail-dialog' + (summary ? ' summary' : '') +
+          '" role="dialog" aria-modal="true" aria-labelledby="batchTaskDetailTitle">' +
+          '<header class="modal-head"><h2 id="batchTaskDetailTitle">批量任务详情</h2><button class="modal-close" data-action="close-batch-task-detail" aria-label="关闭批量任务详情">' +
+          closeIconMarkup() + '</button></header>' +
+          '<div class="batch-task-detail-body" id="batchTaskDetailBody">' +
+          (summary ? poolTaskDetailMarkup(task) : task ? batchTaskDetailTableMarkup(task) : '<div class="operate-bar">未找到该任务</div>') +
+          '</div>' + (summary ? '<footer class="batch-task-detail-footer" id="batchTaskDetailActions">' + poolTaskDetailActionsMarkup(task) + '</footer>' : '') +
+          '</section></div>';
+      }
+
+      function openBatchTaskDetail(opener) {
+        var id = opener.dataset.id;
+        if (!state.poolTaskRows.concat(state.batchTaskRows).some(function (row) { return String(row.id) === id; })) { return; }
+        state.selectedBatchTaskId = /^P/.test(id) ? id : Number(id);
+        state.batchTaskDetailOpener = opener;
+        dismissDatePicker();
+        if (state.openSelect || state.openCombo) {
+          state.openSelect = state.openCombo = "";
+          renderContent();
+        }
+        document.querySelectorAll(".batch-task-table .batch-link").forEach(function (button) {
+          button.classList.toggle("active", button.dataset.id === id);
+        });
+        $(".layout").inert = $(".topbar").inert = $("#pageDocTrigger").inert = true;
+        renderOverlay();
+        $('[data-action="close-batch-task-detail"]').focus();
+      }
+
+      function closeBatchTaskDetail() {
+        var opener = state.batchTaskDetailOpener;
+        state.batchTaskDetailOpener = null;
+        $(".layout").inert = $(".topbar").inert = $("#pageDocTrigger").inert = false;
+        renderOverlay();
+        var target = opener && opener.isConnected ? opener :
+          Array.from(document.querySelectorAll('[data-action="open-batch-task-detail"]')).find(function (button) {
+            return button.dataset.id === String(state.selectedBatchTaskId);
+          }) || $('[data-action="open-batch-task-add"]');
+        if (target) { target.focus({ preventScroll: true }); }
       }
 
       function renderContent() {
@@ -9571,8 +10085,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           markup = redlistMarkup();
         } else if (state.activePage === "batchTask") {
           markup = batchTaskMarkup();
-        } else if (state.activePage === "batchTaskDetail") {
-          markup = batchTaskDetailMarkup();
         } else {
           markup = accountMarkup();
         }
@@ -9885,43 +10397,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function batchTaskAddErrorMarkup(field) {
         return state.batchTaskAddErrorField === field && state.batchTaskAddError ?
           '<div class="batch-task-error" id="batchTaskAddError" role="alert"' +
-          (field === "batchTaskPoolBalance" ? ' tabindex="-1"' : '') + '>' + esc(state.batchTaskAddError) + '</div>' : "";
-      }
-
-      function batchTaskPoolEstimateMarkup(group, eligibleCount) {
-        var pools = resourceBaseRows().filter(function (pool) { return pool.supplier === group.supplier && pool.group === group.groupName; });
-        var reason = pools.length === 0 ? "所选群组暂无匹配的资源池用量数据，暂无法估算。" :
-          (pools.length > 1 ? "所选群组匹配到多个资源池，请先核对资源池配置，暂无法估算。" : "");
-        if (!reason && !eligibleCount) { reason = "本次没有通过所选群组校验的可补池卡，暂无法估算。"; }
-        var forecast = reason ? { reason: reason } : resourcePoolCoverageForecast(pools[0], group.singleCardSupply, eligibleCount);
-        return '<li id="batchTaskPoolEstimate">' + (forecast.reason ? esc(forecast.reason) :
-          '补池完成后，预计能用 <b>' + esc(forecast.daysText) + '</b> 天，至 <b>' + esc(forecast.untilDate) + '</b>。') + '</li>';
-      }
-
-      function batchTaskPoolPreviewMarkup() {
-        var estimate = "";
-        if (!state.batchTaskFileDetecting && !state.batchTaskFileDetectionError && state.batchTaskIccids) {
-          var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
-          if (!group) {
-            estimate = '<li>选择所属群组后，可查看补池用量和余额预估。</li>';
-          } else {
-            var count = batchTaskPoolEligibleCount(group);
-            var balance = batchTaskPoolBalance(group, count);
-            var charge = balance.chargeCents == null ? "" : '本次激活预计扣减账户余额 <b>' + (balance.chargeCents / 100).toFixed(2) +
-              '</b> 元';
-            var balanceText = balance.error ? (charge ? charge + '；' : '') + esc(balance.error) :
-              charge + '，当前群组对应账号余额为 <b>' + (balance.balanceCents / 100).toFixed(2) + '</b> 元，' +
-              (balance.remainingCents < 0 ? '<strong class="balance-warning">账户余额不足</strong>' :
-                '补池后预计剩余 <b>' + (balance.remainingCents / 100).toFixed(2) + '</b> 元') + '。';
-            estimate = batchTaskPoolEstimateMarkup(group, count) + '<li id="batchTaskPoolBalance">' + balanceText + '</li>';
-          }
-        }
-        return '<ul class="batch-task-pool-preview"><li id="batchTaskActivationCount">' + batchTaskActivationCountMarkup() + '</li>' +
-          estimate + '</ul>' + batchTaskAddErrorMarkup("batchTaskPoolBalance");
+          '>' + esc(state.batchTaskAddError) + '</div>' : "";
       }
 
       function batchTaskFileStateMarkup() {
         if (!state.batchTaskFile) { return '<span class="selected-file">未选择文件</span>'; }
+        if (batchTaskIsPoolActivation()) {
+          return '<span class="selected-file" title="' + esc(state.batchTaskFileName) + '">' + esc(state.batchTaskFileName) + '</span>';
+        }
         var activation = state.batchTaskAddType === "激活卡";
         var phase = activation && state.batchTaskFileDetectionError ? "error" :
           (state.batchTaskFileDetecting || (activation && !state.batchTaskIccids) ? "pending" : "ready");
@@ -9980,9 +10463,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<div class="form-row">' +
                 '<label class="form-label" for="batchTaskAddRemark">备注</label>' +
                 '<div class="form-control"><textarea id="batchTaskAddRemark" class="textarea-input" data-action="batch-task-add-remark" placeholder="请输入备注">' + esc(state.batchTaskAddRemark) + '</textarea>' +
-                  (batchTaskIsPoolActivation() ? '<div id="batchTaskPoolFeedback" aria-live="polite" aria-busy="' + state.batchTaskFileDetecting + '">' + batchTaskPoolPreviewMarkup() + '</div>' : '') + '</div>' +
+                  (batchTaskIsPoolActivation() ? '<div class="batch-hint">上传文件后，系统将异步校验SIM卡数量、激活资格、预计扣费及账户余额。校验完成后可查看结果并确认激活，无需在当前页面等待。</div>' : '') + '</div>' +
               "</div>" +
-              '<div class="dialog-actions"><button class="btn btn-gray" data-action="close-batch-task-add">取消</button><button class="btn btn-primary" data-action="confirm-batch-task-add">确定</button></div>' +
+              '<div class="dialog-actions"><button class="btn btn-gray" data-action="close-batch-task-add">取消</button><button class="btn btn-primary" data-action="confirm-batch-task-add">' +
+                (batchTaskIsPoolActivation() ? (state.batchTaskSubmitting ? "提交中…" : "上传并校验") : "确定") + '</button></div>' +
             "</div>" +
           "</section>" +
         "</div>";
@@ -9992,7 +10476,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var dialog = document.querySelector(".batch-task-add-dialog");
         if (!dialog) { return; }
         Array.prototype.forEach.call(dialog.querySelectorAll("button, input, textarea"), function (control) {
-          control.disabled = state.batchTaskSubmitting && control.dataset.action !== "close-batch-task-add";
+          control.disabled = state.batchTaskSubmitting && (batchTaskIsPoolActivation() || control.dataset.action !== "close-batch-task-add");
           if (control.dataset.action === "confirm-batch-task-add" && state.batchTaskAddType === "激活卡" && state.batchTaskFileDetecting) { control.disabled = true; }
         });
         ["batchTaskAddType", "batchTaskAddGroup"].forEach(function (key) {
@@ -10046,9 +10530,31 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             '<button class="btn btn-primary" data-action="confirm-sim-data-reset">重置数据服务</button></div></section></div>';
       }
 
+      function poolTaskConfirmMarkup() {
+        var confirmation = state.poolTaskConfirm;
+        var task = confirmation.task;
+        var review = task.review;
+        var balance = review.balance;
+        var disabled = confirmation.submitting ? " disabled" : "";
+        return '<div class="modal-mask"><section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="poolTaskConfirmTitle" aria-busy="' + confirmation.submitting + '">' +
+          '<header class="modal-head"><h2 id="poolTaskConfirmTitle">确认批量激活</h2><button class="modal-close" data-action="pool-task-close-confirm" aria-label="关闭确认批量激活"' + disabled + '>' + closeIconMarkup() + '</button></header>' +
+          '<div class="confirm-content"><small>所属群组：' + esc(task.targetGroupName) + '</small>' +
+          '<small>本次预计激活卡数：' + review.eligible.length + ' 张；不符合条件：' + review.invalid + ' 条；重复：' + review.duplicates + ' 条</small>' +
+          '<small>预计扣减金额：' + poolTaskMoney(balance.chargeCents) + ' 元</small>' +
+          '<small>当前账户可用余额：' + poolTaskMoney(balance.balanceCents) + ' 元</small>' +
+          '<small>预计剩余余额：' + poolTaskMoney(balance.remainingCents) + ' 元</small>' +
+          '<small>确认后，系统将对符合条件的SIM卡执行批量激活操作，并根据实际执行结果扣费。不符合条件的SIM卡不会执行激活。</small></div>' +
+          '<div class="dialog-actions"><button class="btn btn-gray" data-action="pool-task-close-confirm"' + disabled + '>取消</button>' +
+          '<button class="btn btn-primary" data-action="pool-task-execute"' + disabled + '>' + (confirmation.submitting ? "校验中…" : "确认执行") + '</button></div></section></div>';
+      }
+
       function renderOverlay() {
         var overlay = $("#overlay");
-        if (state.simDetailOperation) {
+        if (state.poolTaskConfirm) {
+          overlay.innerHTML = poolTaskConfirmMarkup();
+        } else if (state.batchTaskDetailOpener) {
+          overlay.innerHTML = batchTaskDetailDialogMarkup();
+        } else if (state.simDetailOperation) {
           overlay.innerHTML = simDetailOperationMarkup();
           var trigger = overlay.querySelector('[data-key="simDetailOperationValue"][data-action="toggle-select"]');
           if (trigger) {
@@ -10232,8 +10738,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.imeiQuery[target.dataset.key] = target.value;
         } else if (target.dataset.action === "batch-task-input") {
           state.batchTaskQuery[target.dataset.key] = target.value;
-        } else if (target.dataset.action === "batch-task-detail-input") {
-          state.batchTaskDetailQuery[target.dataset.key] = target.value;
         } else if (target.dataset.action === "detection-input") {
           state.detectionQuery[target.dataset.key] = target.value;
         } else if (target.dataset.action === "chip-detection-input") {
@@ -10278,10 +10782,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           var poolUsage = event.target.value;
           if (["资源池补池", "非资源池补池"].indexOf(poolUsage) === -1) { return; }
           state.batchTaskAddPoolUsage = poolUsage;
-          if (state.batchTaskAddErrorField === "batchTaskAddPoolUsage" || state.batchTaskAddErrorField === "batchTaskPoolBalance") {
+          state.batchTaskFileDetectionId += 1;
+          state.batchTaskFileDetecting = false;
+          state.batchTaskFileDetectionError = "";
+          if (state.batchTaskAddErrorField === "batchTaskAddPoolUsage" || state.batchTaskAddErrorField === "batchTaskFile") {
             state.batchTaskAddError = "";
             state.batchTaskAddErrorField = "";
           }
+          if (!batchTaskIsPoolActivation()) { detectBatchTaskFile(); }
           renderOverlay();
           document.querySelector('[name="batchTaskAddPoolUsage"][value="' + poolUsage + '"]').focus();
         } else if (event.target.dataset.action === "redlist-notify-frequency") {
@@ -10327,6 +10835,20 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       document.addEventListener("keydown", function (event) {
         var target = event.target;
         if (event.isComposing || event.keyCode === 229) { return; }
+        if (state.batchTaskDetailOpener && !state.poolTaskConfirm) {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeBatchTaskDetail();
+          } else if (event.key === "Tab") {
+            var controls = Array.from(document.querySelectorAll(".batch-task-detail-dialog button:not(:disabled), .batch-task-detail-dialog [tabindex='0']"));
+            var boundary = event.shiftKey ? controls[0] : controls[controls.length - 1];
+            if (target === boundary || controls.indexOf(target) === -1) {
+              event.preventDefault();
+              (event.shiftKey ? controls[controls.length - 1] : controls[0]).focus();
+            }
+          }
+          return;
+        }
         if (event.key === "Escape" && (state.monthlyFlowInfoOpen || document.querySelector('[data-action="monthly-flow-info"][aria-expanded="true"]'))) {
           hideManageStopPopover(); event.preventDefault(); return;
         }
@@ -10398,6 +10920,21 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             var last = controls[controls.length - 1];
             if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
             else if ((!event.shiftKey && target === last) || !dialog.contains(target)) { event.preventDefault(); first.focus(); }
+          }
+          return;
+        }
+        if (state.poolTaskConfirm) {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            if (!state.poolTaskConfirm.submitting) { closePoolTaskConfirm(); }
+          } else if (event.key === "Tab") {
+            var buttons = Array.from(document.querySelectorAll("#overlay .confirm-dialog button:not(:disabled)"));
+            var boundary = event.shiftKey ? buttons[0] : buttons[buttons.length - 1];
+            if (target === boundary || !buttons.includes(target)) {
+              event.preventDefault();
+              var next = event.shiftKey ? buttons[buttons.length - 1] : buttons[0];
+              if (next) { next.focus(); }
+            }
           }
           return;
         }
@@ -11264,6 +11801,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           renderOverlay();
           document.getElementById("batchTaskUpload").focus();
         } else if (action === "close-batch-task-add") {
+          if (batchTaskIsPoolActivation() && state.batchTaskSubmitting) { return; }
           state.batchTaskAddOpen = false;
           resetBatchTaskAdd();
           renderOverlay();
@@ -11277,23 +11815,36 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           toast("批量任务模版已下载");
         } else if (action === "download-batch-task") {
           toast("批量任务结果已下载");
+        } else if (action === "pool-task-refresh") {
+          refreshPoolTasks();
+        } else if (action === "pool-task-confirm") {
+          openPoolTaskConfirm(target.dataset.id);
+        } else if (action === "pool-task-close-confirm") {
+          if (state.poolTaskConfirm && !state.poolTaskConfirm.submitting) { closePoolTaskConfirm(); }
+        } else if (action === "pool-task-execute") {
+          if (!state.poolTaskConfirm || state.poolTaskConfirm.submitting) { return; }
+          state.poolTaskConfirm.submitting = true;
+          renderOverlay();
+          changePoolTask(state.poolTaskConfirm.id, "execute");
+        } else if (action === "pool-task-cancel") {
+          changePoolTask(target.dataset.id, "cancel");
+        } else if (action === "pool-task-retry") {
+          var prior = state.poolTaskRows.find(function (task) { return task.id === target.dataset.id && task.status === "校验失败"; });
+          if (!prior) { return; }
+          resetBatchTaskAdd();
+          state.batchTaskAddOpen = true;
+          state.batchTaskAddType = prior.operationType;
+          state.batchTaskAddPoolUsage = prior.poolUsage;
+          state.batchTaskAddGroup = prior.targetGroupId;
+          state.batchTaskAddRemark = prior.remark;
+          renderOverlay();
+          document.getElementById("batchTaskUpload").focus();
+        } else if (action === "pool-task-export-review" || action === "pool-task-export-execution") {
+          poolTaskExport(target.dataset.id, action === "pool-task-export-execution");
         } else if (action === "open-batch-task-detail") {
-          state.selectedBatchTaskId = Number(target.dataset.id);
-          state.batchTaskDetailQuery = blankBatchTaskDetailQuery();
-          state.batchTaskDetailApplied = blankBatchTaskDetailQuery();
-          openPage("batchTaskDetail");
-          render();
-        } else if (action === "batch-task-detail-search") {
-          state.batchTaskDetailApplied = Object.assign({}, state.batchTaskDetailQuery);
-          state.openSelect = "";
-          renderContent();
-          toast("已更新批量任务详情查询结果");
-        } else if (action === "batch-task-detail-reset") {
-          state.batchTaskDetailQuery = blankBatchTaskDetailQuery();
-          state.batchTaskDetailApplied = blankBatchTaskDetailQuery();
-          state.openSelect = "";
-          renderContent();
-          toast("批量任务详情筛选条件已重置");
+          openBatchTaskDetail(target);
+        } else if (action === "close-batch-task-detail") {
+          closeBatchTaskDetail();
         } else if (action === "group-sync") {
           toast("群组数据已同步");
         } else if (action === "group-page") {
@@ -11787,6 +12338,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       window.addEventListener('resize', scheduleMonthlyListLayout);
       window.addEventListener('resize', fitBreadcrumbTabs);
       render();
+      refreshPoolTasks(true);
     }());
   </script>
 
