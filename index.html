@@ -13,7 +13,14 @@
       --input-border: #dfe5ee;
       --text: #333;
       --muted: #7e8997;
-      --table-text: rgb(96, 98, 102);
+      --table-font: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      --table-text: #171717;
+      --table-background: #fff;
+      --table-header-background: #f5f5f5;
+      --table-border: #ebebeb;
+      --table-line-height: 1.7;
+      --dialog-radius: 6px;
+      --flowchart-preview-radius: 8px;
       --shadow: 0 8px 28px rgba(20, 44, 80, 0.08);
     }
 
@@ -531,15 +538,13 @@
     }
 
     .page-doc-interface-list {
-      border: 1px solid #e7ebf1;
+      border: 1px solid var(--table-border);
       border-radius: 3px;
       overflow: hidden;
     }
 
     .page-doc-interface-list table {
       min-width: 0;
-      font-size: 12px;
-      line-height: 1.7;
     }
 
     .page-doc-interface-list th,
@@ -552,22 +557,13 @@
       overflow-wrap: anywhere;
     }
 
-    .page-doc-interface-list tbody tr:last-child td {
-      border-bottom: 0;
-    }
-
     .page-doc-interface-name {
       display: block;
-      color: #4b5563;
-      font-weight: 500;
     }
 
     .page-doc-interface-meta {
       display: block;
       margin-top: 5px;
-      color: #7d8897;
-      font-size: 11px;
-      line-height: 1.6;
     }
 
     .page-doc-interface-list code {
@@ -909,7 +905,7 @@
 
     .resource-box {
       min-height: 390px;
-      border: 1px solid #e6ebf2;
+      border: 1px solid var(--table-border);
       background: #fff;
       overflow: hidden;
     }
@@ -985,7 +981,7 @@
       gap: 10px;
       align-items: center;
       padding: 10px 12px;
-      border-bottom: 1px solid #e7ebf1;
+      border-bottom: 1px solid var(--table-border);
       background: #fff;
     }
 
@@ -1005,21 +1001,10 @@
 
     .resource-table table {
       min-width: 1260px;
-      font-size: 12px;
     }
 
     .resource-coverage {
       font-variant-numeric: tabular-nums;
-    }
-
-    .resource-table th,
-    .resource-table td {
-      border-right: 1px solid #edf1f5;
-    }
-
-    .resource-table th:last-child,
-    .resource-table td:last-child {
-      border-right: 0;
     }
 
     .chart-panel {
@@ -1310,8 +1295,8 @@
     .monthly-detail-page .monthly-detail-fields { margin: 18px; border-top: 1px solid var(--border); }
     .monthly-overview table { min-width: 1415px; }
     .monthly-detail-page table { min-width: 760px; }
-    .monthly-overview th:first-child, .monthly-overview td:first-child { position: sticky; left: 0; z-index: 2; background: #fff; }
-    .monthly-overview th:first-child { background: #fbfcfe; z-index: 3; }
+    .monthly-overview th:first-child, .monthly-overview td:first-child { position: sticky; left: 0; z-index: 2; }
+    .monthly-overview th:first-child { z-index: 3; }
     .monthly-period-actions .date-popover { left: 0; right: auto; max-width: calc(100vw - 48px); }
     .monthly-detail-page .pagination { margin-top: 12px; flex-wrap: wrap; height: auto; min-height: 56px; }
     .monthly-overview .pagination { flex-shrink: 0; flex-wrap: wrap; height: auto; min-height: 56px; }
@@ -1337,11 +1322,6 @@
     .traffic-history-page td:nth-child(-n+2) {
       position: sticky;
       z-index: 2;
-      background: #fff;
-    }
-
-    .traffic-history-page th:nth-child(-n+2) {
-      background: #fbfcfe;
     }
 
     .traffic-history-page th:first-child,
@@ -1353,10 +1333,6 @@
     .traffic-history-page td:nth-child(2) {
       left: 140px;
       box-shadow: 2px 0 4px rgba(20, 44, 80, 0.05);
-    }
-
-    .traffic-history-page tbody tr:hover td:nth-child(-n+2) {
-      background: #f8fbff;
     }
 
     .traffic-history-page .operate-bar {
@@ -2115,8 +2091,14 @@
     .table-shell {
       margin: 0 18px;
       overflow: auto;
-      border: 1px solid #e6ebf2;
-      background: #fff;
+      border: 1px solid var(--table-border);
+      background: var(--table-background);
+    }
+
+    .table-compact,
+    .redlist-notify-account-list,
+    .risk-table {
+      --table-line-height: 1.6;
     }
 
     table {
@@ -2124,42 +2106,46 @@
       min-width: 860px;
       border-collapse: collapse;
       table-layout: fixed;
-      font-size: 14px;
+      font: 400 13px/var(--table-line-height) var(--table-font);
+    }
+
+    th,
+    td {
+      font: inherit;
+      color: var(--table-text);
+      background: var(--table-background);
+      border: 1px solid var(--table-border);
+      text-align: center;
     }
 
     th {
       height: 38px;
-      color: #4b5563;
-      font-weight: 500;
-      background: #fbfcfe;
-      border-right: 1px solid #edf1f5;
-      border-bottom: 1px solid #e7ebf1;
-      text-align: center;
+      font-weight: 700;
+      background: var(--table-header-background);
     }
 
     td {
       height: 42px;
       padding: 0 9px;
-      color: var(--table-text);
-      border-right: 1px solid #edf1f5;
-      border-bottom: 1px solid #edf1f5;
-      text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    th:last-child,
-    td:last-child {
-      border-right: 0;
+    tr > :is(th, td):first-child {
+      border-left-width: 0;
     }
 
-    tbody tr:hover td {
-      background: #f8fbff;
+    tr > :is(th, td):last-child {
+      border-right-width: 0;
     }
 
-    tbody tr:last-child td {
-      border-bottom: 0;
+    thead tr:first-child > :is(th, td) {
+      border-top-width: 0;
+    }
+
+    tbody tr:last-child > :is(th, td) {
+      border-bottom-width: 0;
     }
 
     .link {
@@ -2325,17 +2311,11 @@
       position: sticky;
       right: 0;
       z-index: 3;
-      background: #fff;
-      box-shadow: -1px 0 0 #e7ebf1;
+      box-shadow: -1px 0 0 var(--table-border);
     }
 
     .sim-management-table .sim-operations-head {
       z-index: 4;
-      background: #fbfcfe;
-    }
-
-    .sim-management-table tbody tr:hover .sim-operations-cell {
-      background: #f8fbff;
     }
 
     .sim-operations-title {
@@ -2427,17 +2407,11 @@
       left: 0;
       z-index: 3;
       min-width: 240px;
-      background: #fff;
-      box-shadow: 1px 0 0 #e7ebf1;
+      box-shadow: 1px 0 0 var(--table-border);
     }
 
     .sim-table th:first-child {
       z-index: 4;
-      background: #fbfcfe;
-    }
-
-    .sim-table tbody tr:hover td:first-child {
-      background: #f8fbff;
     }
 
     .sim-table td:first-child {
@@ -2492,7 +2466,6 @@
 
     .empty-row td {
       height: 160px;
-      color: #9ca7b5;
     }
 
     .detail-grid {
@@ -2787,6 +2760,15 @@
       background: rgba(21, 32, 50, 0.38);
     }
 
+    .modal-mask > [role="dialog"],
+    dialog {
+      border-radius: var(--dialog-radius);
+    }
+
+    .flowchart-preview-dialog {
+      --dialog-radius: var(--flowchart-preview-radius);
+    }
+
     .modal-head {
       flex: 0 0 52px;
       display: flex;
@@ -2823,7 +2805,6 @@
       width: 430px;
       min-height: 0;
       background: #fff;
-      border-radius: 4px;
       box-shadow: 0 16px 43px rgba(12, 27, 50, 0.22);
     }
 
@@ -2903,7 +2884,7 @@
     .redlist-notify-dialog input[type="checkbox"],
     .redlist-notify-dialog input[type="radio"] { accent-color: var(--blue); cursor: pointer; }
     .redlist-notify-search { position: relative; margin-bottom: 8px; }
-    .redlist-notify-account-list { max-height: 220px; overflow: auto; border: 1px solid #e6ebf2; border-radius: 3px; }
+    .redlist-notify-account-list { max-height: 220px; overflow: auto; border: 1px solid var(--table-border); border-radius: 3px; }
     .redlist-notify-dialog table { min-width: 0; }
     .redlist-notify-dialog th { position: sticky; top: 0; z-index: 1; height: 34px; }
     .redlist-notify-dialog td { height: 38px; }
@@ -3025,7 +3006,6 @@
 
     td.batch-operation-type {
       white-space: normal;
-      line-height: 20px;
     }
 
     .batch-task-table table {
@@ -3069,6 +3049,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .batch-task-combo-empty {
+      padding: 6px 11px;
+      color: var(--muted);
     }
 
     .batch-task-add-dialog .textarea-input {
@@ -3144,7 +3129,6 @@
       display: flex;
       flex-direction: column;
       background: #fff;
-      border-radius: 4px;
       box-shadow: 0 16px 43px rgba(12, 27, 50, 0.22);
     }
 
@@ -3423,8 +3407,8 @@
     .risk-table {
       max-height: 252px;
       overflow: auto;
-      border: 1px solid #e6ebf2;
-      background: #fff;
+      border: 1px solid var(--table-border);
+      background: var(--table-background);
     }
 
     .risk-table table {
@@ -3434,7 +3418,6 @@
 
     .risk-table td {
       text-align: left;
-      line-height: 1.5;
     }
 
     .risk-dialog .dialog-actions {
@@ -3616,9 +3599,10 @@
       scroll-padding: 42px 110px 12px 240px;
     }
     [data-monthly-view] .table-shell table { border-collapse: separate; border-spacing: 0; }
+    [data-monthly-view] .table-shell :is(th, td) { border-top-width: 0; border-left-width: 0; }
     [data-monthly-view] .table-shell .empty-row td { position: static; height: 140px; padding: 0; }
     [data-monthly-view] .monthly-empty-message { position: sticky; left: 0; width: var(--monthly-list-width); min-height: 140px; padding: 20px; display: flex; align-items: center; justify-content: center; white-space: normal; overflow-wrap: anywhere; }
-    [data-monthly-view] .table-shell thead th { position: sticky; top: 0; z-index: 4; background: #fbfcfe; }
+    [data-monthly-view] .table-shell thead th { position: sticky; top: 0; z-index: 4; }
     [data-monthly-view] .table-shell thead th:nth-child(-n+2) { z-index: 5; }
     .monthly-overview .table-shell { scroll-padding-right: 12px; }
     [data-monthly-view].monthly-has-list .pagination {
@@ -4482,7 +4466,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         batchTaskFileDetectionId: 0,
         batchTaskFileDetectionError: "",
         batchTaskAddType: "",
+        batchTaskAddSupplier: "",
         batchTaskAddGroup: null,
+        batchTaskComboQuery: null,
         batchTaskAddPoolUsage: "",
         batchTaskAddRemark: "",
         batchTaskAddError: "",
@@ -4942,7 +4928,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               name: "激活卡群组校验（功能说明）",
               version: "V3.1.5",
               ticket: "1002321",
-              text: "批量操作类型为激活卡时，新增必填项所属群组，下拉选择目标群组。逐条校验上传文件中的ICCID所属群组是否与所选群组一致；一致的码号继续激活，不一致的码号判定为失败，不影响同批次其他符合条件的码号处理。其他操作类型不增加此项群组限制"
+              text: "批量操作类型为激活卡时，从群组管理选择供应商和所属群组，两项都支持输入模糊搜索。选择供应商后仅列出其群组，也可直接选择群组并自动带出供应商。逐条校验上传文件中的ICCID所属群组是否与所选群组一致；不一致的码号不执行激活，不影响同批次其他符合条件的码号。其他操作类型不增加此项群组限制"
             },
             {
               name: "上传文件与激活数量检测（功能说明）",
@@ -5449,11 +5435,12 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           esc(value) + '" placeholder="' + esc(placeholder) + '">';
       }
 
-      function comboMarkup(key, value, options, placeholder) {
+      function comboMarkup(key, value, options, placeholder, searchText) {
         var isOpen = state.openCombo === key;
-        var keyword = String(value || "").toLowerCase();
+        var strictSearch = searchText !== undefined;
+        var keyword = String(strictSearch ? searchText.trim() : value || "").toLowerCase();
         var filtered = options.filter(function (item) { return !keyword || item.toLowerCase().indexOf(keyword) !== -1; });
-        if (!filtered.length) { filtered = options; }
+        if (!strictSearch && !filtered.length) { filtered = options; }
         return '<div class="combo ' + (isOpen ? "open" : "") + '">' +
           '<input class="text-input" data-action="combo-input" data-key="' + key + '" id="' + key + '" value="' +
           esc(value) + '" placeholder="' + esc(placeholder) + '">' +
@@ -5462,7 +5449,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           (isOpen ? '<div class="select-options">' + filtered.map(function (item) {
             return '<button class="select-option ' + (item === value ? "selected" : "") +
               '" data-action="choose-combo" data-key="' + key + '" data-value="' + esc(item) + '">' + esc(item) + "</button>";
-          }).join("") + "</div>" : "") +
+          }).join("") + (strictSearch && !filtered.length ? '<div class="batch-task-combo-empty" role="status">暂无匹配选项</div>' : "") + "</div>" : "") +
         "</div>";
       }
 
@@ -5735,7 +5722,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function isBatchTaskAddKey(key) {
-        return key === "batchTaskAddType" || key === "batchTaskAddGroup";
+        return key === "batchTaskAddType";
+      }
+
+      function isBatchTaskAddComboKey(key) {
+        return key === "batchTaskAddSupplier" || key === "batchTaskAddGroup";
       }
 
       function isEsimAllocateKey(key) {
@@ -5796,29 +5787,24 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           if (!state.groupEditDraft) { state.groupEditDraft = {}; }
           if (key === "groupEditFlowType") { state.groupEditDraft.flowType = value; }
         } else if (isBatchTaskAddKey(key)) {
-          if (key === "batchTaskAddType") {
-            var previousType = state.batchTaskAddType;
-            state.batchTaskAddType = value;
-            if (value === "激活卡") {
-              if (previousType !== value) { state.batchTaskAddPoolUsage = "资源池补池"; }
-              loadBatchTaskDemoFile();
-            }
-            if (value !== "激活卡") {
-              state.batchTaskAddGroup = null;
-              state.batchTaskAddPoolUsage = "";
-              state.batchTaskFileDetectionId += 1;
-              state.batchTaskFileDetecting = false;
-            }
+          var previousType = state.batchTaskAddType;
+          state.batchTaskAddType = value;
+          if (value === "激活卡") {
+            if (previousType !== value) { state.batchTaskAddPoolUsage = "资源池补池"; }
+            loadBatchTaskDemoFile();
           } else {
-            var group = state.groupRows.find(function (item) { return batchTaskGroupLabel(item) === value; });
-            state.batchTaskAddGroup = group ? group.id : null;
+            state.batchTaskAddSupplier = "";
+            state.batchTaskAddGroup = null;
+            state.batchTaskComboQuery = null;
+            state.batchTaskAddPoolUsage = "";
+            state.batchTaskFileDetectionId += 1;
+            state.batchTaskFileDetecting = false;
           }
-          if (state.batchTaskAddErrorField === key ||
-              (key === "batchTaskAddType" && value !== "激活卡")) {
+          if (state.batchTaskAddErrorField === key || value !== "激活卡") {
             state.batchTaskAddError = "";
             state.batchTaskAddErrorField = "";
           }
-          if (key === "batchTaskAddType" && value === "激活卡") { detectBatchTaskFile(); }
+          if (value === "激活卡") { detectBatchTaskFile(); }
         } else if (isGroupKey(key)) {
           state.groupQuery[key] = value;
         } else if (isBatchTaskKey(key)) {
@@ -6227,6 +6213,85 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function batchTaskGroupLabel(group) {
         return group.groupName + "（" + group.supplier + "）";
+      }
+
+      function batchTaskSupplierOptions() {
+        return Array.from(new Set(state.groupRows.map(function (group) { return group.supplier; }).filter(Boolean)));
+      }
+
+      function batchTaskGroupOptions() {
+        return state.groupRows.filter(function (group) {
+          return group.supplier && (!state.batchTaskAddSupplier || group.supplier === state.batchTaskAddSupplier);
+        });
+      }
+
+      function selectedBatchTaskGroup() {
+        return batchTaskGroupOptions().find(function (group) { return group.id === state.batchTaskAddGroup; });
+      }
+
+      function batchTaskComboValue(key) {
+        if (key === "batchTaskAddSupplier") { return state.batchTaskAddSupplier; }
+        var group = selectedBatchTaskGroup();
+        return group ? batchTaskGroupLabel(group) : "";
+      }
+
+      function batchTaskComboMarkup(key, options, placeholder) {
+        var query = state.openCombo === key ? state.batchTaskComboQuery : null;
+        return comboMarkup(key, query == null ? batchTaskComboValue(key) : query, options, placeholder, query || "");
+      }
+
+      function chooseBatchTaskCombo(key, value) {
+        if (key === "batchTaskAddSupplier") {
+          if (value && batchTaskSupplierOptions().indexOf(value) === -1) { return; }
+          state.batchTaskAddSupplier = value;
+          if (!value || !selectedBatchTaskGroup()) { state.batchTaskAddGroup = null; }
+        } else {
+          var group = batchTaskGroupOptions().find(function (item) { return batchTaskGroupLabel(item) === value; });
+          state.batchTaskAddGroup = group ? group.id : null;
+          if (group) { state.batchTaskAddSupplier = group.supplier; }
+        }
+        if (isBatchTaskAddComboKey(state.batchTaskAddErrorField)) {
+          state.batchTaskAddErrorField = state.batchTaskAddError = "";
+        }
+      }
+
+      function renderBatchTaskCombo(key, start, end) {
+        var body = document.querySelector(".batch-task-add-dialog .dialog-body");
+        var scrollTop = body ? body.scrollTop : 0;
+        renderOverlay();
+        body = document.querySelector(".batch-task-add-dialog .dialog-body");
+        if (body) { body.scrollTop = scrollTop; }
+        var input = document.getElementById(key);
+        if (input) {
+          input.focus({ preventScroll: true });
+          input.setSelectionRange(start == null ? input.value.length : start, end == null ? input.value.length : end);
+        }
+      }
+
+      function updateBatchTaskCombo(input) {
+        var key = input.dataset.key;
+        if (input.value !== batchTaskComboValue(key)) { chooseBatchTaskCombo(key, ""); }
+        state.openCombo = key;
+        state.openSelect = "";
+        state.batchTaskComboQuery = input.value;
+        renderBatchTaskCombo(key, input.selectionStart, input.selectionEnd);
+      }
+
+      function closeBatchTaskCombo() {
+        var key = state.openCombo;
+        var input = document.getElementById(key);
+        state.openCombo = "";
+        state.batchTaskComboQuery = null;
+        if (!input) { return; }
+        var combo = input.parentElement;
+        var popup = combo.querySelector(".select-options");
+        if (popup) { popup.remove(); }
+        combo.classList.remove("open");
+        input.value = batchTaskComboValue(key);
+        input.setAttribute("aria-expanded", "false");
+        input.removeAttribute("aria-controls");
+        var clear = combo.querySelector(".clear-value");
+        if (clear) { clear.hidden = !input.value; }
       }
 
       function cardMatchesActivationGroup(card, groupId) {
@@ -6706,13 +6771,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.batchTaskFileDetecting = false;
         state.batchTaskFileDetectionError = "";
         state.batchTaskAddType = "";
+        state.batchTaskAddSupplier = "";
         state.batchTaskAddGroup = null;
+        state.batchTaskComboQuery = null;
         state.batchTaskAddPoolUsage = "";
         state.batchTaskAddRemark = "";
         state.batchTaskAddError = "";
         state.batchTaskAddErrorField = "";
         state.batchTaskSubmitting = false;
-        state.openSelect = "";
+        state.openSelect = state.openCombo = "";
       }
 
       function loadBatchTaskDemoFile() {
@@ -6777,7 +6844,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         renderOverlay();
         var target = field === "batchTaskFile" ? document.getElementById("batchTaskUpload") :
           (field === "batchTaskAddPoolUsage" ? document.querySelector('[name="batchTaskAddPoolUsage"]') :
-            document.querySelector('#overlay [data-action="toggle-select"][data-key="' + field + '"]'));
+            document.querySelector('#overlay [role="combobox"][data-key="' + field + '"]'));
         if (target) { target.focus(); }
       }
 
@@ -6785,8 +6852,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (state.batchTaskSubmitting) { return; }
         if (!state.batchTaskFile) { batchTaskAddError("batchTaskFile", "请先上传SIM卡文件"); return; }
         if (!state.batchTaskAddType) { batchTaskAddError("batchTaskAddType", "请选择操作类型"); return; }
-        var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
+        var group = selectedBatchTaskGroup();
         var activation = state.batchTaskAddType === "激活卡";
+        if (activation && batchTaskSupplierOptions().indexOf(state.batchTaskAddSupplier) === -1) {
+          batchTaskAddError("batchTaskAddSupplier", "请从下拉列表选择供应商"); return;
+        }
         if (batchTaskIsPoolActivation()) {
           if (!group) { batchTaskAddError("batchTaskAddGroup", "请选择所属群组"); return; }
           await createPoolTask(group);
@@ -10431,7 +10501,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function batchTaskAddMarkup() {
         var activation = state.batchTaskAddType === "激活卡";
-        var group = state.groupRows.find(function (item) { return item.id === state.batchTaskAddGroup; });
         return '<div class="modal-mask">' +
           '<section class="batch-dialog batch-task-add-dialog" role="dialog" aria-modal="true" aria-label="批量操作新增" aria-busy="' + state.batchTaskSubmitting + '">' +
             '<header class="modal-head"><h2>批量操作新增</h2><button class="modal-close" data-action="close-batch-task-add" aria-label="关闭批量操作新增">' + closeIconMarkup() + '</button></header>' +
@@ -10457,8 +10526,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
                       (state.batchTaskAddPoolUsage === option.value ? ' checked' : '') + '><span>' + option.label + '</span></label>';
                   }).join("") + '</fieldset>' + batchTaskAddErrorMarkup("batchTaskAddPoolUsage") + '</div></div>' : "") +
               (activation ? '<div class="form-row compact">' +
+                '<label class="form-label required" id="batchTaskAddSupplierLabel" for="batchTaskAddSupplier">供应商</label>' +
+                '<div class="form-control">' + batchTaskComboMarkup("batchTaskAddSupplier", batchTaskSupplierOptions(), "请输入或选择供应商") +
+                  batchTaskAddErrorMarkup("batchTaskAddSupplier") + '</div></div><div class="form-row compact">' +
                 '<div class="form-label required" id="batchTaskAddGroupLabel">所属群组</div>' +
-                '<div class="form-control">' + selectMarkup("batchTaskAddGroup", group ? batchTaskGroupLabel(group) : "", state.groupRows.map(batchTaskGroupLabel), "请选择所属群组", false) +
+                '<div class="form-control">' + batchTaskComboMarkup("batchTaskAddGroup", batchTaskGroupOptions().map(batchTaskGroupLabel), "请输入或选择所属群组") +
                   '<div class="batch-hint" id="batchTaskGroupHint">仅对属于所选群组的ICCID执行激活，不一致的码号判定失败，并在任务详情的“失败原因”字段中记录原因。</div>' + batchTaskAddErrorMarkup("batchTaskAddGroup") + '</div></div>' : "") +
               '<div class="form-row">' +
                 '<label class="form-label" for="batchTaskAddRemark">备注</label>' +
@@ -10479,30 +10551,36 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           control.disabled = state.batchTaskSubmitting && (batchTaskIsPoolActivation() || control.dataset.action !== "close-batch-task-add");
           if (control.dataset.action === "confirm-batch-task-add" && state.batchTaskAddType === "激活卡" && state.batchTaskFileDetecting) { control.disabled = true; }
         });
-        ["batchTaskAddType", "batchTaskAddGroup"].forEach(function (key) {
-          var trigger = dialog.querySelector('[data-action="toggle-select"][data-key="' + key + '"]');
+        ["batchTaskAddType", "batchTaskAddSupplier", "batchTaskAddGroup"].forEach(function (key) {
+          var editable = isBatchTaskAddComboKey(key);
+          var trigger = dialog.querySelector('[data-action="' + (editable ? 'combo-input' : 'toggle-select') + '"][data-key="' + key + '"]');
           if (!trigger) { return; }
           trigger.setAttribute("role", "combobox");
           trigger.setAttribute("aria-labelledby", key + "Label");
           trigger.setAttribute("aria-required", "true");
-          trigger.setAttribute("aria-expanded", String(state.openSelect === key));
+          trigger.setAttribute("aria-expanded", String((editable ? state.openCombo : state.openSelect) === key));
           trigger.setAttribute("aria-haspopup", "listbox");
+          if (editable) {
+            trigger.setAttribute("autocomplete", "off");
+            trigger.setAttribute("aria-autocomplete", "list");
+          }
           var popup = trigger.parentElement.querySelector(".select-options");
           if (popup) {
             popup.id = key + "Options";
             popup.setAttribute("role", "listbox");
             popup.setAttribute("aria-labelledby", key + "Label");
             trigger.setAttribute("aria-controls", popup.id);
-            Array.prototype.forEach.call(popup.children, function (option) {
+            popup.querySelectorAll(".select-option").forEach(function (option) {
               option.setAttribute("role", "option");
               option.setAttribute("aria-selected", String(option.classList.contains("selected")));
               option.title = option.textContent;
+              if (editable) { option.tabIndex = -1; }
             });
           }
         });
         var errorControl = state.batchTaskAddErrorField === "batchTaskFile" ? dialog.querySelector("#batchTaskUpload") :
           (state.batchTaskAddErrorField === "batchTaskAddPoolUsage" ? dialog.querySelector("#batchTaskAddPoolUsage") :
-            dialog.querySelector('[data-action="toggle-select"][data-key="' + state.batchTaskAddErrorField + '"]'));
+            dialog.querySelector('[role="combobox"][data-key="' + state.batchTaskAddErrorField + '"]'));
         if (errorControl && state.batchTaskAddError) {
           errorControl.setAttribute("aria-invalid", "true");
           errorControl.setAttribute("aria-describedby", "batchTaskAddError");
@@ -10755,6 +10833,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         } else if (target.dataset.action === "manage-stop-change-remark") {
           state.manageStopChangeRemark = target.value;
         } else if (target.dataset.action === "combo-input") {
+          if (isBatchTaskAddComboKey(target.dataset.key)) {
+            if (!event.isComposing) { updateBatchTaskCombo(target); }
+            return;
+          }
           setQueryValue(target.dataset.key, target.value);
           state.openCombo = target.dataset.key;
           state.openSelect = "";
@@ -10775,6 +10857,25 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             if (error) { error.textContent = ""; error.hidden = true; }
           }
         }
+      });
+
+      document.addEventListener("compositionend", function (event) {
+        var input = event.target;
+        if (input.dataset.action === "combo-input" && isBatchTaskAddComboKey(input.dataset.key)) {
+          updateBatchTaskCombo(input);
+        }
+      });
+
+      document.addEventListener("focusout", function (event) {
+        var combo = event.target.closest(".batch-task-add-dialog .combo");
+        if (!combo || combo.contains(event.relatedTarget)) { return; }
+        var input = combo.querySelector('[data-action="combo-input"]');
+        if (!input || state.openCombo !== input.id) { return; }
+        queueMicrotask(function () {
+          if (input.isConnected && state.openCombo === input.id && !combo.contains(document.activeElement)) {
+            closeBatchTaskCombo();
+          }
+        });
       });
 
       document.addEventListener("change", function (event) {
@@ -10940,20 +11041,47 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }
         if (state.batchTaskAddOpen) {
           var dialog = document.querySelector(".batch-task-add-dialog");
+          var combo = target.closest(".combo");
           if (event.key === "Escape") {
             event.preventDefault();
-            if (state.openSelect) {
+            if (isBatchTaskAddComboKey(state.openCombo)) {
+              var closedComboKey = state.openCombo;
+              closeBatchTaskCombo();
+              document.getElementById(closedComboKey).focus();
+            } else if (state.openSelect) {
               var closedKey = state.openSelect;
               state.openSelect = "";
               renderOverlay();
               document.querySelector('#overlay [data-action="toggle-select"][data-key="' + closedKey + '"]').focus();
             } else { document.querySelector('#overlay [data-action="close-batch-task-add"]').click(); }
           } else if (event.key === "Tab") {
-            var controls = Array.prototype.slice.call(dialog.querySelectorAll('button:not(:disabled), input[type="radio"]:not(:disabled), textarea:not(:disabled)'));
+            var controls = Array.prototype.slice.call(dialog.querySelectorAll('button:not(:disabled):not([tabindex="-1"]), input:not(:disabled):not(.file-input), textarea:not(:disabled)'));
             var first = controls[0];
             var last = controls[controls.length - 1];
             if (event.shiftKey && target === first) { event.preventDefault(); last.focus(); }
             else if ((!event.shiftKey && target === last) || !dialog.contains(target)) { event.preventDefault(); first.focus(); }
+          } else if (combo && isBatchTaskAddComboKey(target.dataset.key) &&
+              (event.key === "ArrowDown" || event.key === "ArrowUp" || (event.key === "Enter" && target.dataset.action === "combo-input"))) {
+            event.preventDefault();
+            var comboKey = target.dataset.key;
+            if (state.openCombo !== comboKey) {
+              state.openCombo = comboKey;
+              state.openSelect = "";
+              state.batchTaskComboQuery = null;
+              renderBatchTaskCombo(comboKey);
+            }
+            var comboPopup = document.getElementById(comboKey + "Options");
+            var comboOptions = Array.from(comboPopup.querySelectorAll(".select-option"));
+            if (event.key === "Enter" && comboOptions.length === 1) {
+              comboOptions[0].click();
+            } else if (comboOptions.length) {
+              var currentComboIndex = comboOptions.indexOf(target);
+              var nextComboIndex = event.key === "ArrowUp" ?
+                (currentComboIndex <= 0 ? comboOptions.length - 1 : currentComboIndex - 1) :
+                (currentComboIndex + 1) % comboOptions.length;
+              comboOptions[nextComboIndex].focus();
+              comboOptions[nextComboIndex].scrollIntoView({ block: "nearest" });
+            }
           } else if (["ArrowDown", "ArrowUp", "Home", "End"].indexOf(event.key) !== -1 && target.closest(".select")) {
             event.preventDefault();
             var selectKey = target.dataset.key;
@@ -11579,6 +11707,19 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.openSelect = "";
           state.openCombo = "";
           state.simDateOpen = false;
+        } else if (isBatchTaskAddComboKey(key) && ["combo-input", "choose-combo", "clear-combo"].indexOf(action) !== -1) {
+          if (action === "combo-input") {
+            if (state.openCombo === key) { return; }
+            state.openCombo = key;
+            state.openSelect = "";
+            state.batchTaskComboQuery = null;
+            renderBatchTaskCombo(key, target.selectionStart, target.selectionEnd);
+          } else {
+            chooseBatchTaskCombo(key, action === "choose-combo" ? target.dataset.value : "");
+            state.openCombo = "";
+            state.batchTaskComboQuery = null;
+            renderBatchTaskCombo(key);
+          }
         } else if (action === "combo-input") {
           state.openCombo = key;
           state.openSelect = "";
@@ -11835,7 +11976,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.batchTaskAddOpen = true;
           state.batchTaskAddType = prior.operationType;
           state.batchTaskAddPoolUsage = prior.poolUsage;
-          state.batchTaskAddGroup = prior.targetGroupId;
+          var priorGroup = state.groupRows.find(function (item) { return item.id === prior.targetGroupId; });
+          state.batchTaskAddSupplier = priorGroup ? priorGroup.supplier : "";
+          state.batchTaskAddGroup = priorGroup ? priorGroup.id : null;
           state.batchTaskAddRemark = prior.remark;
           renderOverlay();
           document.getElementById("batchTaskUpload").focus();
