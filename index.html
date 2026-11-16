@@ -1750,6 +1750,29 @@
       margin-top: 16px;
     }
 
+    /* Keep search actions beside the fields when there are one to three filters. */
+    .filters:has(> .filter-grid > :last-child:nth-child(-n + 3)) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 14px 24px;
+    }
+
+    .filters:has(> .filter-grid > :last-child:nth-child(-n + 3)) > .filter-grid {
+      display: contents;
+    }
+
+    .filters:has(> .filter-grid > :last-child:nth-child(-n + 3)) > .filter-grid > * {
+      flex: 1 1 180px;
+      min-width: 0;
+      max-width: 220px;
+    }
+
+    .filters:has(> .filter-grid > :last-child:nth-child(-n + 3)) > .actions {
+      flex: 0 0 auto;
+      margin-top: 0;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -2829,7 +2852,20 @@
     }
 
     .batch-task-detail-body .table-shell {
-      margin-bottom: 18px;
+      margin: 18px;
+    }
+
+    .batch-task-detail-body .batch-task-detail-filters .filter-grid {
+      grid-template-columns: repeat(2, minmax(0, 220px));
+    }
+
+    .batch-task-detail-filters select.text-input {
+      appearance: none;
+      font: inherit;
+    }
+
+    .batch-task-detail-filters select:has(option[value=""]:checked) {
+      color: #a0a9b7;
     }
 
     .batch-task-detail-footer {
@@ -4469,6 +4505,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         batchTaskSubmissionId: 0,
         selectedBatchTaskId: null,
         batchTaskDetailOpener: null,
+        batchTaskDetailFilter: { iccid: "", status: "" },
         simRows: simRowsSeed.slice(),
         simQuery: blankSimQuery(),
         simApplied: blankSimQuery(),
@@ -6182,6 +6219,29 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         });
       }
 
+      function nextBatchTaskDisplayId(rows) {
+        return rows.reduce(function (max, task) {
+          var id = task.displayId || task.id;
+          return Number.isSafeInteger(id) ? Math.max(max, id) : max;
+        }, 10000) + 1;
+      }
+
+      function batchTaskNumber(id, date) {
+        return "BT" + date.replace(/-/g, "") + String(id - 10000).padStart(4, "0");
+      }
+
+      function numberExistingPoolTasks(rows, store) {
+        var unnumbered = rows.filter(function (task) { return !Number.isSafeInteger(task.displayId); });
+        if (!unnumbered.length) { return; }
+        var id = nextBatchTaskDisplayId(state.batchTaskRows.concat(rows));
+        unnumbered.sort(function (a, b) { return a.createdAt - b.createdAt || String(a.id).localeCompare(String(b.id)); }).forEach(function (task) {
+          var date = String(task.operatedAt || "").slice(0, 10);
+          task.displayId = id++;
+          task.batchNo = batchTaskNumber(task.displayId, /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : dateFilterToday());
+          store.put(task);
+        });
+      }
+
       function currentBatchTask() {
         return state.poolTaskRows.concat(state.batchTaskRows).find(function (row) { return row.id === state.selectedBatchTaskId; });
       }
@@ -6452,13 +6512,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       async function poolTaskTransaction(change, refreshBalances) {
         var db = await poolTaskDb();
         return new Promise(function (resolve, reject) {
-          var tx = db.transaction("tasks", change || refreshBalances ? "readwrite" : "readonly");
+          var tx = db.transaction("tasks", "readwrite");
           var store = tx.objectStore("tasks");
           var read = store.getAll();
           var rows, saved, failure;
           read.onsuccess = function () {
             rows = read.result;
             try {
+              numberExistingPoolTasks(rows, store);
               if (refreshBalances) {
                 rows.forEach(function (task) {
                   var review = task.review;
@@ -6693,10 +6754,15 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           targetGroupId: group.id, targetGroupName: batchTaskGroupLabel(group),
           remark: state.batchTaskAddRemark.trim(), operator: poolTaskActor.name, operatedAt: poolTaskTime()
         };
-        task.batchNo = task.id;
         state.batchTaskSubmitting = true;
         renderOverlay();
-        try { task = await poolTaskTransaction(function () { return task; }); }
+        try {
+          task = await poolTaskTransaction(function (rows) {
+            task.displayId = nextBatchTaskDisplayId(state.batchTaskRows.concat(rows));
+            task.batchNo = batchTaskNumber(task.displayId, task.operatedAt.slice(0, 10));
+            return task;
+          });
+        }
         catch (error) {
           state.batchTaskSubmitting = false;
           batchTaskAddError("batchTaskFile", error.message || "预校验任务创建失败，请重试");
@@ -6919,9 +6985,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           return;
         }
         if (activation && !group) { batchTaskAddError("batchTaskAddGroup", "请选择所属群组"); return; }
+        var id = nextBatchTaskDisplayId(state.batchTaskRows.concat(state.poolTaskRows));
         var task = {
-          id: state.batchTaskRows.reduce(function (max, item) { return Math.max(max, item.id); }, 10000) + 1,
-          batchNo: "BT" + dateFilterToday().replace(/-/g, "") + String(state.batchTaskRows.length + 1).padStart(4, "0"),
+          id: id,
+          batchNo: batchTaskNumber(id, dateFilterToday()),
           operationType: state.batchTaskAddType, count: 0, status: "未完成",
           poolUsage: activation ? state.batchTaskAddPoolUsage : "",
           remark: state.batchTaskAddRemark.trim() || ("文件：" + state.batchTaskFileName),
@@ -7016,25 +7083,16 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '</div>';
       }
 
-      function poolTaskListFields(task) {
-        if (!task.fileName) { return "<td>--</td>".repeat(7); }
-        var review = task.review;
-        return [task.fileName, "是", task.targetGroupName, review ? review.total : "--", review ? review.eligible.length : "--",
-          review ? review.invalid : "--", review ? poolTaskMoney(review.balance.chargeCents) : "--"
-        ].map(function (value) { return '<td title="' + esc(value) + '">' + esc(value) + '</td>'; }).join("");
-      }
-
-      function batchTaskRowMarkup(row, showPoolFields) {
+      function batchTaskRowMarkup(row) {
         var pool = !!row.fileName;
         var cancelled = row.status === "已取消";
         return "<tr>" +
-          "<td>" + esc(row.id) + "</td>" +
+          "<td>" + esc(row.displayId || row.id) + "</td>" +
           '<td title="' + esc(row.batchNo) + '">' + (cancelled ? esc(row.batchNo) :
             '<button class="batch-link ' + (state.selectedBatchTaskId === row.id ? "active" : "") + '" data-action="open-batch-task-detail" data-id="' + row.id + '" title="' + esc(row.batchNo) + '">' + esc(row.batchNo) + "</button>") + "</td>" +
           '<td class="batch-operation-type" title="' + esc(batchTaskOperationLabel(row)) + '">' + esc(batchTaskOperationLabel(row)) + '</td>' +
           "<td>" + esc(pool ? (row.execution && row.execution.dispatched ? row.execution.sent : "--") : row.count) + "</td>" +
           "<td>" + esc(row.status) + "</td>" +
-          (showPoolFields ? poolTaskListFields(row) : "") +
           '<td title="' + esc(row.remark) + '">' + esc(row.remark) + "</td>" +
           "<td>" + esc(row.operator) + "</td>" +
           "<td>" + esc(row.operatedAt) + "</td>" +
@@ -10008,7 +10066,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
 
       function batchTaskMarkup() {
         var rows = filteredBatchTaskRows();
-        var showPoolFields = rows.some(function (row) { return !!row.fileName; });
         return '<div class="panel page-panel">' +
           '<div class="filters">' +
             '<div class="filter-grid">' +
@@ -10028,12 +10085,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           "</div></div>" +
           '<div class="table-shell batch-task-table">' +
             '<table><colgroup><col style="width:80px"><col style="width:180px"><col style="width:210px"><col style="width:100px"><col style="width:100px">' +
-              (showPoolFields ? '<col style="width:170px"><col style="width:125px"><col style="width:175px"><col style="width:115px"><col style="width:115px"><col style="width:130px"><col style="width:140px">' : "") +
-              '<col style="width:200px"><col style="width:100px"><col style="width:190px"><col style="width:' + (showPoolFields ? 300 : 120) + 'px"></colgroup>' +
-              "<thead><tr><th>ID</th><th>批次号</th><th>操作类型</th><th>操作数量</th><th>状态</th>" +
-              (showPoolFields ? "<th>文件名称</th><th>是否资源池补池</th><th>所属群组</th><th>文件卡片总数</th><th>符合条件卡数</th><th>不符合条件卡数</th><th>预计扣减金额（元）</th>" : "") +
-              "<th>备注</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead>" +
-              "<tbody>" + (rows.length ? rows.map(function (row) { return batchTaskRowMarkup(row, showPoolFields); }).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据</td></tr>') + "</tbody>" +
+              '<col style="width:200px"><col style="width:100px"><col style="width:190px"><col style="width:160px"></colgroup>' +
+              "<thead><tr><th>ID</th><th>批次号</th><th>操作类型</th><th>操作数量</th><th>状态</th><th>备注</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead>" +
+              "<tbody>" + (rows.length ? rows.map(batchTaskRowMarkup).join("") : '<tr class="empty-row"><td colspan="9">暂无符合条件的数据</td></tr>') + "</tbody>" +
             "</table>" +
           "</div>" +
           '<div class="pagination"><span>共' + rows.length + '条</span><span class="select-mini">20条/页&nbsp;⌄</span><span class="page-box">1</span><span>前往</span><input class="jump-input" value="1" readonly><span>页</span></div>' +
@@ -10091,16 +10145,39 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         XLSX.writeFile(workbook, task.batchNo + (execution ? "-执行明细.xlsx" : "-预校验失败明细.xlsx"));
       }
 
+      function batchTaskDetailResultRows(task) {
+        var filter = state.batchTaskDetailFilter;
+        var rows = batchTaskDetailRows(task).filter(function (row) {
+          return (!filter.iccid || row.iccid.indexOf(filter.iccid) !== -1) && (!filter.status || row.status === filter.status);
+        });
+        return rows.length ? rows.map(batchTaskDetailRowMarkup).join("") :
+          '<tr class="empty-row"><td colspan="' + batchTaskDetailColumns.length + '">暂无符合条件的数据</td></tr>';
+      }
+
       function batchTaskDetailTableMarkup(task) {
-        var rows = batchTaskDetailRows(task);
-        return '<div class="operate-bar"><div class="operate-actions"><span>批次号：' + esc(task.batchNo) + "</span>" +
-            (task.targetGroupName ? '<span>所属群组：' + esc(task.targetGroupName) + '</span>' : "") + "</div></div>" +
-          '<div class="table-shell" role="region" aria-label="卡片结果明细" tabindex="0">' +
+        return '<div class="table-shell" role="region" aria-label="卡片结果明细" tabindex="0">' +
             '<table><colgroup>' + batchTaskDetailColumns.map(function (column) { return '<col style="width:' + column[2] + 'px">'; }).join("") + '</colgroup>' +
               '<thead><tr>' + batchTaskDetailColumns.map(function (column) { return '<th>' + column[1] + '</th>'; }).join("") + '</tr></thead>' +
-              "<tbody>" + (rows.length ? rows.map(batchTaskDetailRowMarkup).join("") : '<tr class="empty-row"><td colspan="' + batchTaskDetailColumns.length + '">暂无符合条件的数据</td></tr>') + "</tbody>" +
+              '<tbody id="batchTaskDetailResultRows">' + batchTaskDetailResultRows(task) + '</tbody>' +
             "</table>" +
           "</div>";
+      }
+
+      function batchTaskDetailResultsMarkup(task) {
+        var filter = state.batchTaskDetailFilter;
+        var statuses = task.execution ? ["成功", "失败", "未执行", "待执行", "待确认结果"] : ["成功", "失败"];
+        return '<form class="filters batch-task-detail-filters" id="batchTaskDetailFilters" role="search" aria-label="任务明细查询">' +
+          '<div class="filter-grid"><input class="text-input" name="iccid" aria-label="ICCID" placeholder="请输入 ICCID" value="' + esc(filter.iccid) + '">' +
+          '<div class="select"><select class="text-input" name="status" aria-label="状态"><option value="">请选择状态</option>' +
+          statuses.map(function (status) {
+            return '<option value="' + esc(status) + '"' + (filter.status === status ? ' selected' : '') + '>' + esc(status) + '</option>';
+          }).join("") + '</select><span class="caret"></span></div></div>' +
+          '<div class="actions"><button class="btn btn-outline" type="submit">搜索</button><button class="btn btn-gray" type="reset">重置</button></div></form>' +
+          batchTaskDetailTableMarkup(task);
+      }
+
+      function renderBatchTaskDetailResults(task) {
+        document.getElementById("batchTaskDetailResultRows").innerHTML = batchTaskDetailResultRows(task);
       }
 
       function poolTaskDetailActionsMarkup(task) {
@@ -10121,18 +10198,14 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var footer = document.getElementById("batchTaskDetailActions");
         var active = document.activeElement;
         if (task.execution) {
-          var table = body.querySelector(".table-shell");
-          var left = table ? table.scrollLeft : 0;
-          var top = body.scrollTop;
-          var tableFocused = table && table === active;
+          if (document.getElementById("batchTaskDetailResultRows")) {
+            renderBatchTaskDetailResults(task);
+            return;
+          }
           var footerFocused = footer && footer.contains(active);
           body.closest(".batch-task-detail-dialog").classList.remove("summary");
-          body.innerHTML = batchTaskDetailTableMarkup(task);
+          body.innerHTML = batchTaskDetailResultsMarkup(task);
           if (footer) { footer.remove(); }
-          body.scrollTop = top;
-          table = body.querySelector(".table-shell");
-          table.scrollLeft = left;
-          if (tableFocused) { table.focus({ preventScroll: true }); }
           if (footerFocused) { document.querySelector('[data-action="close-batch-task-detail"]').focus({ preventScroll: true }); }
           return;
         }
@@ -10155,7 +10228,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           '<header class="modal-head"><h2 id="batchTaskDetailTitle">批量任务详情</h2><button class="modal-close" data-action="close-batch-task-detail" aria-label="关闭批量任务详情">' +
           closeIconMarkup() + '</button></header>' +
           '<div class="batch-task-detail-body" id="batchTaskDetailBody">' +
-          (summary ? poolTaskDetailMarkup(task) : task ? batchTaskDetailTableMarkup(task) : '<div class="operate-bar">未找到该任务</div>') +
+          (summary ? poolTaskDetailMarkup(task) : task ? batchTaskDetailResultsMarkup(task) : '<div class="operate-bar">未找到该任务</div>') +
           '</div>' + (summary ? '<footer class="batch-task-detail-footer" id="batchTaskDetailActions">' + poolTaskDetailActionsMarkup(task) + '</footer>' : '') +
           '</section></div>';
       }
@@ -10166,6 +10239,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (!task || task.status === "已取消") { return; }
         state.selectedBatchTaskId = task.id;
         state.batchTaskDetailOpener = opener;
+        state.batchTaskDetailFilter = { iccid: "", status: "" };
         dismissDatePicker();
         if (state.openSelect || state.openCombo) {
           state.openSelect = state.openCombo = "";
@@ -11007,6 +11081,23 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         }
       });
 
+      document.addEventListener("submit", function (event) {
+        var form = event.target;
+        if (form.id !== "batchTaskDetailFilters") { return; }
+        event.preventDefault();
+        state.batchTaskDetailFilter = { iccid: form.elements.iccid.value.trim(), status: form.elements.status.value };
+        renderBatchTaskDetailResults(currentBatchTask());
+      });
+
+      document.addEventListener("reset", function (event) {
+        var form = event.target;
+        if (form.id !== "batchTaskDetailFilters") { return; }
+        event.preventDefault();
+        form.elements.iccid.value = form.elements.status.value = "";
+        state.batchTaskDetailFilter = { iccid: "", status: "" };
+        renderBatchTaskDetailResults(currentBatchTask());
+      });
+
       document.addEventListener("keydown", function (event) {
         var target = event.target;
         if (event.isComposing || event.keyCode === 229) { return; }
@@ -11015,7 +11106,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             event.preventDefault();
             closeBatchTaskDetail();
           } else if (event.key === "Tab") {
-            var controls = Array.from(document.querySelectorAll(".batch-task-detail-dialog button:not(:disabled), .batch-task-detail-dialog [tabindex='0']"));
+            var controls = Array.from(document.querySelectorAll(".batch-task-detail-dialog :is(button:not(:disabled), input, select, [tabindex='0'])"));
             var boundary = event.shiftKey ? controls[0] : controls[controls.length - 1];
             if (target === boundary || controls.indexOf(target) === -1) {
               event.preventDefault();
