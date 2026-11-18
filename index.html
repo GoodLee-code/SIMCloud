@@ -3965,10 +3965,10 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       };
       var defaultResourceReplenishmentDays = 3;
       var defaultResourceLookbackDays = 7;
-      var maxResourceLookbackDays = 30;
+      var resourceDailyUsageSeedDays = 30;
       var resourceNotificationStorageKey = "simcloud.resource-pool.notification.v1";
       var redlistRemainingBalanceNote = "剩余余额=红名单额度+账户余额；";
-      var inlineInfoSelector = '[data-action="traffic-history-info"], [data-action="sim-reset-info"], [data-action="group-field-info"], [data-action="resource-replenishment-info"], [data-action="redlist-balance-info"]';
+      var inlineInfoSelector = '[data-action="traffic-history-info"], [data-action="sim-reset-info"], [data-action="group-field-info"], [data-action="resource-replenishment-info"], [data-action="resource-coverage-info"], [data-action="redlist-balance-info"]';
       inlineInfoSelector += ', [data-action="monthly-flow-info"]';
       var simDataResetCooldownMs = 3 * 60 * 1000;
       var simDataResetStorageKey = "simcloud.data-service-reset.cooldowns";
@@ -4548,6 +4548,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         simResetInfoOpen: false,
         groupFieldInfoOpen: "",
         resourceReplenishmentInfoOpen: false,
+        resourceCoverageInfoOpen: false,
         redlistBalanceInfoOpen: false,
         monthlyFlowInfoOpen: "",
         simDataResetConfirmIccid: "",
@@ -7088,8 +7089,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var cancelled = row.status === "已取消";
         return "<tr>" +
           "<td>" + esc(row.displayId || row.id) + "</td>" +
-          '<td title="' + esc(row.batchNo) + '">' + (cancelled ? esc(row.batchNo) :
-            '<button class="batch-link ' + (state.selectedBatchTaskId === row.id ? "active" : "") + '" data-action="open-batch-task-detail" data-id="' + row.id + '" title="' + esc(row.batchNo) + '">' + esc(row.batchNo) + "</button>") + "</td>" +
+          "<td>" + esc(row.batchNo) + "</td>" +
           '<td class="batch-operation-type" title="' + esc(batchTaskOperationLabel(row)) + '">' + esc(batchTaskOperationLabel(row)) + '</td>' +
           "<td>" + esc(pool ? (row.execution && row.execution.dispatched ? row.execution.sent : "--") : row.count) + "</td>" +
           "<td>" + esc(row.status) + "</td>" +
@@ -7604,21 +7604,33 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var earlierDays = resourceUsedDays(row) - daily.length;
         if (monthly == null || monthly < weekly || earlierDays <= 0) { return daily; }
         var earlierAverage = (monthly - weekly) / earlierDays;
-        for (var index = 0; daily.length < maxResourceLookbackDays; index += 1) {
+        for (var index = 0; daily.length < resourceDailyUsageSeedDays; index += 1) {
           daily.push(Math.round(earlierAverage * (index + 1)) - Math.round(earlierAverage * index));
         }
         return daily;
       }
 
+      function resourceCoverageNote() {
+        var days = state.resourceNotifyConfig.lookbackDays;
+        return [
+          "预计可用天数 = 剩余用量 ÷ 日均用量。",
+          "日均用量依据「补卡与通知配置」中的「日均统计天数」计算，当前为最近 " + days + " 天总用量 ÷ " + days + "。",
+          "可点击资源池管理右上角的「补卡与通知配置」按钮调整统计天数。",
+          "统计期间无用量或数据不足时，暂无法估算可用天数。"
+        ].join("\n");
+      }
+
       function resourceReplenishmentNote() {
         var config = state.resourceNotifyConfig;
         return [
-          "当前保障 " + config.days + " 天，日均用量按最近 " + config.lookbackDays + " 天计算。两项均可在「补卡与通知配置」中修改。",
+          "建议补卡数量按补足「目标可用天数」计算，当前为 " + config.days + " 天；「日均统计天数」当前为最近 " + config.lookbackDays + " 天。",
+          "可点击资源池管理右上角的「补卡与通知配置」按钮，修改以上两项。",
           "1. 日均用量 = 最近 " + config.lookbackDays + " 天总用量 ÷ " + config.lookbackDays + "。",
-          "2. 还缺的流量 = 日均用量 × " + config.days + " − 剩余用量。结果小于或等于 0，建议补 0 张。",
-          "3. 建议补卡数量 = 还缺的流量 ÷ 单卡流量补给量，有小数就向上取整。",
+          "2. 需补充流量 = 日均用量 × " + config.days + " 天 − 剩余用量；结果小于或等于 0 时，建议补 0 张。",
+          "3. 建议补卡数量 = 需补充流量 ÷ 单卡流量补给量，结果向上取整。",
+          "单卡流量补给量（GB）在「群组管理」中维护。",
           "",
-          "以 3 天为例：日均用 100 GB，3 天需 300 GB。还剩 150 GB，每张卡补 20 GB，(300 − 150) ÷ 20 = 7.5，建议补 8 张。"
+          "例如：目标可用天数为 3 天，日均用量为 100 GB，剩余用量为 150 GB，每张卡补给 20 GB，则 (100 × 3 − 150) ÷ 20 = 7.5，建议补 8 张。"
         ].join("\n");
       }
 
@@ -7735,8 +7747,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               "</div>" +
             "</div>" +
             '<div class="resource-table">' +
-              '<table><colgroup><col style="width:94px"><col style="width:130px"><col style="width:112px"><col style="width:140px"><col style="width:112px"><col style="width:105px"><col style="width:124px"><col style="width:138px"><col style="width:115px"><col style="width:190px"></colgroup>' +
-                '<thead><tr><th>供应商</th><th>群组名称</th><th>预计可用天数（天）</th>' +
+              '<table><colgroup><col style="width:94px"><col style="width:130px"><col style="width:150px"><col style="width:140px"><col style="width:112px"><col style="width:105px"><col style="width:124px"><col style="width:138px"><col style="width:115px"><col style="width:190px"></colgroup>' +
+                '<thead><tr><th>供应商</th><th>群组名称</th><th><span class="resource-column-title">预计可用天数（天）' + infoIconMarkup("resource-coverage-info", "预计可用天数（天）计算说明") + '</span></th>' +
                   '<th><span class="resource-column-title">建议补卡数量（张）' + infoIconMarkup("resource-replenishment-info", "建议补卡数量（张）计算说明") + '</span></th>' +
                   '<th>剩余用量(GB)</th><th>群组简称</th><th>使用量(GB)</th><th title="本月已用量 / 本月已用天数">本月日均用量（GB）</th><th>使用量百分比</th><th>时间</th></tr></thead>' +
                 "<tbody>" + (rows.length ? rows.map(resourceRowMarkup).join("") : '<tr class="empty-row"><td colspan="10">暂无符合条件的资源池</td></tr>') + "</tbody>" +
@@ -9745,7 +9757,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function validResourceLookbackDays(days) {
-        return Number.isSafeInteger(days) && days >= 1 && days <= maxResourceLookbackDays;
+        return Number.isSafeInteger(days) && days >= 1;
       }
 
       function readResourceNotificationConfig() {
@@ -9904,7 +9916,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           errors.days = "请输入大于或等于1的整数天数";
         }
         if (isResource && (!/^\d+$/.test(draft.lookbackDays) || !validResourceLookbackDays(lookbackDays))) {
-          errors.lookbackDays = "请输入 1 至 " + maxResourceLookbackDays + " 的整数天数";
+          errors.lookbackDays = "请输入大于或等于1的整数天数";
         }
         if (!isResource && !validRedlistNotifyTime(time)) { errors.time = "请输入有效的24小时制时间，例如09:30"; }
         var ids = notificationRecipientIds(draft.recipientIds);
@@ -9968,8 +9980,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
                 "按够用该天数计算建议补卡数量。预计可用天数低于目标时通知所选人员；等于目标时不通知。" :
                 "距离红名单到期指定天数时通知。") + '</div>' + redlistNotifyErrorMarkup("days") + '</div></div>' +
             (isResource ? '<div class="form-row"><label class="form-label required" for="resourceNotifyLookback">日均统计天数</label><div class="form-control">' +
-              '<div class="redlist-notify-inline"><input class="text-input" id="resourceNotifyLookback" type="number" min="1" max="' + maxResourceLookbackDays + '" step="1" inputmode="numeric" data-action="resource-notify-lookback" value="' + esc(draft.lookbackDays) + '" aria-required="true" aria-describedby="resourceNotifyLookbackHelp redlistNotifyError-lookbackDays"><span>天</span></div>' +
-              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">取最近指定天数的总用量计算日均（1 至 ' + maxResourceLookbackDays + ' 天），用于补卡建议、可用天数估算和通知判断。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
+              '<div class="redlist-notify-inline"><input class="text-input" id="resourceNotifyLookback" type="number" min="1" step="1" inputmode="numeric" data-action="resource-notify-lookback" value="' + esc(draft.lookbackDays) + '" aria-required="true" aria-describedby="resourceNotifyLookbackHelp redlistNotifyError-lookbackDays"><span>天</span></div>' +
+              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">取最近指定天数的总用量计算日均，用于补卡建议、可用天数估算和通知判断。请输入正整数，不设天数上限；历史用量数据不足时暂不估算。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
               '<div class="form-row"><div class="form-label required" id="redlistNotifyFrequencyLabel">通知频率</div><div class="form-control">' +
               '<fieldset class="redlist-notify-frequency" aria-labelledby="redlistNotifyFrequencyLabel">' +
               [{ value: "once", label: "仅通知一次" }, { value: "daily", label: "每日通知" }].map(function (item) {
@@ -10245,9 +10257,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
           state.openSelect = state.openCombo = "";
           renderContent();
         }
-        document.querySelectorAll(".batch-task-table .batch-link").forEach(function (button) {
-          button.classList.toggle("active", button.dataset.id === id);
-        });
         $(".layout").inert = $(".topbar").inert = $("#pageDocTrigger").inert = true;
         renderOverlay();
         $('[data-action="close-batch-task-detail"]').focus();
@@ -10872,6 +10881,11 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function showInlineInfo(target) {
+        if (target.dataset.action === "resource-coverage-info") {
+          target.setAttribute("aria-expanded", "true");
+          showFloatingPopover(target, esc(resourceCoverageNote()).replace(/\n/g, "<br>"));
+          return;
+        }
         if (target.dataset.action === "monthly-flow-info") {
           target.setAttribute("aria-expanded", "true");
           showFloatingPopover(target, esc(monthlyFlowNotes[target.dataset.field]).replace(/\n/g, "<br>"));
@@ -10888,6 +10902,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       }
 
       function isInlineInfoPinned(target) {
+        if (target.dataset.action === "resource-coverage-info") { return state.resourceCoverageInfoOpen; }
         if (target.dataset.action === "monthly-flow-info") { return state.monthlyFlowInfoOpen === target.dataset.field; }
         if (target.dataset.action === "redlist-balance-info") { return state.redlistBalanceInfoOpen; }
         if (target.dataset.action === "resource-replenishment-info") { return state.resourceReplenishmentInfoOpen; }
@@ -10921,6 +10936,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         state.simResetInfoOpen = false;
         state.groupFieldInfoOpen = "";
         state.resourceReplenishmentInfoOpen = false;
+        state.resourceCoverageInfoOpen = false;
         state.redlistBalanceInfoOpen = false;
         state.monthlyFlowInfoOpen = "";
         Array.prototype.forEach.call(document.querySelectorAll(inlineInfoSelector), function (button) {
@@ -11118,8 +11134,8 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (event.key === "Escape" && (state.monthlyFlowInfoOpen || document.querySelector('[data-action="monthly-flow-info"][aria-expanded="true"]'))) {
           hideManageStopPopover(); event.preventDefault(); return;
         }
-        if (event.key === "Escape" && (state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen ||
-            document.querySelector('[data-action="group-field-info"][aria-expanded="true"], [data-action="resource-replenishment-info"][aria-expanded="true"], [data-action="redlist-balance-info"][aria-expanded="true"]'))) {
+        if (event.key === "Escape" && (state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.resourceCoverageInfoOpen || state.redlistBalanceInfoOpen ||
+            document.querySelector('[data-action="group-field-info"][aria-expanded="true"], [data-action="resource-replenishment-info"][aria-expanded="true"], [data-action="resource-coverage-info"][aria-expanded="true"], [data-action="redlist-balance-info"][aria-expanded="true"]'))) {
           event.preventDefault();
           hideManageStopPopover();
           return;
@@ -11463,7 +11479,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         if (state.simDateOpen && state.dateTarget === "monthlyTraffic" && !event.target.closest('.monthly-period-actions .date-field')) { dismissMonthlyPeriod(); }
         var infoAction = target && target.matches(inlineInfoSelector);
         if (state.monthlyFlowInfoOpen && !infoAction) { hideManageStopPopover(); }
-        if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen || state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.redlistBalanceInfoOpen) && !infoAction) {
+        if ((state.trafficHistoryInfoOpen || state.simResetInfoOpen || state.groupFieldInfoOpen || state.resourceReplenishmentInfoOpen || state.resourceCoverageInfoOpen || state.redlistBalanceInfoOpen) && !infoAction) {
           hideManageStopPopover();
         }
         if (!target) {
@@ -11496,6 +11512,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
             if (action === "monthly-flow-info") { state.monthlyFlowInfoOpen = target.dataset.field; }
             else if (action === "redlist-balance-info") { state.redlistBalanceInfoOpen = true; }
             else if (action === "resource-replenishment-info") { state.resourceReplenishmentInfoOpen = true; }
+            else if (action === "resource-coverage-info") { state.resourceCoverageInfoOpen = true; }
             else if (action === "group-field-info") { state.groupFieldInfoOpen = target.dataset.field; }
             else if (action === "sim-reset-info") { state.simResetInfoOpen = true; }
             else { state.trafficHistoryInfoOpen = true; }
