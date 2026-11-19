@@ -2900,6 +2900,7 @@
     }
     .redlist-notify-dialog .dialog-body { min-height: 0; overflow-y: auto; padding: 22px 24px 4px; }
     .redlist-notify-dialog .form-label { width: 112px; flex-shrink: 0; }
+    .resource-notify-dialog .form-label { width: 144px; }
     .redlist-notify-dialog .form-row { margin-bottom: 18px; }
     .redlist-notify-dialog .dialog-actions { flex-shrink: 0; margin: 0; padding: 16px 24px; border-top: 1px solid #eef1f5; }
     .redlist-notify-dialog :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
@@ -2923,9 +2924,6 @@
     .redlist-notify-error { margin-top: 6px; color: #f05252; line-height: 1.6; }
     .redlist-notify-dialog [aria-invalid="true"] { border-color: #f05252; }
     .redlist-notify-dialog [hidden] { display: none !important; }
-    .resource-notify-record { margin-top: 10px; line-height: 1.6; overflow-wrap: anywhere; }
-    .resource-notify-record summary { color: #1687e8; cursor: pointer; }
-    .resource-notify-record ul { margin: 6px 0 0; padding-left: 20px; }
     body.redlist-notify-open { overflow: hidden; }
     body.redlist-notify-open .page-doc-trigger { visibility: hidden; }
     @media (max-width: 520px) {
@@ -7613,24 +7611,17 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
       function resourceCoverageNote() {
         var days = state.resourceNotifyConfig.lookbackDays;
         return [
-          "预计可用天数 = 剩余用量 ÷ 日均用量。",
-          "日均用量依据「补卡与通知配置」中的「日均统计天数」计算，当前为最近 " + days + " 天总用量 ÷ " + days + "。",
-          "可点击资源池管理右上角的「补卡与通知配置」按钮调整统计天数。",
-          "统计期间无用量或数据不足时，暂无法估算可用天数。"
+          "预计可用天数 = 剩余用量 ÷ 测算日均用量。",
+          "测算日均用量按最近 " + days + " 天计算，可在「补卡与通知配置」中修改「日均用量测算范围」。"
         ].join("\n");
       }
 
       function resourceReplenishmentNote() {
         var config = state.resourceNotifyConfig;
         return [
-          "建议补卡数量按补足「目标可用天数」计算，当前为 " + config.days + " 天；「日均统计天数」当前为最近 " + config.lookbackDays + " 天。",
-          "可点击资源池管理右上角的「补卡与通知配置」按钮，修改以上两项。",
-          "1. 日均用量 = 最近 " + config.lookbackDays + " 天总用量 ÷ " + config.lookbackDays + "。",
-          "2. 需补充流量 = 日均用量 × " + config.days + " 天 − 剩余用量；结果小于或等于 0 时，建议补 0 张。",
-          "3. 建议补卡数量 = 需补充流量 ÷ 单卡流量补给量，结果向上取整。",
-          "单卡流量补给量（GB）在「群组管理」中维护。",
-          "",
-          "例如：目标可用天数为 3 天，日均用量为 100 GB，剩余用量为 150 GB，每张卡补给 20 GB，则 (100 × 3 − 150) ÷ 20 = 7.5，建议补 8 张。"
+          "需补用量 = 测算日均用量 × 目标可用天数 − 剩余用量。",
+          "建议补卡数量 = 需补用量 ÷ 单卡流量补给量，向上取整。剩余用量够用时，建议补 0 张。",
+          "当前目标为 " + config.days + " 天，可在「补卡与通知配置」中修改。"
         ].join("\n");
       }
 
@@ -9815,18 +9806,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         toast("已生成资源池模拟通知，涉及 " + notice.items.length + " 个资源池");
       }
 
-      function resourceNoticeMarkup() {
-        var notice = state.resourceNotifyConfig.lastNotice;
-        if (!notice) { return ""; }
-        var recipients = redlistNotificationAccounts.filter(function (account) {
-          return notice.recipientIds.indexOf(account.id) !== -1;
-        }).map(function (account) { return account.name; }).join("、");
-        var lookbackDays = validResourceLookbackDays(notice.lookbackDays) ? notice.lookbackDays : defaultResourceLookbackDays;
-        return '<details class="resource-notify-record"><summary>最近一次模拟通知（' + notice.items.length + ' 个资源池）</summary>' +
-          '<div>' + esc(notice.at) + ' · 目标 ' + esc(notice.days) + ' 天 · 按近 ' + lookbackDays + ' 天算日均</div><div>通知对象：' + esc(recipients) + '</div><ul>' +
-          notice.items.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join("") + '</ul></details>';
-      }
-
       function openNotification(kind) {
         var config = kind === "resource" ? state.resourceNotifyConfig : state.redlistNotifyConfig;
         state.notificationDraft = config ? { days: String(config.days), frequency: config.frequency, time: config.time, recipientIds: config.recipientIds.slice() } :
@@ -9971,7 +9950,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
         var isResource = state.notificationKind === "resource";
         var draft = state.notificationDraft;
         var title = isResource ? "补卡与通知配置" : "通知配置";
-        return '<div class="modal-mask redlist-notify-mask"><section class="batch-dialog redlist-notify-dialog" role="dialog" aria-modal="true" aria-labelledby="redlistNotifyTitle">' +
+        return '<div class="modal-mask redlist-notify-mask"><section class="batch-dialog redlist-notify-dialog' + (isResource ? ' resource-notify-dialog' : '') + '" role="dialog" aria-modal="true" aria-labelledby="redlistNotifyTitle">' +
           '<header class="modal-head"><h2 id="redlistNotifyTitle">' + title + '</h2><button class="modal-close" data-action="close-notification" aria-label="关闭' + title + '">' + closeIconMarkup() + '</button></header>' +
           '<div class="dialog-body">' +
             '<div class="form-row"><label class="form-label required" for="redlistNotifyDays">' + (isResource ? "目标可用天数" : "提前通知天数") + '</label><div class="form-control">' +
@@ -9979,9 +9958,9 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<div class="redlist-notify-help" id="redlistNotifyDaysHelp">' + (isResource ?
                 "按够用该天数计算建议补卡数量。预计可用天数低于目标时通知所选人员；等于目标时不通知。" :
                 "距离红名单到期指定天数时通知。") + '</div>' + redlistNotifyErrorMarkup("days") + '</div></div>' +
-            (isResource ? '<div class="form-row"><label class="form-label required" for="resourceNotifyLookback">日均统计天数</label><div class="form-control">' +
-              '<div class="redlist-notify-inline"><input class="text-input" id="resourceNotifyLookback" type="number" min="1" step="1" inputmode="numeric" data-action="resource-notify-lookback" value="' + esc(draft.lookbackDays) + '" aria-required="true" aria-describedby="resourceNotifyLookbackHelp redlistNotifyError-lookbackDays"><span>天</span></div>' +
-              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">取最近指定天数的总用量计算日均，用于补卡建议、可用天数估算和通知判断。请输入正整数，不设天数上限；历史用量数据不足时暂不估算。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
+            (isResource ? '<div class="form-row"><label class="form-label required" for="resourceNotifyLookback">日均用量测算范围</label><div class="form-control">' +
+              '<div class="redlist-notify-inline"><span>最近</span><input class="text-input" id="resourceNotifyLookback" type="number" min="1" step="1" inputmode="numeric" data-action="resource-notify-lookback" value="' + esc(draft.lookbackDays) + '" aria-required="true" aria-describedby="resourceNotifyLookbackHelp redlistNotifyError-lookbackDays"><span>天</span></div>' +
+              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">按最近所填天数计算日均用量，用于估算可用天数、计算建议补卡数量和判断是否通知。不影响列表中的「本月日均用量」。历史用量数据不足时暂不估算。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
               '<div class="form-row"><div class="form-label required" id="redlistNotifyFrequencyLabel">通知频率</div><div class="form-control">' +
               '<fieldset class="redlist-notify-frequency" aria-labelledby="redlistNotifyFrequencyLabel">' +
               [{ value: "once", label: "仅通知一次" }, { value: "daily", label: "每日通知" }].map(function (item) {
@@ -9994,7 +9973,6 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
               '<div class="redlist-notify-search combo"><input class="text-input" id="redlistNotifySearch" data-action="redlist-notify-search" value="' + esc(state.notificationSearch) + '" placeholder="搜索姓名或电话号码" aria-label="搜索通知账号姓名或电话号码" aria-describedby="redlistNotifyRecipientHelp redlistNotifyError-recipients">' +
                 '<button class="clear-value" data-action="clear-redlist-notify-search" aria-label="清空账号搜索"' + (state.notificationSearch ? '' : ' hidden') + '>' + closeIconMarkup() + '</button></div>' +
               '<div id="redlistNotifyRecipients">' + redlistNotifyRecipientsMarkup() + '</div>' +
-              (isResource ? resourceNoticeMarkup() : '') +
               '</div></div>' +
               redlistNotifyErrorMarkup("save") +
           '</div><footer class="dialog-actions"><button class="btn btn-gray" data-action="close-notification">取消</button>' +
