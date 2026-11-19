@@ -9960,7 +9960,7 @@ format_cell:tn,sheet_new:nn,sheet_add_aoa:sn,sheet_add_json:Wk,sheet_add_dom:Cg,
                 "距离红名单到期指定天数时通知。") + '</div>' + redlistNotifyErrorMarkup("days") + '</div></div>' +
             (isResource ? '<div class="form-row"><label class="form-label required" for="resourceNotifyLookback">日均用量测算范围</label><div class="form-control">' +
               '<div class="redlist-notify-inline"><span>最近</span><input class="text-input" id="resourceNotifyLookback" type="number" min="1" step="1" inputmode="numeric" data-action="resource-notify-lookback" value="' + esc(draft.lookbackDays) + '" aria-required="true" aria-describedby="resourceNotifyLookbackHelp redlistNotifyError-lookbackDays"><span>天</span></div>' +
-              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">按最近所填天数计算日均用量，用于估算可用天数、计算建议补卡数量和判断是否通知。不影响列表中的「本月日均用量」。历史用量数据不足时暂不估算。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
+              '<div class="redlist-notify-help" id="resourceNotifyLookbackHelp">按最近所填天数计算日均用量，用于估算可用天数、计算建议补卡数量和判断是否通知。不影响列表中的「本月日均用量」。</div>' + redlistNotifyErrorMarkup("lookbackDays") + '</div></div>' :
               '<div class="form-row"><div class="form-label required" id="redlistNotifyFrequencyLabel">通知频率</div><div class="form-control">' +
               '<fieldset class="redlist-notify-frequency" aria-labelledby="redlistNotifyFrequencyLabel">' +
               [{ value: "once", label: "仅通知一次" }, { value: "daily", label: "每日通知" }].map(function (item) {
